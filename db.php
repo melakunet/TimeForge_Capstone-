@@ -1,13 +1,5 @@
 <?php
-$host = 'localhost';
-$dbname = 'TimeForge_Capstone';
-$username = 'root'; 
-$password = '';     
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-} catch(PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+// Compatibility wrapper: use centralized database.php for connection.
+// Purpose: Keep existing includes that reference db.php working.
+require_once __DIR__ . '/database.php';
 ?>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 30, 2026 at 03:23 PM
+-- Generation Time: Feb 06, 2026 at 04:03 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -20,6 +20,45 @@ SET time_zone = "+00:00";
 --
 -- Database: `TimeForge_Capstone`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `audit_log`
+--
+
+CREATE TABLE `audit_log` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `action` varchar(50) NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `timestamp` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `audit_logs`
+--
+
+CREATE TABLE `audit_logs` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `action` varchar(100) NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `audit_logs`
+--
+
+INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `ip_address`, `user_agent`, `created_at`) VALUES
+(1, 1, 'login_success', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', '2026-02-06 15:30:00'),
+(2, 2, 'login_success', '127.0.0.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', '2026-02-06 15:35:00'),
+(5, 1, 'login_failed_wrong_password', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-02-06 14:36:32'),
+(6, 1, 'login_failed_wrong_password', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36', '2026-02-06 14:48:41');
 
 -- --------------------------------------------------------
 
@@ -75,24 +114,48 @@ INSERT INTO `time_entries` (`id`, `project_id`, `start_time`, `end_time`, `descr
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('admin','freelancer','client') NOT NULL DEFAULT 'freelancer',
   `full_name` varchar(100) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `is_active` tinyint(1) DEFAULT 1,
+  `last_login` datetime DEFAULT NULL,
+  `password_reset_token` varchar(255) DEFAULT NULL,
+  `password_reset_expires` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `full_name`, `created_at`) VALUES
-(1, 'admin_user', 'password123', 'admin', 'Super Admin', '2026-01-30 13:57:53'),
-(2, 'dev_sarah', 'password123', 'freelancer', 'Sarah Developer', '2026-01-30 13:57:53'),
-(3, 'client_bob', 'password123', 'client', 'Bob The Client', '2026-01-30 13:57:53');
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `full_name`, `is_active`, `last_login`, `password_reset_token`, `password_reset_expires`, `created_at`, `updated_at`) VALUES
+(1, 'admin_user', 'admin@timeforge.local', '$2y$10$W9q5yxlqZ3Z8Q7R5P2K1L.8Y6V3T9N2M5B8K7J4H1G0F9E8D7C6', 'admin', 'Super Admin', 1, NULL, NULL, NULL, '2026-01-30 13:57:53', '2026-02-06 13:48:29'),
+(2, 'dev_sarah', 'sarah@timeforge.local', '$2y$10$W9q5yxlqZ3Z8Q7R5P2K1L.8Y6V3T9N2M5B8K7J4H1G0F9E8D7C6', 'freelancer', 'Sarah Developer', 1, NULL, NULL, NULL, '2026-01-30 13:57:53', '2026-02-06 13:48:29'),
+(3, 'client_bob', 'bob@timeforge.local', '$2y$10$W9q5yxlqZ3Z8Q7R5P2K1L.8Y6V3T9N2M5B8K7J4H1G0F9E8D7C6', 'client', 'Bob The Client', 1, NULL, NULL, NULL, '2026-01-30 13:57:53', '2026-02-06 13:48:29'),
+(4, 'admin', 'admin@example.com', '$2y$10$Nw6mQ8zIxPjdbOIEOwv6aOMVZY9h2PjYWnsIDFHDT/aMAPiD0ArA6', 'admin', 'Administrator', 1, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-02-06 14:47:00'),
+(5, 'freelancer1', 'freelancer1@example.com', '$2y$10$lSsxsqy3UiLsNiJdsaCq/etAY7ziHDLYF3noAKn/2RW7sJz5iAa3q', 'freelancer', 'Sample Freelancer', 1, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-02-06 14:47:00'),
+(6, 'client1', 'client1@example.com', '$2y$10$FP50P/GmLCjfyfXYq7GX7e55Qi49zAlorNDjEpwAhe.4yM/7lDAIi', 'client', 'Sample Client', 1, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-02-06 14:47:00');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `audit_log`
+--
+ALTER TABLE `audit_log`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_user_id` (`user_id`);
+
+--
+-- Indexes for table `audit_logs`
+--
+ALTER TABLE `audit_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `created_at` (`created_at`);
 
 --
 -- Indexes for table `projects`
@@ -120,6 +183,18 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `audit_log`
+--
+ALTER TABLE `audit_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `audit_logs`
+--
+ALTER TABLE `audit_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
@@ -135,11 +210,23 @@ ALTER TABLE `time_entries`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `audit_log`
+--
+ALTER TABLE `audit_log`
+  ADD CONSTRAINT `audit_log_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `audit_logs`
+--
+ALTER TABLE `audit_logs`
+  ADD CONSTRAINT `audit_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `projects`
