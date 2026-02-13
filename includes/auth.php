@@ -195,7 +195,7 @@ function registerUser($username, $email, $password, $confirmPassword, $fullName,
         $errors[] = 'Full name must be at least 3 characters';
     }
     
-    if (!in_array($role, ['freelancer', 'client'])) {
+    if (!in_array($role, ['freelancer', 'client', 'admin'])) {
         $errors[] = 'Invalid role selected';
     }
     

@@ -1,95 +1,157 @@
 <?php
-
-$page_title = 'Home';
-
 require_once __DIR__ . '/config/session.php';
 require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/db.php';
 
-$current_user = getCurrentUser();
+$user_id = $_SESSION['user_id'] ?? null;
+$role = $_SESSION['role'] ?? null;
 
+// Check if user wants to view the welcome/landing page
+$view = $_GET['view'] ?? '';
+$showLanding = (!isLoggedIn() || $view === 'welcome');
 
+// Determine view based on login status and URL parameter
+if (isLoggedIn() && $view !== 'welcome') {
+    $page_title = 'Dashboard';
+    
+    // Dashboard Data Logic
+    if ($role === 'admin') {
+        $query = 'SELECT * FROM projects ORDER BY id DESC';
+        $p_stmt = $pdo->prepare($query);
+        $p_stmt->execute();
+    } elseif ($role === 'client') {
+        $query = 'SELECT * FROM projects WHERE client_id = :uid ORDER BY id DESC';
+        $p_stmt = $pdo->prepare($query);
+        $p_stmt->bindValue(':uid', $user_id);
+        $p_stmt->execute();
+    } else {
+        // Fallback or Freelancer logic if any specific logic needed
+        $query = 'SELECT * FROM projects ORDER BY id DESC';
+        $p_stmt = $pdo->prepare($query);
+        $p_stmt->execute();
+    }
+    $projects = $p_stmt->fetchAll();
+    $p_stmt->closeCursor();
+
+} else {
+    $page_title = 'Welcome';
+}
+
+// Use the main Header component (contains DOCTYPE, <head>, <body> start, and Nav)
+include __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TimeForge - Home</title>
-    <!-- Google Fonts: DM Serif Display -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css" />
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png" />
-    <script defer src="/TimeForge_Capstone/js/theme.js"></script>
-    <script defer src="/TimeForge_Capstone/js/animations.js"></script>
-</head>
-<body>
-<?php include __DIR__ . '/includes/header_partial.php'; ?>
 
+<?php if (isLoggedIn() && $view !== 'welcome'): ?>
+    <!-- LOGGED IN VIEW: DASHBOARD -->
+    <main class="container">
+        <div class="card dashboard-card">
+            <div class="dashboard-header">
+                <h2>Project Dashboard</h2>
+                <?php if ($role === 'admin' || $role === 'client'): ?>
+                    <a href="add_project.php" class="btn btn-primary">+ New Project</a>
+                <?php endif; ?>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="project-table">
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>Hourly Rate</th>
+                            <th>Status</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($projects)): ?>
+                            <?php foreach ($projects as $project): ?>
+                            <tr>
+                                <td class="project-name"><?php echo htmlspecialchars($project['project_name']); ?></td>
+                                <td>$<?php echo number_format($project['hourly_rate'], 2); ?>/hr</td>
+                                <td><span class="status-badge status-<?php echo htmlspecialchars($project['status']); ?>"><?php echo ucfirst(htmlspecialchars($project['status'])); ?></span></td>
+                                <td class="text-center">
+                                    <?php if ($role === 'admin' || $role === 'client'): ?>
+                                    <form action="delete_project.php" method="post" onsubmit="return confirm('Are you sure you want to delete this project?');" class="d-inline">
+                                        <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
+                                        <button type="submit" class="action-btn-delete">Delete</button>
+                                    </form>
+                                    <?php else: ?>
+                                    <span class="placeholder-text">--</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" class="empty-state">No projects found.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 
-<main class="container">
-    <div class="card card-home">
-    <h1 class="text-accent mb-1 heading-serif">Welcome to TimeForge</h1>
-        <p class="text-secondary mb-0-75">Track time and projects with clarity—built for freelancers, teams, and clients.</p>
-    <p class="text-secondary">Start timers, organize tasks by project, and share clear progress with clients through simple role‑based dashboards.</p>
-        
-        
-        <div class="hero-clock-wrap mt-1">
-            <div class="hero-clock" aria-label="Current time">
-                <div class="clock-sheen"></div>
-                <div class="hand hour" id="clockHour"></div>
-                <div class="hand minute" id="clockMinute"></div>
-                <div class="hand second" id="clockSecond"></div>
-                <div class="center-dot"></div>
-            </div>
-            <div class="stat">
-                <div class="label">Time running</div>
-                <div class="value" id="statTime">--:--:--</div>
-                <div class="stat-bar"><div class="fill" id="statTimeFill"></div></div>
-            </div>
-            <div class="stat">
-                <div class="label">Earnings (demo)</div>
-                <div class="value" id="statCash">$0.00</div>
-                <div class="stat-bar"><div class="fill" id="statCashFill"></div></div>
+<?php else: ?>
+    <!-- LOGGED OUT VIEW: LANDING PAGE -->
+    <div class="home-wrapper">
+        <div class="home-hero">
+            <h1 class="home-title">
+                Master your time. <br>
+                <span class="text-accent">Secure your earnings.</span>
+            </h1>
+            <p class="home-subtitle">
+                 The simple, professional way to track time, manage projects, and get paid faster.
+            </p>
+            
+            <div class="home-btn-group">
+                <a href="register.php" class="btn btn-pill btn-pill-primary">Get Started</a>
+                <a href="login.php" class="btn btn-pill btn-pill-secondary">Login</a>
             </div>
         </div>
 
-        <?php if (isLoggedIn()): ?>
-            <div class="form-group mt-1">
-                <label>Signed in as</label>
-                <div>
-                    <?php echo htmlspecialchars(($current_user['full_name'] ?? $current_user['username']) ?: 'User'); ?>
-                    (role: <?php echo htmlspecialchars($current_user['role'] ?? 'admin'); ?>)
-                </div>
+        <!-- Hero Clock & Stats Widget -->
+        <div class="hero-clock-wrap" style="margin: 2rem auto; justify-content: center; max-width: 600px;">
+            <div class="hero-clock">
+                <div class="clock-sheen"></div>
+                <div class="center-dot"></div>
+                <!-- ID hooks for JS -->
+                <div class="hand hour" id="clockHour"></div>
+                <div class="hand minute" id="clockMinute"></div>
+                <div class="hand second" id="clockSecond"></div>
             </div>
+            
+            <div class="hero-stats">
+                 <div class="stat">
+                    <div class="label">Time Saved</div>
+                    <div class="value" id="statTime">00:00:00</div>
+                    <div class="stat-bar"><div class="fill" id="statTimeFill" style="width: 0%"></div></div>
+                 </div>
+                 <div class="stat">
+                    <div class="label">Est. Earnings</div>
+                    <div class="value" id="statCash">$0.00</div>
+                    <div class="stat-bar"><div class="fill" id="statCashFill" style="width: 0%"></div></div>
+                 </div>
+            </div>
+        </div>
 
-            <div class="grid mt-1-25">
-                <a class="btn btn-primary" href="/TimeForge_Capstone/admin/dashboard.php">Admin Dashboard</a>
-                <a class="btn btn-primary" href="/TimeForge_Capstone/freelancer/dashboard.php">Freelancer Portal</a>
-                <a class="btn btn-primary" href="/TimeForge_Capstone/client/dashboard.php">Client Portal</a>
+        <div class="home-features">
+            <div class="feature-card">
+                <h3>Time Tracking</h3>
+                <p>Log hours in seconds and keep your productivity in check.</p>
             </div>
-
-            <p class="mt-1">
-                <a class="btn btn-danger" href="/TimeForge_Capstone/includes/logout.php">Logout</a>
-            </p>
-        <?php else: ?>
-            <div class="grid mt-1-25">
-                <a class="btn btn-primary" href="/TimeForge_Capstone/login.php">Login</a>
-                <a class="btn btn-primary" href="/TimeForge_Capstone/register.php">Register</a>
+            <div class="feature-card">
+                <h3>Project Management</h3>
+                <p>Stay on top of deadlines and budgets with ease.</p>
             </div>
-        <?php endif; ?>
+            <div class="feature-card">
+                <h3>Reporting</h3>
+                <p>Generate insights to share with clients or your team.</p>
+            </div>
+        </div>
     </div>
 
-    <div class="card quick-links-card">
-    <h2 class="text-accent mb-0-75 heading-serif">Quick Links</h2>
-        <ul class="list-reset pl-1-25">
-            <li><a href="/TimeForge_Capstone/project_details.php?project_id=1">Project Details (Example)</a></li>
-            <li><a href="/TimeForge_Capstone/sql/TimeForge_Capstone.sql" target="_blank">View SQL Export</a></li>
-        </ul>
-    </div>
- </main>
+<?php endif; ?>
 
- <?php include __DIR__ . '/includes/footer_partial.php'; ?>
- </body>
-</html>
+<?php include __DIR__ . '/includes/footer.php'; ?>
+

@@ -4,106 +4,138 @@ $page_title = 'Register';
 require_once __DIR__ . '/config/session.php';
 require_once __DIR__ . '/includes/auth.php';
 
-// If already logged in, redirect
 if (isLoggedIn()) {
     header('Location: /TimeForge_Capstone/index.php');
     exit();
 }
 
 $errors = [];
-$success_message = '';
+$form_data = [];
 
-// Check if form was submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
-    $full_name = trim($_POST['full_name'] ?? '');
-    $role = $_POST['role'] ?? 'freelancer';
-    
-    $result = registerUser($username, $email, $password, $confirm_password, $full_name, $role);
-    
-    if ($result['success']) {
-        $success_message = $result['message'];
-        // Clear form
-        $username = '';
-        $email = '';
-        $full_name = '';
-    } else {
-        $errors = $result['errors'] ?? [];
-    }
+if (isset($_SESSION['register_errors'])) {
+    $errors = $_SESSION['register_errors'];
+    unset($_SESSION['register_errors']);
 }
 
-include_once __DIR__ . '/includes/header.php';
-?>
+if (isset($_SESSION['register_form_data'])) {
+    $form_data = $_SESSION['register_form_data'];
+    unset($_SESSION['register_form_data']);
+}
 
-<div class="container">
-    <div class="card" style="max-width: 500px; margin: 3rem auto;">
-        <h1 style="text-align: center; margin-bottom: 2rem; color: var(--color-accent);">Create Account</h1>
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - TimeForge</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth_layout.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="auth-wrapper">
+    <!-- Left Side -->
+    <div class="auth-left">
+        <div class="auth-brand">
+            <a href="index.php" class="brand-link">
+                <img src="icons/logo.png" alt="Logo">
+                <span>TIMEFORGE</span>
+            </a>
+        </div>
         
-        <?php if (!empty($success_message)): ?>
-            <div class="alert alert-success">
-                <?php echo htmlspecialchars($success_message); ?>
-                <p style="margin-top: 1rem;"><a href="/TimeForge_Capstone/login.php" class="btn btn-primary" style="padding: 0.5rem 1rem;">Go to Login</a></p>
+        <div class="auth-hero-text">
+            <h1>Master your time.<br>Secure your earnings.</h1>
+            <p>The comprehensive time tracking solution for modern professionals.</p>
+        </div>
+
+        <div class="auth-stats">
+            <div class="auth-stat-item">
+                <strong class="blue-text">15k+</strong>
+                <span>Users Globally</span>
             </div>
-        <?php endif; ?>
+            <div class="auth-stat-item">
+                <strong class="blue-text">4.9/5</strong>
+                <span>users rating</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side -->
+    <div class="auth-right">
         
+        <h2 style="margin-top: 1rem;">Create Account</h2>
+        
+        <div class="auth-tabs">
+            <a href="login.php" style="color: #9ca3af; text-decoration: none;">Login</a>
+            <a href="register.php" class="active">Sign Up</a>
+        </div>
+
+        <div class="social-login">
+            <span style="font-weight: 600;">google</span>
+            <span class="or-divider">or create new account</span>
+        </div>
+
         <?php if (!empty($errors)): ?>
-            <div class="alert alert-danger">
-                <ul style="margin: 0; padding-left: 1.5rem;">
+             <div style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <ul style="margin: 0; padding-left: 1.2rem;">
                     <?php foreach ($errors as $error): ?>
                         <li><?php echo htmlspecialchars($error); ?></li>
                     <?php endforeach; ?>
                 </ul>
             </div>
         <?php endif; ?>
-        
-        <?php if (empty($success_message)): ?>
-        <form method="POST" action="register.php">
+
+        <form action="includes/register_process.php" method="post" class="auth-form" style="max-height: 55vh; overflow-y: auto; padding-right: 5px;">
+            
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username ?? ''); ?>" required>
-                <small style="color: var(--color-text-secondary);">3+ characters, no spaces</small>
+                <label>Username</label>
+                <input type="text" name="username" value="<?php echo htmlspecialchars($form_data['username'] ?? ''); ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="full_name" value="<?php echo htmlspecialchars($form_data['full_name'] ?? ''); ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" value="<?php echo htmlspecialchars($form_data['email'] ?? ''); ?>" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" required>
             </div>
             
             <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password" required>
             </div>
             
             <div class="form-group">
-                <label for="full_name">Full Name</label>
-                <input type="text" id="full_name" name="full_name" value="<?php echo htmlspecialchars($full_name ?? ''); ?>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-                <small style="color: var(--color-text-secondary);">6+ characters</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="role">I am a:</label>
-                <select id="role" name="role" required>
-                    <option value="freelancer">Freelancer</option>
-                    <option value="client">Client</option>
+                <label>Register as</label>
+                <select name="role" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 1rem; background-color: #f9fafb;">
+                    <option value="freelancer" <?php echo ($form_data['role'] ?? '') === 'freelancer' ? 'selected' : ''; ?>>Freelancer</option>
+                    <option value="client" <?php echo ($form_data['role'] ?? '') === 'client' ? 'selected' : ''; ?>>Client</option>
+                    <option value="admin" <?php echo ($form_data['role'] ?? '') === 'admin' ? 'selected' : ''; ?>>Admin</option>
                 </select>
             </div>
-            
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Register</button>
+
+            <div class="form-group" style="margin-top: 1rem;">
+                <label style="display: flex; align-items: center; cursor: pointer; color: #374151; font-weight: normal;">
+                    <input type="checkbox" name="terms" value="1" required style="width: auto; margin-right: 0.75rem;">
+                    <span>I agree to the Terms & Conditions</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-auth-primary">Create Account</button>
         </form>
-        
-        <div style="text-align: center; margin-top: 1.5rem; color: var(--color-text-secondary);">
-            <p>Already have an account? <a href="/TimeForge_Capstone/login.php" style="color: var(--color-accent); text-decoration: none; font-weight: 600;">Login here</a></p>
-        </div>
-        <?php endif; ?>
     </div>
 </div>
 
-<?php include_once __DIR__ . '/includes/footer.php'; ?>
+<script src="js/theme.js"></script>
+</body>
+</html>
+<?php // End of file
