@@ -1,0 +1,220 @@
+/* Auth Page Layout - Split Screen */
+body {
+    background-color: #ffffff;
+    /* Reset body behavior for full height split */
+    height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    display: flex; /* Ensure body takes full height */
+    flex-direction: column; /* Or row if needed, but wrapper handles it */
+}
+
+.auth-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Left Panel (Teal Background) */
+.auth-left {
+    flex: 1;
+    background-color: #BBECE8; /* Matching the teal color from the image */
+    padding: 3rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    color: #000;
+}
+
+.auth-brand {
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #2D5BFF; /* Blue brand color */
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    width: fit-content;
+}
+
+.auth-brand img {
+    height: 30px;
+    width: auto;
+}
+
+.auth-hero-text {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.auth-hero-text h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: #000;
+}
+
+.auth-hero-text p {
+    font-size: 1.1rem;
+    color: #333;
+    max-width: 80%;
+}
+
+.auth-stats {
+    display: flex;
+    gap: 4rem;
+    margin-top: 4rem;
+}
+
+.auth-stat-item strong {
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.auth-stat-item span {
+    font-size: 1rem;
+    color: #4a5568; /* Distinct slate color for labels */
+}
+
+.auth-stat-item strong.blue-text {
+    color: #000; /* As per image left side is black/dark grey text mostly */
+}
+
+/* Right Panel (White Background) */
+.auth-right {
+    flex: 1; /* Or specifically width: 50% or fixed width */
+    background-color: #ffffff;
+    padding: 6rem 8rem; /* Large padding to center content vertically/horizontally */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-right h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.auth-tabs {
+    display: flex;
+    gap: 3rem;
+    margin-bottom: 2.5rem;
+    font-size: 1.1rem;
+}
+
+.auth-tabs a {
+    text-decoration: none;
+    color: #1f2937;
+    position: relative;
+    padding-bottom: 5px; 
+}
+
+.auth-tabs a.active {
+    color: #2563eb; /* Active blue */
+    font-weight: 600;
+}
+
+/* Google / Social Logic Placeholder */
+.social-login {
+    margin-bottom: 2rem;
+}
+
+.social-login span {
+    color: #2563eb;
+    margin-right: 1rem;
+    cursor: pointer;
+}
+.social-login .or-divider {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-left: 1rem;
+}
+
+
+/* Form Styling */
+.auth-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #2563eb; /* Blue label text as per image */
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb; /* Light grey border */
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #f9fafb; /* Slight grey background input */
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-auth-primary {
+    background-color: #1d4ed8; /* Strong Blue */
+    color: white;
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: 50px; /* Pill shape */
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1.5rem;
+    transition: background-color 0.2s;
+}
+
+.btn-auth-primary:hover {
+    background-color: #1e40af;
+}
+
+.forgot-password {
+    display: block;
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #2563eb;
+    text-decoration: none;
+    background-color: #eff6ff;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .auth-wrapper {
+        flex-direction: column;
+    }
+    .auth-left {
+        padding: 2rem;
+        min-height: 40vh;
+    }
+    .auth-right {
+        padding: 2rem;
+    }
+}

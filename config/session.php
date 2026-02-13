@@ -19,7 +19,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // Development auth bypass (set to false when you want to enforce login)
 // Allows reviewers/advisors to navigate without credentials during development.
 if (!defined('DEV_AUTH_BYPASS')) {
-    define('DEV_AUTH_BYPASS', true);
+    define('DEV_AUTH_BYPASS', false);
 }
 
 // Session timeout (in seconds)

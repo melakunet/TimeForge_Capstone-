@@ -19,7 +19,7 @@ $current_user = getCurrentUser();
 <body>
     <header>
         <div class="logo">
-            <a href="/TimeForge_Capstone/index.php" class="logo-link">
+            <a href="/TimeForge_Capstone/index.php?view=welcome" class="logo-link">
                 <img src="/TimeForge_Capstone/icons/logo.png" alt="TimeForge Logo">
                 <span>TimeForge</span>
             </a>
@@ -39,13 +39,13 @@ $current_user = getCurrentUser();
                 <?php endif; ?>
                 
                 <button id="themeToggle" class="theme-toggle">
-                    Theme
+                    Dark mode
                 </button>
                 
                 <a href="/TimeForge_Capstone/includes/logout.php" class="btn btn-danger btn-compact">Logout</a>
             <?php else: ?>
                 <button id="themeToggle" class="theme-toggle">
-                    Theme
+                    Dark mode
                 </button>
                 
                 <a href="/TimeForge_Capstone/login.php">Login</a>
@@ -53,5 +53,4 @@ $current_user = getCurrentUser();
             <?php endif; ?>
         </nav>
     </header>
-    
-    <script src="/TimeForge_Capstone/js/theme.js"></script>
+
