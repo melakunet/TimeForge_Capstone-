@@ -65,21 +65,21 @@ if (isset($_SESSION['register_form_data'])) {
     <!-- Right Side -->
     <div class="auth-right">
         
-        <h2 style="margin-top: 1rem;">Create Account</h2>
+        <h2 class="top-margin">Create Account</h2>
         
         <div class="auth-tabs">
-            <a href="login.php" style="color: #9ca3af; text-decoration: none;">Login</a>
+            <a href="login.php" class="inactive-tab">Login</a>
             <a href="register.php" class="active">Sign Up</a>
         </div>
 
         <div class="social-login">
-            <span style="font-weight: 600;">google</span>
+            <span class="google-text">google</span>
             <span class="or-divider">or create new account</span>
         </div>
 
         <?php if (!empty($errors)): ?>
-             <div style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-                <ul style="margin: 0; padding-left: 1.2rem;">
+             <div class="alert-error">
+                <ul>
                     <?php foreach ($errors as $error): ?>
                         <li><?php echo htmlspecialchars($error); ?></li>
                     <?php endforeach; ?>
@@ -87,7 +87,7 @@ if (isset($_SESSION['register_form_data'])) {
             </div>
         <?php endif; ?>
 
-        <form action="includes/register_process.php" method="post" class="auth-form" style="max-height: 55vh; overflow-y: auto; padding-right: 5px;">
+        <form action="includes/register_process.php" method="post" class="auth-form auth-form-scrollable">
             
             <div class="form-group">
                 <label>Username</label>
@@ -116,16 +116,16 @@ if (isset($_SESSION['register_form_data'])) {
             
             <div class="form-group">
                 <label>Register as</label>
-                <select name="role" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 1rem; background-color: #f9fafb;">
+                <select name="role">
                     <option value="freelancer" <?php echo ($form_data['role'] ?? '') === 'freelancer' ? 'selected' : ''; ?>>Freelancer</option>
                     <option value="client" <?php echo ($form_data['role'] ?? '') === 'client' ? 'selected' : ''; ?>>Client</option>
                     <option value="admin" <?php echo ($form_data['role'] ?? '') === 'admin' ? 'selected' : ''; ?>>Admin</option>
                 </select>
             </div>
 
-            <div class="form-group" style="margin-top: 1rem;">
-                <label style="display: flex; align-items: center; cursor: pointer; color: #374151; font-weight: normal;">
-                    <input type="checkbox" name="terms" value="1" required style="width: auto; margin-right: 0.75rem;">
+            <div class="form-group form-group-top-margin">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="terms" value="1" required>
                     <span>I agree to the Terms & Conditions</span>
                 </label>
             </div>

@@ -1,4 +1,6 @@
 <?php
+$page_title = 'Welcome';
+
 require_once __DIR__ . '/config/session.php';
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/db.php';
@@ -14,32 +16,39 @@ $showLanding = (!isLoggedIn() || $view === 'welcome');
 if (isLoggedIn() && $view !== 'welcome') {
     $page_title = 'Dashboard';
     
-    // Dashboard Data Logic
+    // Dashboard Data Logic - Exclude soft-deleted projects
     if ($role === 'admin') {
-        $query = 'SELECT * FROM projects ORDER BY id DESC';
+        $query = 'SELECT * FROM projects WHERE deleted_at IS NULL ORDER BY id DESC';
         $p_stmt = $pdo->prepare($query);
         $p_stmt->execute();
     } elseif ($role === 'client') {
-        $query = 'SELECT * FROM projects WHERE client_id = :uid ORDER BY id DESC';
+        $query = 'SELECT * FROM projects WHERE client_id = :uid AND deleted_at IS NULL ORDER BY id DESC';
         $p_stmt = $pdo->prepare($query);
         $p_stmt->bindValue(':uid', $user_id);
         $p_stmt->execute();
     } else {
         // Fallback or Freelancer logic if any specific logic needed
-        $query = 'SELECT * FROM projects ORDER BY id DESC';
+        $query = 'SELECT * FROM projects WHERE deleted_at IS NULL ORDER BY id DESC';
         $p_stmt = $pdo->prepare($query);
         $p_stmt->execute();
     }
     $projects = $p_stmt->fetchAll();
     $p_stmt->closeCursor();
-
-} else {
-    $page_title = 'Welcome';
 }
 
-// Use the main Header component (contains DOCTYPE, <head>, <body> start, and Nav)
-include __DIR__ . '/includes/header.php';
+$current_user = getCurrentUser();
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($page_title); ?> - TimeForge</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="icons/logo.png">
+</head>
+<body>
+    <?php include_once __DIR__ . '/includes/header_partial.php'; ?>
 
 <?php if (isLoggedIn() && $view !== 'welcome'): ?>
     <!-- LOGGED IN VIEW: DASHBOARD -->
@@ -71,9 +80,9 @@ include __DIR__ . '/includes/header.php';
                                 <td><span class="status-badge status-<?php echo htmlspecialchars($project['status']); ?>"><?php echo ucfirst(htmlspecialchars($project['status'])); ?></span></td>
                                 <td class="text-center">
                                     <?php if ($role === 'admin' || $role === 'client'): ?>
-                                    <form action="delete_project.php" method="post" onsubmit="return confirm('Are you sure you want to delete this project?');" class="d-inline">
+                                    <form action="delete_project.php" method="post" onsubmit="return confirm('Are you sure you want to archive this project? It can be restored later.');" class="d-inline">
                                         <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
-                                        <button type="submit" class="action-btn-delete">Delete</button>
+                                        <button type="submit" class="action-btn-delete">Archive</button>
                                     </form>
                                     <?php else: ?>
                                     <span class="placeholder-text">--</span>
@@ -153,5 +162,15 @@ include __DIR__ . '/includes/header.php';
 
 <?php endif; ?>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+    <footer>
+        <p>&copy; <?php echo date('Y'); ?> TimeForge. All rights reserved.</p>
+        <p>Professional Time Tracking & Project Management Solution</p>
+        <p>Web Capstone Project by Etefworkie Melaku — triOS College, Mobile and Web App Development</p>
+    </footer>
+    
+    <script src="js/theme.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/hero.js"></script>
+</body>
+</html>
 

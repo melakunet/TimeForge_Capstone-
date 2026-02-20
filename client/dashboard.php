@@ -4,13 +4,21 @@ $page_title = 'Client Portal';
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/auth.php';
 
-// Require client role
 requireRole('client');
 
 $current_user = getCurrentUser();
-
-include_once __DIR__ . '/../includes/header.php';
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($page_title); ?> - TimeForge</title>
+    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
+    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+</head>
+<body>
+    <?php include_once __DIR__ . '/../includes/header_partial.php'; ?>
 
 <div class="container">
     <h1 class="text-accent mb-2">Client Portal</h1>
@@ -51,4 +59,13 @@ include_once __DIR__ . '/../includes/header.php';
     </div>
 </div>
 
-<?php include_once __DIR__ . '/../includes/footer.php'; ?>
+    <footer>
+        <p>&copy; <?php echo date('Y'); ?> TimeForge. All rights reserved.</p>
+        <p>Professional Time Tracking & Project Management Solution</p>
+        <p>Web Capstone Project by Etefworkie Melaku — triOS College, Mobile and Web App Development</p>
+    </footer>
+    
+    <script src="/TimeForge_Capstone/js/theme.js"></script>
+    <script src="/TimeForge_Capstone/js/animations.js"></script>
+</body>
+</html>

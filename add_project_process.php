@@ -10,25 +10,29 @@ if (!isLoggedIn()) {
 
 $project_name = filter_input(INPUT_POST, 'project_name');
 $description = filter_input(INPUT_POST, 'description');
+$client_id = filter_input(INPUT_POST, 'client_id', FILTER_VALIDATE_INT);
+$hourly_rate = filter_input(INPUT_POST, 'hourly_rate', FILTER_VALIDATE_FLOAT);
 $budget = filter_input(INPUT_POST, 'budget', FILTER_VALIDATE_FLOAT);
 $deadline = filter_input(INPUT_POST, 'deadline');
 $status = filter_input(INPUT_POST, 'status');
 
-if ($project_name == null || $budget === false || $deadline == null || $status == null) {
-    echo "Invalid data. Check all fields.";
-    include('add_project.php'); // Or header redirection
+if ($project_name == null || $client_id === false || $hourly_rate === false || $status == null) {
+    echo "Invalid data. Check all required fields.";
+    include('add_project.php');
     exit();
 } else {
     // Add the project
-    $query = 'INSERT INTO projects (project_name, description, client_id, budget, deadline, status)
-              VALUES (:project_name, :description, :client_id, :budget, :deadline, :status)';
+    $query = 'INSERT INTO projects (project_name, description, client_id, hourly_rate, budget, deadline, status, created_by)
+              VALUES (:project_name, :description, :client_id, :hourly_rate, :budget, :deadline, :status, :created_by)';
     $statement = $pdo->prepare($query);
     $statement->bindValue(':project_name', $project_name);
     $statement->bindValue(':description', $description);
-    $statement->bindValue(':client_id', $_SESSION['user_id']); // Assuming logged in user is client
+    $statement->bindValue(':client_id', $client_id);
+    $statement->bindValue(':hourly_rate', $hourly_rate);
     $statement->bindValue(':budget', $budget);
     $statement->bindValue(':deadline', $deadline);
     $statement->bindValue(':status', $status);
+    $statement->bindValue(':created_by', $_SESSION['user_id']); // Track who created the project
     $statement->execute();
     $statement->closeCursor();
 

@@ -1,5 +1,4 @@
 <?php
-// Header Partial (markup only) for instructor-style pages
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/auth.php';
 $current_user = getCurrentUser();
