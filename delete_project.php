@@ -10,18 +10,33 @@ if (!isLoggedIn()) {
 }
 
 $project_id = filter_input(INPUT_POST, 'project_id', FILTER_VALIDATE_INT);
+$deletion_reason = filter_input(INPUT_POST, 'deletion_reason') ?? 'No reason provided';
 
-// Basic deletion logic
+// SOFT DELETE - Mark as deleted instead of removing from database
 if ($project_id != false) {
     // Only Admin or Client who owns the project should delete.
-    // For simplicity, checking if logged in as Admin or Client.
-    // In a real app, verify ownership for Clients.
+    $user_id = $_SESSION['user_id'];
+    $role = $_SESSION['role'];
     
-    $query = 'DELETE FROM projects WHERE project_id = :project_id';
+    // Soft delete: Update deleted_at and deleted_by instead of DELETE
+    $query = 'UPDATE projects 
+              SET deleted_at = NOW(), 
+                  deleted_by = :user_id,
+                  deletion_reason = :reason,
+                  status = "archived"
+              WHERE id = :project_id';
+    
     $statement = $pdo->prepare($query);
     $statement->bindValue(':project_id', $project_id);
+    $statement->bindValue(':user_id', $user_id);
+    $statement->bindValue(':reason', $deletion_reason);
     $success = $statement->execute();
     $statement->closeCursor();
+    
+    // Log the deletion in audit logs
+    if ($success) {
+        logAuditAction($user_id, 'project_archived', $_SERVER['REMOTE_ADDR']);
+    }
 }
 
 // Redirect to index

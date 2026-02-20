@@ -73,18 +73,18 @@ if (isset($_SESSION['register_success'])) {
         </div>
 
         <div class="social-login">
-            <span style="font-weight: 600;">google</span>
+            <span class="google-text">google</span>
             <span class="or-divider">or email address</span>
         </div>
 
         <?php if (!empty($success_message)): ?>
-            <div style="background: #d1fae5; color: #065f46; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <div class="alert-success">
                 <?php echo htmlspecialchars($success_message); ?>
             </div>
         <?php endif; ?>
 
         <?php if (!empty($error_message)): ?>
-            <div style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <div class="alert-error">
                 <?php echo htmlspecialchars($error_message); ?>
             </div>
         <?php endif; ?>

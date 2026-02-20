@@ -8,6 +8,10 @@ if (!isLoggedIn()) {
     exit();
 }
 
+// Fetch active clients for dropdown
+$clients_query = $pdo->query("SELECT id, client_name, company_name FROM clients WHERE is_active = 1 ORDER BY client_name");
+$clients = $clients_query->fetchAll();
+
 $page_title = 'Add Project';
 $error_message = '';
 ?>
@@ -31,6 +35,28 @@ $error_message = '';
                 <div class="form-group">
                     <label>Project Name:</label>
                     <input type="text" name="project_name" required><br>
+                </div>
+
+                <div class="form-group">
+                    <label>Client:</label>
+                    <select name="client_id" required>
+                        <option value="">-- Select Client --</option>
+                        <?php foreach ($clients as $client): ?>
+                            <option value="<?php echo $client['id']; ?>">
+                                <?php 
+                                    echo htmlspecialchars($client['client_name']);
+                                    if ($client['company_name']) {
+                                        echo ' (' . htmlspecialchars($client['company_name']) . ')';
+                                    }
+                                ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select><br>
+                </div>
+
+                <div class="form-group">
+                    <label>Hourly Rate ($):</label>
+                    <input type="number" name="hourly_rate" step="0.01" min="0" required><br>
                 </div>
 
                 <div class="form-group">
