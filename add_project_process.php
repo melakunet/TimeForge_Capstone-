@@ -1,10 +1,18 @@
 <?php
 require_once __DIR__ . '/config/session.php';
 require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/flash.php';
 require_once __DIR__ . '/db.php';
 
 if (!isLoggedIn()) {
     header('Location: login.php');
+    exit();
+}
+
+// Only admin and freelancers can add projects
+if (!hasRole('admin') && !hasRole('freelancer')) {
+    setFlash('danger', 'You do not have permission to add projects.');
+    header('Location: index.php');
     exit();
 }
 
@@ -17,8 +25,8 @@ $deadline = filter_input(INPUT_POST, 'deadline');
 $status = filter_input(INPUT_POST, 'status');
 
 if ($project_name == null || $client_id === false || $hourly_rate === false || $status == null) {
-    echo "Invalid data. Check all required fields.";
-    include('add_project.php');
+    setFlash('danger', 'Invalid data. Check all required fields.');
+    header('Location: add_project.php');
     exit();
 } else {
     // Add the project
@@ -36,6 +44,7 @@ if ($project_name == null || $client_id === false || $hourly_rate === false || $
     $statement->execute();
     $statement->closeCursor();
 
+    setFlash('success', 'Project added successfully!');
     header('Location: index.php');
     exit();
 }

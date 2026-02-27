@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/config/session.php';
 require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/flash.php';
 require_once __DIR__ . '/db.php';
 
 if (!isLoggedIn()) {
@@ -14,6 +15,7 @@ $clients = $clients_query->fetchAll();
 
 $page_title = 'Add Project';
 $error_message = '';
+$flash = getFlash();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +32,12 @@ $error_message = '';
     <main class="container">
         <div class="card form-card">
             <h2 class="page-title">Add Project</h2>
+
+            <?php if (!empty($flash) && !empty($flash['message'])): ?>
+                <div class="alert alert-<?php echo htmlspecialchars($flash['type'] ?? 'info'); ?>">
+                    <?php echo htmlspecialchars($flash['message']); ?>
+                </div>
+            <?php endif; ?>
             
             <form action="add_project_process.php" method="post" id="add_project_form">
                 <div class="form-group">
