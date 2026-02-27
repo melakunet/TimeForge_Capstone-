@@ -3,10 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 20, 2026 at 04:42 PM
+-- Generation Time: Feb 27, 2026 at 03:26 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -26,23 +27,10 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `audit_log`
 --
-
-DROP TABLE IF EXISTS `audit_log`;
-CREATE TABLE `audit_log` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `action` varchar(50) NOT NULL,
-  `ip_address` varchar(45) DEFAULT NULL,
-  `timestamp` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
 --
 -- Table structure for table `audit_logs`
 --
 
-DROP TABLE IF EXISTS `audit_logs`;
 CREATE TABLE `audit_logs` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -68,7 +56,6 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `ip_address`, `user_agent`,
 -- Table structure for table `clients`
 --
 
-DROP TABLE IF EXISTS `clients`;
 CREATE TABLE `clients` (
   `id` int(11) NOT NULL,
   `client_name` varchar(100) NOT NULL,
@@ -90,7 +77,8 @@ CREATE TABLE `clients` (
 INSERT INTO `clients` (`id`, `client_name`, `company_name`, `email`, `phone`, `address`, `user_id`, `created_by`, `created_at`, `updated_at`, `is_active`) VALUES
 (3, 'Bob The Client', NULL, 'bob@timeforge.local', NULL, NULL, 3, 1, '2026-02-20 15:08:08', '2026-02-20 15:08:08', 1),
 (6, 'Sample Client', NULL, 'client1@example.com', NULL, NULL, 6, 1, '2026-02-20 15:08:08', '2026-02-20 15:08:08', 1),
-(9, 'Rose Etef', NULL, 'rose@timeforge.com', NULL, NULL, 9, 1, '2026-02-20 15:08:08', '2026-02-20 15:08:08', 1);
+(9, 'Rose Etef', NULL, 'rose@timeforge.com', NULL, NULL, 9, 1, '2026-02-20 15:08:08', '2026-02-20 15:08:08', 1),
+(10, 'Azi go', 'az-flowers', 'azibeletu@gmail.com', '+164750043333', '200 dawntown , toronto', NULL, 11, '2026-02-27 13:53:58', '2026-02-27 13:53:58', 1);
 
 -- --------------------------------------------------------
 
@@ -98,7 +86,6 @@ INSERT INTO `clients` (`id`, `client_name`, `company_name`, `email`, `phone`, `a
 -- Table structure for table `projects`
 --
 
-DROP TABLE IF EXISTS `projects`;
 CREATE TABLE `projects` (
   `id` int(11) NOT NULL,
   `project_name` varchar(100) NOT NULL,
@@ -127,7 +114,8 @@ CREATE TABLE `projects` (
 
 INSERT INTO `projects` (`id`, `project_name`, `description`, `client_id`, `created_by`, `hourly_rate`, `budget`, `deadline`, `status`, `stage`, `created_at`, `updated_at`, `deleted_at`, `deleted_by`, `deletion_requested`, `deletion_requested_by`, `deletion_requested_at`, `deletion_reason`, `progress_percentage`) VALUES
 (1, 'Website Redesign', NULL, 3, NULL, 50.00, NULL, NULL, 'active', 'planning', '2026-02-20 15:07:00', '2026-02-20 15:07:00', NULL, NULL, 0, NULL, NULL, NULL, 0),
-(2, 'SEO Audit', NULL, 3, NULL, 75.00, NULL, NULL, 'active', 'planning', '2026-02-20 15:07:00', '2026-02-20 15:07:00', NULL, NULL, 0, NULL, NULL, NULL, 0);
+(2, 'SEO Audit', NULL, 3, NULL, 75.00, NULL, NULL, 'active', 'planning', '2026-02-20 15:07:00', '2026-02-20 15:07:00', NULL, NULL, 0, NULL, NULL, NULL, 0),
+(4, 'Melaku Digital Inc.', 'Melaku digital inc need website design. we must show luxury colors and font styles. and the landing page need to have animations.', 9, 9, 35.00, 20000.00, '2026-03-20', 'active', 'planning', '2026-02-20 15:47:42', '2026-02-20 15:47:42', NULL, NULL, 0, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -135,23 +123,25 @@ INSERT INTO `projects` (`id`, `project_name`, `description`, `client_id`, `creat
 -- Table structure for table `time_entries`
 --
 
-DROP TABLE IF EXISTS `time_entries`;
 CREATE TABLE `time_entries` (
   `id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `start_time` datetime NOT NULL,
   `end_time` datetime DEFAULT NULL,
   `description` text DEFAULT NULL,
-  `is_billable` tinyint(1) DEFAULT 1
+  `is_billable` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `time_entries`
 --
 
-INSERT INTO `time_entries` (`id`, `project_id`, `start_time`, `end_time`, `description`, `is_billable`) VALUES
-(1, 1, '2025-10-20 09:00:00', '2025-10-20 12:00:00', 'Initial layout design', 1),
-(2, 1, '2025-10-21 14:00:00', '2025-10-21 16:30:00', 'Fixing navigation bar bug', 1);
+INSERT INTO `time_entries` (`id`, `project_id`, `user_id`, `start_time`, `end_time`, `description`, `is_billable`, `created_at`, `updated_at`) VALUES
+(1, 1, NULL, '2025-10-20 09:00:00', '2025-10-20 12:00:00', 'Initial layout design', 1, '2026-02-27 14:16:21', '2026-02-27 14:16:21'),
+(2, 1, NULL, '2025-10-21 14:00:00', '2025-10-21 16:30:00', 'Fixing navigation bar bug', 1, '2026-02-27 14:16:21', '2026-02-27 14:16:21');
 
 -- --------------------------------------------------------
 
@@ -159,7 +149,6 @@ INSERT INTO `time_entries` (`id`, `project_id`, `start_time`, `end_time`, `descr
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
@@ -187,13 +176,21 @@ INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `full_name`,
 (5, 'freelancer1', 'freelancer1@example.com', '$2y$10$lSsxsqy3UiLsNiJdsaCq/etAY7ziHDLYF3noAKn/2RW7sJz5iAa3q', 'freelancer', 'Sample Freelancer', 1, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-02-06 14:47:00'),
 (6, 'client1', 'client1@example.com', '$2y$10$FP50P/GmLCjfyfXYq7GX7e55Qi49zAlorNDjEpwAhe.4yM/7lDAIi', 'client', 'Sample Client', 1, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-02-06 14:47:00'),
 (7, 'sara', 'sarakey@timeforge.com', '$2y$10$gM4HuEs1G1zlqIFsoQEHIe0IpYEnig.Omygc4jJtONKBXMzvx/btG', 'freelancer', 'sara key', 1, '2026-02-13 11:27:27', NULL, NULL, '2026-02-13 14:10:55', '2026-02-13 16:27:27'),
-(8, 'Etef', 'etefmelaku@gmail.com', '$2y$10$zQe9n49AM0U3zq6S.O9uHOcxJpPRkkd719./6b6faaDJs0f1YPjIG', 'admin', 'Etefworkie Melaku', 1, '2026-02-20 10:25:25', NULL, NULL, '2026-02-13 15:58:57', '2026-02-20 15:25:25'),
+(8, 'Etef', 'etefmelaku@gmail.com', '$2y$10$zQe9n49AM0U3zq6S.O9uHOcxJpPRkkd719./6b6faaDJs0f1YPjIG', 'admin', 'Etefworkie Melaku', 1, '2026-02-20 10:48:13', NULL, NULL, '2026-02-13 15:58:57', '2026-02-20 15:48:13'),
 (9, 'Rose', 'rose@timeforge.com', '$2y$10$HQxSMJiCwzmnIV3x9TPDf.VvzwvgnZf7B1A8KNLgxwE4rtsN8aXYW', 'client', 'Rose Etef', 1, '2026-02-20 10:26:18', NULL, NULL, '2026-02-13 16:07:33', '2026-02-20 15:26:18'),
-(10, 'ademe', 'abelconltd@gmail.com', '$2y$10$Src9cEOBTf1n1zdRp3tANO9MaXg5XxzucgO2mBFsKhO5zlD5o7aeO', 'freelancer', 'abel', 1, '2026-02-20 08:14:09', NULL, NULL, '2026-02-20 13:13:52', '2026-02-20 13:14:09');
+(10, 'ademe', 'abelconltd@gmail.com', '$2y$10$Src9cEOBTf1n1zdRp3tANO9MaXg5XxzucgO2mBFsKhO5zlD5o7aeO', 'freelancer', 'abel', 1, '2026-02-20 08:14:09', NULL, NULL, '2026-02-20 13:13:52', '2026-02-20 13:14:09'),
+(11, 'Abi', 'gizieart@gmail.com', '$2y$10$afzkYYWImgw5/3VkSx0yYuMB9L0l6aiBlnLIjhOTlRV7r0yKyFNR.', 'freelancer', 'Abegaile', 1, '2026-02-27 08:06:31', NULL, NULL, '2026-02-27 13:06:12', '2026-02-27 13:06:31');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `audit_logs`
+--
+ALTER TABLE `audit_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `clients`
@@ -202,7 +199,8 @@ ALTER TABLE `clients`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
   ADD KEY `user_id` (`user_id`),
-  ADD KEY `created_by` (`created_by`);
+  ADD KEY `created_by` (`created_by`),
+  ADD KEY `is_active` (`is_active`);
 
 --
 -- Indexes for table `projects`
@@ -210,14 +208,17 @@ ALTER TABLE `clients`
 ALTER TABLE `projects`
   ADD PRIMARY KEY (`id`),
   ADD KEY `created_by` (`created_by`),
-  ADD KEY `projects_ibfk_1` (`client_id`);
+  ADD KEY `projects_ibfk_1` (`client_id`),
+  ADD KEY `status` (`status`),
+  ADD KEY `deleted_at` (`deleted_at`);
 
 --
 -- Indexes for table `time_entries`
 --
 ALTER TABLE `time_entries`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `project_id` (`project_id`);
+  ADD KEY `project_id` (`project_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `users`
@@ -231,16 +232,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `audit_logs`
+--
+ALTER TABLE `audit_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `time_entries`
@@ -252,7 +259,7 @@ ALTER TABLE `time_entries`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
@@ -276,7 +283,9 @@ ALTER TABLE `projects`
 -- Constraints for table `time_entries`
 --
 ALTER TABLE `time_entries`
-  ADD CONSTRAINT `time_entries_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `time_entries_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `time_entries_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

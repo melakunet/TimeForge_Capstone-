@@ -13,6 +13,7 @@ $current_user = getCurrentUser();
   <nav>
     <a href="/TimeForge_Capstone/index.php">Home</a>
     <?php if (isLoggedIn()): ?>
+      <a href="/TimeForge_Capstone/clients.php">Clients</a>
       <span class="nav-text">Welcome, <?php echo htmlspecialchars($current_user['full_name'] ?? 'User'); ?></span>
       
         <?php if (hasRole('admin')): ?>
