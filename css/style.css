@@ -283,6 +283,53 @@ nav a:hover {
   overflow: hidden;
 }
 
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 2rem;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+body.dark-mode .modal-content {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+body.dark-mode .close-modal:hover { color: #fff; }
+
+.modal h2 {
+    margin-bottom: 1.5rem;
+    font-family: 'DM Serif Display', serif;
+}
+
 .modal-header {
   display: flex;
   align-items: center;
@@ -336,38 +383,56 @@ body.dark-mode .modal-close {
   border-color: #2a3f5f;
 }
 
-/* Forms */
-.form-group {
-  margin-bottom: 14px;
+/* Form Control Enhancements for Modal */
+.modal .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-top: 0.25rem;
+    font-size: 1rem;
+}
+body.dark-mode .modal .form-control {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+.modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
-label {
-  display: block;
-  font-weight: 700;
-  margin-bottom: 6px;
+/* Status Badges */
+.status-warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #d97706;
 }
-
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 10px 10px;
-  border: 1px solid #dedfe3;
-  border-radius: 4px;
-  background: #ffffff;
-  color: #1f2937;
+.status-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
 }
-
-input:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid rgba(37, 99, 235, 0.25);
-  border-color: #2563eb;
+/* Approve/Reject Buttons */
+.btn-approve, .btn-reject {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
 }
-
-small {
-  color: #6b7280;
+.btn-approve {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #059669;
 }
+.btn-approve:hover { background-color: #059669; color: white; }
+.btn-reject {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+.btn-reject:hover { background-color: #dc2626; color: white; }
 
 /* Buttons */
 .btn {
@@ -396,6 +461,20 @@ small {
 .btn-danger:hover {
   filter: brightness(0.95);
 }
+
+/* Icon Buttons */
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0 4px;
+    color: #64748b;
+    transition: color 0.2s;
+    text-decoration: none;
+}
+.btn-icon:hover { color: #2563eb; }
+.btn-icon-danger:hover { color: #dc2626; }
 
 /* Theme toggle */
 .theme-toggle {
@@ -663,6 +742,71 @@ body.dark-mode .feature-card p {
 
   .container {
     padding: 16px;
+  }
+}
+
+/* Mobile Responsive Enhancements */
+@media (max-width: 768px) {
+  /* Header adjustments */
+  header {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  header nav {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  header nav a {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  /* Grid layout improvements */
+  .grid-layout, .container, .dashboard-grid {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    width: 100%;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+    overflow-x: auto; /* Allow tables to scroll horizontally */
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr; /* Stack info items vertically */
+  }
+
+  /* Form adjustments */
+  .auth-wrapper {
+    margin: 20px auto;
+    width: 95%;
+  }
+
+  /* Modal adjustments */
+  .modal-content {
+    width: 95% !important;
+    margin: 10% auto;
+    padding: 1.5rem;
+  }
+
+  /* Table responsiveness */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .btn-icon {
+    font-size: 1.3rem; /* Make icons easier to tap */
+    padding: 8px;
   }
 }
 
