@@ -109,6 +109,35 @@ if (isset($_SESSION['register_success'])) {
 </div>
 
 <script src="js/theme.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const passwordInput = document.getElementById('password');
+        
+        // Create toggle button
+        const toggleBtn = document.createElement('span');
+        toggleBtn.innerHTML = '👁️';
+        toggleBtn.className = 'password-toggle';
+        toggleBtn.style.cursor = 'pointer';
+        toggleBtn.style.position = 'absolute';
+        toggleBtn.style.right = '10px';
+        toggleBtn.style.top = '50%';
+        toggleBtn.style.transform = 'translateY(-50%)';
+        toggleBtn.style.zIndex = '10';
+        
+        // Wrap input in relative container if not already
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        passwordInput.parentNode.insertBefore(wrapper, passwordInput);
+        wrapper.appendChild(passwordInput);
+        wrapper.appendChild(toggleBtn);
+        
+        toggleBtn.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            toggleBtn.innerHTML = type === 'password' ? '👁️' : '🚫';
+        });
+    });
+</script>
 </body>
 </html>
 <?php // End of file

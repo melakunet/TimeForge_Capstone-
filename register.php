@@ -106,12 +106,15 @@ if (isset($_SESSION['register_form_data'])) {
 
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" name="password" required>
+                <input type="password" name="password" id="password" required>
+                <small class="form-text text-muted" style="display: block; margin-top: 5px; font-size: 0.85em; color: #666;">
+                    Password must be at least 8 characters, include one uppercase letter, one lowercase letter, and one number.
+                </small>
             </div>
             
             <div class="form-group">
                 <label>Confirm Password</label>
-                <input type="password" name="confirm_password" required>
+                <input type="password" name="confirm_password" id="confirm_password" required>
             </div>
             
             <div class="form-group">
@@ -136,6 +139,41 @@ if (isset($_SESSION['register_form_data'])) {
 </div>
 
 <script src="js/theme.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        
+        // Helper function to create toggle button
+        const createToggle = (inputElement) => {
+            const toggleBtn = document.createElement('span');
+            toggleBtn.innerHTML = '👁️';
+            toggleBtn.className = 'password-toggle';
+            toggleBtn.style.cursor = 'pointer';
+            toggleBtn.style.position = 'absolute';
+            toggleBtn.style.right = '10px';
+            toggleBtn.style.top = '50%';
+            toggleBtn.style.transform = 'translateY(-50%)';
+            toggleBtn.style.zIndex = '10';
+            
+            // Wrap input in relative container if not already
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            inputElement.parentNode.insertBefore(wrapper, inputElement);
+            wrapper.appendChild(inputElement);
+            wrapper.appendChild(toggleBtn);
+            
+            toggleBtn.addEventListener('click', () => {
+                const type = inputElement.getAttribute('type') === 'password' ? 'text' : 'password';
+                inputElement.setAttribute('type', type);
+                toggleBtn.innerHTML = type === 'password' ? '👁️' : '🚫';
+            });
+        };
+
+        if(passwordInput) createToggle(passwordInput);
+        if(confirmPasswordInput) createToggle(confirmPasswordInput);
+    });
+</script>
 </body>
 </html>
 <?php // End of file

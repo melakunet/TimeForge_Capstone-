@@ -39,6 +39,27 @@ if ($username == null || $email == null || $password == null || $confirm_passwor
     $errors[] = "Invalid registration data, Check all fields and try again.";
 }
 
+// Password strength check
+if (strlen($password) < 8) {
+    $errors[] = "Password must be at least 8 characters long.";
+}
+if (!preg_match('/[A-Z]/', $password)) {
+    $errors[] = "Password must contain at least one uppercase letter.";
+}
+if (!preg_match('/[a-z]/', $password)) {
+    $errors[] = "Password must contain at least one lowercase letter.";
+}
+if (!preg_match('/[0-9]/', $password)) {
+    $errors[] = "Password must contain at least one number.";
+}
+
+// Check if errors exist before calling registerUser
+if (!empty($errors)) {
+    $_SESSION['register_errors'] = $errors;
+    header('Location: /TimeForge_Capstone/register.php');
+    exit();
+}
+
 if (empty($errors)) {
     // Call auth.php registration function which handles duplicate checks and hashing
     $result = registerUser($username, $email, $password, $confirm_password, $full_name, $role);

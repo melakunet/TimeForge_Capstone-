@@ -17,33 +17,43 @@ $showLanding = (!isLoggedIn() || $view === 'welcome');
 if (isLoggedIn() && $view !== 'welcome') {
     $page_title = 'Dashboard';
     
-    // Dashboard Data Logic - Exclude soft-deleted projects
+    // Filter logic
+    $filter = $_GET['filter'] ?? 'active';
+    $whereClause = "WHERE p.deleted_at IS NULL";
+    
+    if ($filter === 'archived') {
+        $whereClause = "WHERE p.deleted_at IS NOT NULL";
+    } elseif ($filter === 'all') {
+        $whereClause = "WHERE 1=1";
+    }
+
+    // Dashboard Data Logic
     if ($role === 'admin') {
-        $query = 'SELECT p.*, c.client_name, c.company_name
+        $query = "SELECT p.*, c.client_name, c.company_name
                   FROM projects p
-                  INNER JOIN clients c ON c.id = p.client_id
-                  WHERE p.deleted_at IS NULL
-                  ORDER BY p.id DESC';
+                  LEFT JOIN clients c ON c.id = p.client_id
+                  $whereClause
+                  ORDER BY p.id DESC";
         $p_stmt = $pdo->prepare($query);
         $p_stmt->execute();
     } elseif ($role === 'client') {
         // Clients can view ONLY their own projects.
         // Map logged-in user -> clients.user_id -> projects.client_id
-        $query = 'SELECT p.*, c.client_name, c.company_name
+        $query = "SELECT p.*, c.client_name, c.company_name
                   FROM projects p
                   INNER JOIN clients c ON c.id = p.client_id
-                  WHERE c.user_id = :user_id AND p.deleted_at IS NULL
-                  ORDER BY p.id DESC';
+                  $whereClause AND c.user_id = :user_id
+                  ORDER BY p.id DESC";
         $p_stmt = $pdo->prepare($query);
         $p_stmt->bindValue(':user_id', $user_id);
         $p_stmt->execute();
     } else {
-        // Fallback or Freelancer logic if any specific logic needed
-        $query = 'SELECT p.*, c.client_name, c.company_name
+        // Freelancer logic
+        $query = "SELECT p.*, c.client_name, c.company_name
                   FROM projects p
-                  INNER JOIN clients c ON c.id = p.client_id
-                  WHERE p.deleted_at IS NULL
-                  ORDER BY p.id DESC';
+                  LEFT JOIN clients c ON c.id = p.client_id
+                  $whereClause
+                  ORDER BY p.id DESC";
         $p_stmt = $pdo->prepare($query);
         $p_stmt->execute();
     }
@@ -72,9 +82,21 @@ $flash = getFlash();
         <div class="card dashboard-card">
             <div class="dashboard-header">
                 <h2>Project Dashboard</h2>
-                <?php if ($role === 'admin' || $role === 'freelancer'): ?>
-                    <a href="add_project.php" class="btn btn-primary">+ New Project</a>
-                <?php endif; ?>
+                <div class="header-actions">
+                    <?php if ($role === 'admin'): ?>
+                        <form method="GET" class="filter-form">
+                            <select name="filter" onchange="this.form.submit()" class="form-select-sm">
+                                <option value="active" <?php echo ($filter === 'active') ? 'selected' : ''; ?>>Active Projects</option>
+                                <option value="archived" <?php echo ($filter === 'archived') ? 'selected' : ''; ?>>Archived</option>
+                                <option value="all" <?php echo ($filter === 'all') ? 'selected' : ''; ?>>All</option>
+                            </select>
+                        </form>
+                    <?php endif; ?>
+                    
+                    <?php if ($role === 'admin' || $role === 'freelancer'): ?>
+                        <a href="add_project.php" class="btn btn-primary">+ New Project</a>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <?php if (!empty($flash) && !empty($flash['message'])): ?>
@@ -112,18 +134,30 @@ $flash = getFlash();
                                 <td>$<?php echo number_format($project['hourly_rate'], 2); ?>/hr</td>
                                 <td><span class="status-badge status-<?php echo htmlspecialchars($project['status']); ?>"><?php echo ucfirst(htmlspecialchars($project['status'])); ?></span></td>
                                 <td class="text-center">
+                                    <a class="action-link" href="project_details.php?id=<?php echo (int)$project['id']; ?>">View</a>
+                                    
                                     <?php if ($role === 'admin' || $role === 'freelancer'): ?>
-                                    <a class="action-link" href="edit_project.php?id=<?php echo (int)$project['id']; ?>">Edit</a>
                                     <span class="action-sep">|</span>
+                                    <a class="action-link" href="edit_project.php?id=<?php echo (int)$project['id']; ?>">Edit</a>
                                     <?php endif; ?>
 
                                     <?php if ($role === 'admin'): ?>
-                                    <form action="delete_project.php" method="post" onsubmit="return confirm('Are you sure you want to archive this project? It can be restored later.');" class="d-inline">
-                                        <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
-                                        <button type="submit" class="action-btn-delete">Archive</button>
-                                    </form>
+                                        <span class="action-sep">|</span>
+                                        <?php if (!empty($project['deleted_at'])): ?>
+                                            <form action="restore_project.php" method="post" class="d-inline">
+                                                <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
+                                                <button type="submit" class="action-btn-restore">Restore</button>
+                                            </form>
+                                        <?php else: ?>
+                                            <form action="delete_project.php" method="post" onsubmit="return confirm('Are you sure you want to archive this project? It can be restored later.');" class="d-inline">
+                                                <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
+                                                <button type="submit" class="action-btn-delete">Archive</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    <?php elseif ($role === 'freelancer'): ?>
+                                        <!-- specific actions for freelancer if needed -->
                                     <?php else: ?>
-                                    <span class="placeholder-text">--</span>
+                                        <!-- client has no additional actions -->
                                     <?php endif; ?>
                                 </td>
                             </tr>

@@ -10,3 +10,4 @@
 <!-- Scripts -->
 <script src="/TimeForge_Capstone/js/theme.js"></script>
 <script src="/TimeForge_Capstone/js/animations.js"></script>
+<script src="/TimeForge_Capstone/js/time_tracker.js"></script>
