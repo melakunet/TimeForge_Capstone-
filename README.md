@@ -29,7 +29,7 @@ TimeForge helps freelancers maximize revenue through accurate time tracking. Thi
 - Role-based project visibility
 - Project tracking with created_by field
 
-### Phase 3: Client Management ✅ (CURRENT)
+### Phase 3: Client Management ✅
 - **Add new clients** with full validation
 - **Edit existing clients** with duplicate prevention
 - **Client list view** with search and filtering
@@ -41,11 +41,40 @@ TimeForge helps freelancers maximize revenue through accurate time tracking. Thi
 - **Success/Error messages**
 - **Dark mode support**
 
+### Phase 4: Time Tracking ✅
+- **Real-Time Timer**: JavaScript-based stopwatch with start/stop functionality and persistence.
+- **Manual Time Entry**: Modal for logging offline work hours.
+- **Mobile Responsiveness**: Fully optimized layout for mobile devices to track time on the go.
+- **Live Presence**: Heartbeat system to track active sessions.
+- **Security Enhancements**: Password strength enforcement and visibility toggles.
+
+### Phase 4.5: Enhanced Project Management ✅ (Bonus Features)
+- **Project Hub**: Centralized dashboard (`project_details.php`) for project details, financials, and time logs.
+- **Budget Tracking**: Real-time calculation of remaining budget based on approved hours.
+- **Approval Workflow**: Admins review and approve/reject freelancer time entries.
+- **Edit/Delete Controls**: Secure permissions for modifying entry mistakes.
+
 ### Coming Soon:
-- Phase 4: Enhanced project management
-- Phase 5: Time tracking
-- Phase 6: Reporting and invoicing
-- Phase 7: Email notifications
+
+#### Phase 5: Client Portal
+- **Develop Client Dashboard**: Restricted view for 'client' role users only.
+- **Implement Project Filter**: Ensure clients only see their assigned projects.
+- **Generate Project Reports**: View for clients to see total hours and cost.
+
+#### Phase 6: Reporting and Invoicing
+- Generate PDF invoices from approved time sheets
+- Financial reports and profitability analysis
+- Export options (CSV/Excel/PDF)
+
+#### Phase 7: Email Notifications
+- Budget alerts and warnings
+- Approval notifications for admins and freelancers
+- Client updates and progress reports
+
+#### Phase 8: Future Frontend (Angular/React)
+- **Research Angular Integration**: Plan migration of frontend to Angular/React.
+- **Develop Real-Time Timer (v2)**: Enhanced Angular stopwatch for live tracking.
+- **Advanced Analytics**: Productivity charts and team performance metrics.
 
 ---
 
