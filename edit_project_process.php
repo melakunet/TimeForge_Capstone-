@@ -8,8 +8,8 @@ requireLogin();
 
 $role = $_SESSION['role'] ?? null;
 if (!in_array($role, ['admin', 'freelancer'], true)) {
-    http_response_code(403);
-    die('Access Denied');
+    include __DIR__ . '/includes/403.php';
+    exit();
 }
 
 $project_id = filter_input(INPUT_POST, 'project_id', FILTER_VALIDATE_INT);

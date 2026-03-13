@@ -71,6 +71,7 @@ $flash = getFlash();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> - TimeForge</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/time_tracker.css">
     <link rel="icon" type="image/png" href="icons/logo.png">
 </head>
 <body>
@@ -155,7 +156,7 @@ $flash = getFlash();
                                             </form>
                                         <?php endif; ?>
                                     <?php elseif ($role === 'freelancer'): ?>
-                                        <!-- specific actions for freelancer if needed -->
+                                        <button class="action-btn-start" onclick="event.preventDefault(); window.startProjectTimer(<?php echo (int)$project['id']; ?>, '<?php echo htmlspecialchars($project['project_name'], ENT_QUOTES); ?>');" style="background: none; border: none; color: #2ecc71; cursor: pointer; font-weight: bold; margin-right: 5px;">▶ Start</button>
                                     <?php else: ?>
                                         <!-- client has no additional actions -->
                                     <?php endif; ?>
@@ -243,6 +244,27 @@ $flash = getFlash();
     <script src="js/theme.js"></script>
     <script src="js/animations.js"></script>
     <script src="js/hero.js"></script>
+    <script src="js/time_tracker.js"></script>
+    <script>
+        window.startProjectTimer = function(id, name) {
+            if (!window.timeTracker) {
+                console.error('TimeTracker not initialized');
+                alert('TimeTracker is loading...');
+                return;
+            }
+            
+            // Simple check if timer is running
+            if (window.timeTracker.projectId) {
+                alert('A timer is already running. Please stop it first.');
+                return;
+            }
+
+            const description = prompt(`Start timer for "${name}"?\n\nEnter task description (optional):`, "General work");
+            if (description !== null) {
+                window.timeTracker.startTimer(id, description);
+            }
+        };
+    </script>
 </body>
 </html>
 

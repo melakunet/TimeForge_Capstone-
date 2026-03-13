@@ -26,13 +26,7 @@ ADD COLUMN `status` ENUM('running', 'paused', 'completed') DEFAULT 'completed' A
 -- -----------------------------------------------------------------------------
 -- 3. Create `time_sessions` table (Optional: For highly granular pause/resume history)
 -- -----------------------------------------------------------------------------
--- This table is useful if we want to support "Pausing" a timer without creating a new entry.
--- For now, we will stick to time_entries. If you pause, we stop the current entry and start a new one when you resume? 
--- OR we keep one entry and have multiple 'intervals'?
--- DECISION: For simplicity and robustness in Phase 4, we will treat 'Pause' as 'Stop'.
--- When 'Resume' happens, a NEW time_entry is created.
--- This is cleaner for reporting. "I worked from 9:00-10:00 (1h) and 10:15-11:00 (45m)".
--- So we strictly use `time_entries`.
+
 
 -- Update existing entries to have calculated total_seconds and status
 UPDATE `time_entries`

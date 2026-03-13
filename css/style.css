@@ -404,15 +404,6 @@ body.dark-mode .modal .form-control {
     margin-top: 1.5rem;
 }
 
-/* Status Badges */
-.status-warning {
-    background-color: rgba(245, 158, 11, 0.1);
-    color: #d97706;
-}
-.status-danger {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #dc2626;
-}
 /* Approve/Reject Buttons */
 .btn-approve, .btn-reject {
     padding: 4px 8px;
@@ -812,7 +803,7 @@ body.dark-mode .feature-card p {
 
 /* Error page styles */
 .page-error {
-  margin-top: 64px; /* similar to 4rem spacing */
+  margin-top: 64px;
 }
 
 .details {
@@ -829,6 +820,59 @@ body.dark-mode .feature-card p {
   gap: 12px;
   flex-wrap: wrap;
 }
+
+/* ── 403 Access Denied Page ─────────────────────────────────────────────────── */
+.page-403 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+}
+
+.error-403-wrap {
+    text-align: center;
+    max-width: 480px;
+    padding: 2rem 1rem;
+}
+
+.error-403-code {
+    font-size: 6rem;
+    font-weight: 800;
+    color: #e5e7eb;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    font-family: 'DM Serif Display', serif;
+}
+
+.error-403-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
+}
+
+.error-403-message {
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.error-403-hint {
+    color: #9ca3af;
+    font-size: 0.88rem;
+    margin-bottom: 2rem;
+}
+
+.error-403-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+body.dark-mode .error-403-code  { color: #374151; }
+body.dark-mode .error-403-title { color: #e0e0e0; }
+body.dark-mode .error-403-message { color: #9ca3af; }
 
 .btn-secondary {
   background: #e9ecef;
@@ -1292,6 +1336,68 @@ body.dark-mode .form-text {
     padding: 0.4rem 0.8rem;
     font-size: 0.875rem;
 }
+
+/* ── Status Badges ──────────────────────────────────────────────────────────── */
+/* Used across project_details.php, client portal, index.php, etc. */
+.status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.status-active {
+    background-color: rgba(22, 163, 74, 0.1);
+    color: #16a34a;
+}
+
+.status-completed {
+    background-color: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+}
+
+.status-archived {
+    background-color: rgba(107, 114, 128, 0.12);
+    color: #6b7280;
+}
+
+.status-success {
+    background-color: rgba(22, 163, 74, 0.1);
+    color: #16a34a;
+}
+
+.status-warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+}
+
+.status-danger {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+}
+
+body.dark-mode .status-active  { background-color: rgba(22, 163, 74, 0.15);  color: #4ade80; }
+body.dark-mode .status-completed { background-color: rgba(74, 144, 226, 0.15); color: #60a5fa; }
+body.dark-mode .status-archived  { background-color: rgba(107, 114, 128, 0.15); color: #9ca3af; }
+body.dark-mode .status-success   { background-color: rgba(22, 163, 74, 0.15);  color: #4ade80; }
+body.dark-mode .status-warning   { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+body.dark-mode .status-danger    { background-color: rgba(220, 38, 38, 0.15);  color: #f87171; }
+
+/* ── Text Colour Utilities ──────────────────────────────────────────────────── */
+/* Used for budget remaining (danger/success) across portal and project pages */
+.text-danger {
+    color: #dc2626;
+}
+
+.text-success {
+    color: #16a34a;
+}
+
+body.dark-mode .text-danger  { color: #f87171; }
+body.dark-mode .text-success { color: #4ade80; }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
