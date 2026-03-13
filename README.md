@@ -54,27 +54,44 @@ TimeForge helps freelancers maximize revenue through accurate time tracking. Thi
 - **Approval Workflow**: Admins review and approve/reject freelancer time entries.
 - **Edit/Delete Controls**: Secure permissions for modifying entry mistakes.
 
-### Coming Soon:
+### Phase 5: Client Portal ✅
+- **Client Dashboard**: Live stats — total projects, approved hours, total billed amount, all scoped to the logged-in client only.
+- **My Projects Page**: Filterable project list (Active / Completed / All) with budget progress bars and status badges.
+- **Project Report Page**: Per-project approved time log with full financial breakdown — hours, rate, cost, and budget remaining.
+- **Role-Aware Navigation**: Header dynamically shows different links for client vs admin vs freelancer roles.
+- **403 Access Control**: Styled access-denied page replaces all raw `die()` calls. `requireRole()` is enforced on every portal page.
+- **File Separation**: All portal styles in `css/client-portal.css`, all portal JS in `js/client-portal.js` — zero inline code.
 
-#### Phase 5: Client Portal
-- **Develop Client Dashboard**: Restricted view for 'client' role users only.
-- **Implement Project Filter**: Ensure clients only see their assigned projects.
-- **Generate Project Reports**: View for clients to see total hours and cost.
+### Coming Soon — See `ROADMAP.md` for full details:
 
-#### Phase 6: Reporting and Invoicing
-- Generate PDF invoices from approved time sheets
-- Financial reports and profitability analysis
-- Export options (CSV/Excel/PDF)
+#### Phase 6: Smart Idle Detection & Honest Time
+- Idle popup modal — pauses timer and asks what to do with inactive minutes
+- Stale session guard — prevents 21-hour ghost timers on laptop resume
+- Activity score heartbeat — keyboard and mouse events tracked per minute
+- Server-side auto-close of abandoned sessions via cron
 
-#### Phase 7: Email Notifications
-- Budget alerts and warnings
-- Approval notifications for admins and freelancers
-- Client updates and progress reports
+#### Phase 7: Reporting and Invoicing
+- Generate formatted HTML/PDF invoices from approved time sheets
+- Financial reports and profitability analysis per project
+- CSV export for time logs
+- Invoice history with Draft / Sent / Paid status
 
-#### Phase 8: Future Frontend (Angular/React)
-- **Research Angular Integration**: Plan migration of frontend to Angular/React.
-- **Develop Real-Time Timer (v2)**: Enhanced Angular stopwatch for live tracking.
-- **Advanced Analytics**: Productivity charts and team performance metrics.
+#### Phase 8: Email Notifications
+- Approval and rejection notifications for freelancers
+- Budget threshold alerts (75% / 90% / 100%) for admins and clients
+- Weekly digest emails for all roles
+
+#### Phase 9: Desktop Agent (Real Activity Monitoring)
+- Electron.js desktop app to detect active application and window title
+- OS-level keyboard and mouse event counting
+- Screenshot capture (optional, admin-controlled)
+- Productive vs unproductive app categorization
+
+#### Phase 10: Advanced Frontend (React + Real-Time)
+- Full REST API layer replacing PHP-rendered pages
+- React + Vite frontend consuming the API
+- Real-time timer feed for admin via WebSockets
+- Analytics charts — line, bar, pie, activity heatmap
 
 ---
 
@@ -204,6 +221,7 @@ TimeForge_Capstone/
 ## 📚 Documentation
 
 - `CREDENTIALS.md` - Test user credentials
+- `ROADMAP.md` - Full product roadmap: Phases 6–10 with tasks, files, and DB schema plans
 - `PHASE3_PROGRESS.md` - Phase 3 progress report
 - `TESTING_GUIDE.md` - Step-by-step testing scenarios
 - `DATABASE_UPDATE_GUIDE.md` - Database setup instructions

@@ -13,19 +13,25 @@ $current_user = getCurrentUser();
   <nav>
     <a href="/TimeForge_Capstone/index.php">Home</a>
     <?php if (isLoggedIn()): ?>
-      <a href="/TimeForge_Capstone/clients.php">Clients</a>
-      <span class="nav-text">Welcome, <?php echo htmlspecialchars($current_user['full_name'] ?? 'User'); ?></span>
-      
+
+      <?php if (hasRole('client')): ?>
+        <!-- Client-only nav -->
+        <a href="/TimeForge_Capstone/client/dashboard.php">My Dashboard</a>
+        <a href="/TimeForge_Capstone/client/projects.php">My Projects</a>
+      <?php else: ?>
+        <!-- Admin & Freelancer nav -->
+        <a href="/TimeForge_Capstone/clients.php">Clients</a>
         <?php if (hasRole('admin')): ?>
-            <a href="/TimeForge_Capstone/admin/dashboard.php">Admin Dashboard</a>
+          <a href="/TimeForge_Capstone/admin/dashboard.php">Admin Dashboard</a>
         <?php elseif (hasRole('freelancer')): ?>
-            <a href="/TimeForge_Capstone/freelancer/dashboard.php">Freelancer Portal</a>
-        <?php elseif (hasRole('client')): ?>
-            <a href="/TimeForge_Capstone/client/dashboard.php">Client Portal</a>
+          <a href="/TimeForge_Capstone/freelancer/dashboard.php">Freelancer Portal</a>
         <?php endif; ?>
-      
+      <?php endif; ?>
+
+      <span class="nav-text">Welcome, <?php echo htmlspecialchars($current_user['full_name'] ?? 'User'); ?></span>
       <button id="themeToggle" class="theme-toggle">Dark mode</button>
-  <a href="/TimeForge_Capstone/includes/logout.php" class="btn btn-danger btn-compact">Logout</a>
+      <a href="/TimeForge_Capstone/includes/logout.php" class="btn btn-danger btn-compact">Logout</a>
+
     <?php else: ?>
       <button id="themeToggle" class="theme-toggle">Dark mode</button>
       <a href="/TimeForge_Capstone/login.php">Login</a>

@@ -260,8 +260,8 @@ function requireRole($role) {
     }
     requireLogin();
     if (!hasRole($role)) {
-        http_response_code(403);
-        die('Access Denied');
+        include __DIR__ . '/403.php';
+        exit();
     }
 }
 ?>
