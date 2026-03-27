@@ -312,6 +312,10 @@ $dompdf->loadHtml($html, 'UTF-8');
 $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 
+// Discard any stray buffered output (whitespace from includes, etc.)
+// that would corrupt the binary PDF stream sent to the browser.
+while (ob_get_level()) ob_end_clean();
+
 $filename = 'Invoice-' . preg_replace('/[^A-Za-z0-9\-]/', '_', $invoice['invoice_number']) . '.pdf';
 $dompdf->stream($filename, ['Attachment' => true]);
 

@@ -23,4 +23,3 @@ try {
     header("Location: /TimeForge_Capstone/database_error.php");
     exit();
 }
-?>
