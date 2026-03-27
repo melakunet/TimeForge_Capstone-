@@ -96,7 +96,25 @@ $tax_amount = round($subtotal * ($tax_rate / 100), 2);
 $total      = round($subtotal + $tax_amount, 2);
 
 // Auto-generate invoice number: INV-YYYYMM-PPPP (project id padded)
-$invoice_number_default = 'INV-' . date('Ym') . '-' . str_pad($project_id, 4, '0', STR_PAD_LEFT);
+// If that number is already taken, keep incrementing the suffix until we find a free slot.
+$invoice_number_base = 'INV-' . date('Ym') . '-' . str_pad($project_id, 4, '0', STR_PAD_LEFT);
+$invoice_number_default = $invoice_number_base;
+$suffix = 1;
+while (true) {
+    $chk = $pdo->prepare("SELECT id FROM invoices WHERE invoice_number = ? LIMIT 1");
+    $chk->execute([$invoice_number_default]);
+    if (!$chk->fetch()) break;           // number is free — use it
+    $suffix++;
+    $invoice_number_default = $invoice_number_base . '-R' . $suffix;  // e.g. INV-202603-0004-R2
+}
+
+// If an invoice already exists for this project, offer to view it instead of regenerating
+$existing_invoices = $pdo->prepare("
+    SELECT id, invoice_number, status, created_at
+    FROM invoices WHERE project_id = ? ORDER BY created_at DESC
+");
+$existing_invoices->execute([$project_id]);
+$project_invoices = $existing_invoices->fetchAll();
 
 // Pre-select the template passed from the project_details pre-flight modal (?tpl=)
 $allowed_tpls_get = ['classic', 'modern', 'bold', 'minimal', 'corporate'];
@@ -193,6 +211,28 @@ $flash = getFlash();
         <div class="flash flash-<?php echo htmlspecialchars($flash['type']); ?>" style="margin-bottom:1rem;">
             <?php echo htmlspecialchars($flash['message']); ?>
         </div>
+    <?php endif; ?>
+
+    <?php if (!empty($project_invoices)): ?>
+    <!-- Existing invoices notice — shown whenever 1+ invoices already exist for this project -->
+    <div style="background:rgba(37,99,235,0.07); border:1px solid #93c5fd; border-radius:8px;
+                padding:1rem 1.25rem; margin-bottom:1.5rem;">
+        <div style="font-weight:700; margin-bottom:0.5rem; color:var(--color-accent);">
+            ⚠ This project already has <?php echo count($project_invoices); ?> invoice<?php echo count($project_invoices)>1?'s':''; ?>:
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+            <?php foreach ($project_invoices as $pi): ?>
+            <a href="/TimeForge_Capstone/invoices/view.php?id=<?php echo $pi['id']; ?>"
+               class="btn btn-secondary" style="font-size:0.82rem; padding:4px 12px;">
+                <?php echo htmlspecialchars($pi['invoice_number']); ?>
+                <span style="opacity:0.7; font-weight:400;">(<?php echo ucfirst($pi['status']); ?>)</span>
+            </a>
+            <?php endforeach; ?>
+            <span style="font-size:0.82rem; color:var(--color-text-secondary);">
+                — or fill the form below to generate a new one.
+            </span>
+        </div>
+    </div>
     <?php endif; ?>
 
     <div class="invoice-gen-grid">
