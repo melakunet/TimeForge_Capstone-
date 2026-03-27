@@ -1,0 +1,22 @@
+# TimeForge — Apache directives
+# Catches unhandled 500 errors and redirects to the friendly database error page
+# instead of showing a raw white browser error screen.
+
+Options -Indexes
+
+# ── Block direct browser access to src/ ───────────────────────────────────
+# Controllers, Core helpers, and Models are backend-only files.
+# They are loaded via require_once from page files — never hit directly.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^src/ - [F,L]
+</IfModule>
+
+# Custom error pages — keep error details out of the browser
+ErrorDocument 500 /TimeForge_Capstone/database_error.php
+ErrorDocument 503 /TimeForge_Capstone/database_error.php
+
+# Prevent PHP errors from leaking to the browser in production-like environments.
+# XAMPP's own php.ini controls this too, but this acts as a safety net.
+php_flag display_errors Off
+php_flag log_errors On
