@@ -1,0 +1,275 @@
+/* Time Tracker Widget */
+:root {
+    --tf-timer-bg: #1e1e2d;
+    --tf-timer-text: #ffffff;
+    --tf-timer-accent: #00d2b5;
+    --tf-timer-danger: #ff5b5b;
+    --tf-timer-idle: #f39c12;
+}
+
+#tf-timer-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 250px;
+    background-color: var(--tf-timer-bg);
+    color: var(--tf-timer-text);
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    font-family: 'Inter', sans-serif;
+    z-index: 9999;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+}
+
+.tf-timer-hidden {
+    transform: translateY(150%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Phase 6.8: Tab unfocused state — yellow border pulse */
+.tf-timer-unfocused {
+    border-color: var(--tf-timer-idle) !important;
+    box-shadow: 0 0 12px rgba(243, 156, 18, 0.5);
+}
+.tf-timer-unfocused .tf-timer-status-dot {
+    background: var(--tf-timer-idle) !important;
+}
+
+/* Status Indicator */
+.tf-timer-status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--tf-timer-accent);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: tf-pulse 2s infinite;
+}
+
+@keyframes tf-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 210, 181, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(0, 210, 181, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 210, 181, 0); }
+}
+
+/* Idle State */
+.tf-timer-idle {
+    border-color: var(--tf-timer-idle);
+}
+.tf-timer-idle .tf-timer-status-dot {
+    background-color: var(--tf-timer-idle);
+    animation: none;
+}
+
+/* Header */
+.tf-timer-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+#tf-timer-project {
+    flex-grow: 1;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.tf-btn-icon {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0 4px;
+}
+.tf-btn-icon:hover { color: #fff; }
+
+/* Body (Time Display) */
+.tf-timer-body {
+    padding: 15px;
+    text-align: center;
+}
+
+#tf-timer-display {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace; /* Use monospaced font if available */
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+/* Controls */
+.tf-btn-stop {
+    background-color: rgba(255, 91, 91, 0.1);
+    color: var(--tf-timer-danger);
+    border: 1px solid var(--tf-timer-danger);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.tf-btn-stop:hover {
+    background-color: var(--tf-timer-danger);
+    color: white;
+}
+
+/* Collapsed State */
+.tf-timer-collapsed .tf-timer-body {
+    display: none;
+}
+.tf-timer-collapsed {
+    width: auto;
+    min-width: 150px;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Phase 6 Additions
+   ──────────────────────────────────────────────────────────────── */
+
+/* Idle badge shown inside widget when idle time was discarded */
+.tf-idle-badge {
+    font-size: 0.72rem;
+    color: var(--tf-timer-idle);
+    background: rgba(243, 156, 18, 0.12);
+    border: 1px solid rgba(243, 156, 18, 0.35);
+    border-radius: 4px;
+    padding: 3px 8px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Utility: hidden */
+.tf-hidden {
+    display: none !important;
+}
+
+/* ── Modal Overlay ───────────────────────────────────────────────── */
+.tf-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: tf-fade-in 0.2s ease;
+}
+
+@keyframes tf-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Modal Box ───────────────────────────────────────────────────── */
+.tf-modal-box {
+    background: #1e1e2d;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 2rem 2.5rem;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: tf-slide-up 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+@keyframes tf-slide-up {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.tf-modal-icon {
+    font-size: 2.8rem;
+    margin-bottom: 0.75rem;
+}
+
+.tf-modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: #fff;
+}
+
+.tf-modal-body {
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.tf-modal-body strong {
+    color: #fff;
+}
+
+/* ── Modal Buttons ───────────────────────────────────────────────── */
+.tf-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.tf-btn-modal {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    font-family: 'Inter', sans-serif;
+}
+
+.tf-btn-modal:hover  { opacity: 0.88; transform: translateY(-1px); }
+.tf-btn-modal:active { transform: translateY(0); }
+
+.tf-btn-success {
+    background: rgba(0, 210, 181, 0.15);
+    color: #00d2b5;
+    border-color: rgba(0, 210, 181, 0.4);
+}
+.tf-btn-success:hover { background: rgba(0, 210, 181, 0.25); }
+
+.tf-btn-warning {
+    background: rgba(243, 156, 18, 0.15);
+    color: #f39c12;
+    border-color: rgba(243, 156, 18, 0.4);
+}
+.tf-btn-warning:hover { background: rgba(243, 156, 18, 0.25); }
+
+.tf-btn-danger {
+    background: rgba(255, 91, 91, 0.15);
+    color: #ff5b5b;
+    border-color: rgba(255, 91, 91, 0.4);
+}
+.tf-btn-danger:hover { background: rgba(255, 91, 91, 0.25); }
+
+.tf-btn-neutral {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+.tf-btn-neutral:hover { background: rgba(255, 255, 255, 0.14); }
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .tf-modal-box {
+        padding: 1.5rem 1.25rem;
+    }
+    .tf-modal-title {
+        font-size: 1.1rem;
+    }
+}
