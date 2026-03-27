@@ -1,0 +1,17 @@
+# ── Composer tool (binary — not source code) ──────────────────
+composer.phar
+
+# ── OS & editor noise ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+
+# ── XAMPP / Apache ─────────────────────────────────────────────
+.htaccess
+
+# ── Uploaded screenshots (Phase 9) ────────────────────────────
+uploads/screenshots/
+
+# ── Logs ───────────────────────────────────────────────────────
+*.log
+php_error_log
