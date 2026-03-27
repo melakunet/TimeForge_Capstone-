@@ -1,0 +1,1182 @@
+/*
+ * Invoice stylesheet
+ * Loaded by: invoices/view.php, invoices/generate.php, invoices/history.php
+ *
+ * Sections:
+ *   1. Status badge
+ *   2. Toolbar
+ *   3. Generate-page layout grid
+ *   4. Invoice document wrapper
+ *   5. Invoice header
+ *   6. Address / dates section
+ *   7. Line-item table
+ *   8. Notes and footer
+ *   9. Form helpers
+ *  10. Print overrides
+ *  11. Template picker cards (generate.php)
+ *  12. Template-specific styles — Classic, Modern, Bold, Minimal, Corporate
+ *      Note: download.php (PDF generation) uses its own inline styles because
+ *      Dompdf cannot fetch external stylesheets over HTTP. Any visual changes
+ *      to PDF output must be mirrored in the $themes array inside download.php.
+ */
+
+/* ── Status badge ─────────────────────────────────────────────────────────── */
+.inv-status-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* ── Toolbar above the invoice doc ───────────────────────────────────────── */
+.inv-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Side-by-side layout for generate.php ────────────────────────────────── */
+.invoice-gen-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .invoice-gen-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── The printable invoice document wrapper ──────────────────────────────── */
+.invoice-doc {
+  background: #ffffff;
+  border: 1px solid #dedfe3;
+  border-radius: 6px;
+  padding: 2.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-top: 1.5rem;
+}
+
+body.dark-mode .invoice-doc {
+  background: #16213e;
+  border-color: #2a3f5f;
+}
+
+/* ── Invoice header: logo + number ──────────────────────────────────────── */
+.inv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 3px solid #14532d;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.inv-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.inv-logo {
+  height: 52px;
+  width: auto;
+}
+
+.inv-company-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #14532d;
+  font-family: 'DM Serif Display', serif;
+}
+
+body.dark-mode .inv-company-name {
+  color: #86efac;
+}
+
+.inv-tagline {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.inv-meta {
+  text-align: right;
+}
+
+.inv-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-accent, #1f2937);
+  letter-spacing: 0.05em;
+}
+
+.inv-number-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2563eb;
+  margin-bottom: 0.4rem;
+}
+
+/* ── Bill-to / dates section ─────────────────────────────────────────────── */
+.inv-addresses {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.inv-from,
+.inv-to,
+.inv-dates {
+  flex: 1;
+  min-width: 160px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.inv-addr-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+  margin-bottom: 0.4rem;
+}
+
+.inv-date-label {
+  font-weight: 600;
+}
+
+/* ── Line-item table ─────────────────────────────────────────────────────── */
+.inv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin-bottom: 0;
+}
+
+.inv-table thead th {
+  background: #14532d;
+  color: #ffffff;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.inv-table th.num,
+.inv-table td.num {
+  text-align: right;
+}
+
+.inv-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+body.dark-mode .inv-table tbody tr {
+  border-bottom: 1px solid #374151;
+}
+
+.inv-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+body.dark-mode .inv-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.inv-table tbody td {
+  padding: 9px 12px;
+}
+
+.inv-table tfoot td {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.inv-table tfoot tr.total-row td {
+  border-top: 2px solid #14532d;
+  font-size: 1rem;
+  padding-top: 10px;
+}
+
+/* ── Notes and footer ────────────────────────────────────────────────────── */
+.inv-notes {
+  background: #f3f4f6;
+  border-left: 4px solid #14532d;
+  padding: 0.75rem 1rem;
+  font-size: 0.88rem;
+  margin-top: 1.5rem;
+  border-radius: 0 4px 4px 0;
+}
+
+body.dark-mode .inv-notes {
+  background: rgba(20, 83, 45, 0.15);
+}
+
+.inv-footer-note {
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+  margin-top: 1.5rem;
+}
+
+body.dark-mode .inv-footer-note {
+  border-top-color: #374151;
+}
+
+/* ── Form helpers reused on generate.php ─────────────────────────────────── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ── Print: hide navigation, show only the document ─────────────────────── */
+@media print {
+  .no-print,
+  header,
+  footer,
+  .flash {
+    display: none !important;
+  }
+
+  .invoice-doc {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    background: #fff;
+  }
+}
+
+/* ── Template picker card grid (generate.php) ────────────────────────────── */
+.tpl-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.75rem;
+}
+
+.tpl-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 0.5rem;
+  border: 2px solid var(--color-border, #d1d5db);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: var(--color-card-bg, #fff);
+  text-align: center;
+}
+
+.tpl-card:hover {
+  border-color: var(--color-accent, #2563eb);
+}
+
+.tpl-card--active {
+  border-color: var(--color-accent, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+/* Hide the native radio button — the card border acts as the indicator */
+.tpl-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tpl-swatch {
+  display: block;
+  width: 100%;
+  height: 28px;
+  border-radius: 5px;
+}
+
+.tpl-card-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text, #111827);
+}
+
+.tpl-card-desc {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary, #6b7280);
+  line-height: 1.3;
+}
+
+body.dark-mode .tpl-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+body.dark-mode .tpl-card--active {
+  border-color: var(--color-accent, #60a5fa);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+body.dark-mode .tpl-card-name {
+  color: #f1f5f9;
+}
+
+body.dark-mode .tpl-card-desc {
+  color: #94a3b8;
+}
+
+
+/* ==========================================================================
+   12. Template-specific styles
+       Each .inv-doc block is scoped so templates do not conflict with each
+       other or with the surrounding page layout. Only one template is
+       rendered on-screen at a time (view.php includes the chosen template).
+   ========================================================================== */
+
+/* ── 12a. Shared base — applies to all five templates ─────────────────────
+   Common resets and utilities that every template relies on.              */
+
+.inv-doc {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  max-width: 860px;
+  margin: 0 auto;
+  color: #1f2937;
+}
+
+/* Invoice header: brand left, invoice number right */
+.inv-doc .inv-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.75rem;
+}
+
+.inv-doc .brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.inv-doc .brand-logo {
+  height: 54px;
+  width: auto;
+}
+
+.inv-doc .brand-name {
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+.inv-doc .brand-tagline {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.inv-doc .brand-sub {
+  font-size: 0.8rem;
+  margin-top: 3px;
+}
+
+.inv-doc .inv-right {
+  text-align: right;
+}
+
+.inv-doc .inv-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.inv-doc .inv-num {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 0.2rem;
+}
+
+.inv-doc .inv-badge {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 0.4rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Address / bill-to row */
+.inv-doc .addr-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.inv-doc .addr-block {
+  flex: 1;
+  min-width: 150px;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.inv-doc .addr-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  margin-bottom: 0.4rem;
+}
+
+/* Line-item table */
+.inv-doc table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin-bottom: 0;
+}
+
+.inv-doc thead th {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.inv-doc th.r,
+.inv-doc td.r {
+  text-align: right;
+}
+
+.inv-doc tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.inv-doc tbody td {
+  padding: 9px 12px;
+}
+
+.inv-doc tfoot td {
+  padding: 8px 12px;
+}
+
+.inv-doc tfoot .total-row td {
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding-top: 10px;
+}
+
+/* Notes block and page footer */
+.inv-doc .inv-notes {
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  margin-top: 1.5rem;
+  border-radius: 0 4px 4px 0;
+}
+
+.inv-doc .inv-foot {
+  font-size: 0.78rem;
+  color: #6b7280;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+  margin-top: 1.5rem;
+}
+
+
+/* ── 12b. Classic template — forest green ────────────────────────────────── */
+
+.inv-doc.tpl-classic .inv-head {
+  border-bottom: 4px solid #14532d;
+  padding-bottom: 1.5rem;
+}
+
+.inv-doc.tpl-classic .brand-name   { color: #14532d; font-family: 'DM Serif Display', serif; }
+.inv-doc.tpl-classic .brand-logo   { height: 56px; }
+.inv-doc.tpl-classic .inv-title    { color: #14532d; font-size: 2.2rem; font-weight: 800; }
+.inv-doc.tpl-classic .inv-num      { color: #2563eb; }
+.inv-doc.tpl-classic .company-from { font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem; }
+
+.inv-doc.tpl-classic .addr-label {
+  color: #14532d;
+  border-bottom: 1px solid #bbf7d0;
+  padding-bottom: 2px;
+}
+
+.inv-doc.tpl-classic thead th {
+  background: #14532d;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.inv-doc.tpl-classic tbody tr:nth-child(even) { background: #f0fdf4; }
+
+.inv-doc.tpl-classic tfoot .total-row td { border-top: 3px solid #14532d; }
+
+.inv-doc.tpl-classic .inv-notes {
+  background: #f0fdf4;
+  border-left: 4px solid #14532d;
+}
+
+
+/* ── 12c. Modern template — navy blue with gradient accent stripe ─────────── */
+
+.inv-doc.tpl-modern .inv-head {
+  background: #1e3a5f;
+  color: #fff;
+  padding: 2rem 2.25rem;
+  border-radius: 8px 8px 0 0;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.inv-doc.tpl-modern .brand-logo    { border-radius: 6px; background: rgba(255,255,255,0.1); padding: 4px; }
+.inv-doc.tpl-modern .brand-name    { color: #fff; font-size: 1.5rem; }
+.inv-doc.tpl-modern .brand-tagline { color: #93c5fd; font-size: 0.72rem; }
+.inv-doc.tpl-modern .brand-sub     { color: #bfdbfe; font-weight: 600; }
+.inv-doc.tpl-modern .inv-title     { color: #fff; font-size: 2rem; font-weight: 800; letter-spacing: 0.1em; }
+.inv-doc.tpl-modern .inv-num       { color: #93c5fd; }
+.inv-doc.tpl-modern .inv-badge     { color: #1e3a5f; background: #fbbf24; border-radius: 20px; }
+
+.inv-doc.tpl-modern .stripe {
+  height: 6px;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981);
+  margin-bottom: 1.75rem;
+}
+
+.inv-doc.tpl-modern .addr-label { color: #1e3a5f; }
+
+.inv-doc.tpl-modern thead th    { background: #1e3a5f; color: #fff; }
+.inv-doc.tpl-modern tbody tr:nth-child(even) { background: #eff6ff; }
+.inv-doc.tpl-modern tfoot .total-row td { border-top: 3px solid #1e3a5f; }
+
+.inv-doc.tpl-modern .inv-notes {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+}
+
+
+/* ── 12d. Bold template — dark charcoal with amber accents ───────────────── */
+
+.inv-doc.tpl-bold .inv-head {
+  background: #1f2937;
+  color: #fff;
+  padding: 2rem 2.25rem;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.inv-doc.tpl-bold .brand-name    { color: #f59e0b; font-weight: 800; letter-spacing: 0.03em; }
+.inv-doc.tpl-bold .brand-tagline { color: #9ca3af; }
+.inv-doc.tpl-bold .brand-sub     { color: #d1d5db; }
+.inv-doc.tpl-bold .inv-title     { color: #f59e0b; font-size: 2.2rem; font-weight: 900; letter-spacing: 0.1em; }
+.inv-doc.tpl-bold .inv-num       { color: #e5e7eb; }
+.inv-doc.tpl-bold .inv-badge     { color: #1f2937; background: #f59e0b; border-radius: 4px; }
+
+.inv-doc.tpl-bold .amber-bar {
+  height: 5px;
+  background: #f59e0b;
+  margin-bottom: 1.75rem;
+}
+
+.inv-doc.tpl-bold .addr-label { color: #f59e0b; }
+
+.inv-doc.tpl-bold thead th {
+  background: #374151;
+  color: #f9fafb;
+  letter-spacing: 0.04em;
+  border-bottom: 3px solid #f59e0b;
+}
+
+.inv-doc.tpl-bold tbody tr:nth-child(even) { background: #fefce8; }
+.inv-doc.tpl-bold tfoot .total-row td      { border-top: 3px solid #f59e0b; color: #1f2937; }
+
+.inv-doc.tpl-bold .inv-notes {
+  background: #fefce8;
+  border-left: 4px solid #f59e0b;
+}
+
+
+/* ── 12e. Minimal template — purely typographic, no colour bands ──────────── */
+
+.inv-doc.tpl-minimal {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #111827;
+}
+
+.inv-doc.tpl-minimal .inv-head {
+  border-bottom: 2px solid #111827;
+  padding-bottom: 1.5rem;
+}
+
+.inv-doc.tpl-minimal .brand-logo    { filter: grayscale(100%); opacity: 0.85; height: 48px; }
+.inv-doc.tpl-minimal .brand-name    { color: #111827; font-size: 1.4rem; font-family: Georgia, serif; }
+.inv-doc.tpl-minimal .brand-tagline { font-family: -apple-system, sans-serif; }
+.inv-doc.tpl-minimal .brand-sub     { color: #374151; font-style: italic; font-family: -apple-system, sans-serif; }
+.inv-doc.tpl-minimal .inv-title     { color: #111827; font-size: 2rem; font-weight: 400; letter-spacing: 0.15em; font-family: Georgia, serif; }
+.inv-doc.tpl-minimal .inv-num       { color: #6b7280; font-family: -apple-system, sans-serif; }
+.inv-doc.tpl-minimal .inv-badge     { border: 1px solid #6b7280; color: #374151; background: transparent; font-weight: 600; border-radius: 3px; letter-spacing: 0.06em; font-family: -apple-system, sans-serif; }
+
+.inv-doc.tpl-minimal .addr-block { font-family: -apple-system, sans-serif; line-height: 1.7; }
+.inv-doc.tpl-minimal .addr-label { color: #6b7280; letter-spacing: 0.12em; font-size: 0.65rem; }
+
+.inv-doc.tpl-minimal table      { font-family: -apple-system, sans-serif; }
+.inv-doc.tpl-minimal thead th   {
+  border-top: 2px solid #111827;
+  border-bottom: 1px solid #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: transparent;
+  color: #374151;
+  font-size: 0.78rem;
+}
+
+.inv-doc.tpl-minimal tfoot .total-row td { border-top: 2px solid #111827; }
+
+.inv-doc.tpl-minimal .inv-notes {
+  border: 1px solid #e5e7eb;
+  font-family: -apple-system, sans-serif;
+}
+
+.inv-doc.tpl-minimal .inv-foot { font-family: -apple-system, sans-serif; letter-spacing: 0.03em; }
+
+
+/* ── 12f. Corporate template — deep purple, formal header grid ───────────── */
+
+.inv-doc.tpl-corporate .inv-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 5px solid #4c1d95;
+  padding-bottom: 1.5rem;
+  margin-bottom: 0;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.inv-doc.tpl-corporate .brand-wrap {
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.inv-doc.tpl-corporate .brand-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.inv-doc.tpl-corporate .brand-name    { color: #4c1d95; font-size: 1.5rem; }
+.inv-doc.tpl-corporate .brand-tagline { color: #7c3aed; }
+.inv-doc.tpl-corporate .brand-sub     { color: #6d28d9; font-weight: 600; font-size: 0.82rem; }
+
+.inv-doc.tpl-corporate .inv-meta-block {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0.25rem;
+}
+
+.inv-doc.tpl-corporate .inv-title { color: #4c1d95; font-size: 2.1rem; font-weight: 800; letter-spacing: 0.08em; }
+.inv-doc.tpl-corporate .inv-num   { color: #7c3aed; }
+
+.inv-doc.tpl-corporate .purple-stripe {
+  height: 4px;
+  background: linear-gradient(90deg, #4c1d95, #7c3aed, #c4b5fd);
+  margin-bottom: 1.75rem;
+}
+
+.inv-doc.tpl-corporate .addr-label {
+  color: #4c1d95;
+  border-bottom: 1px solid #ddd6fe;
+  padding-bottom: 2px;
+}
+
+.inv-doc.tpl-corporate thead th {
+  background: #4c1d95;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.inv-doc.tpl-corporate tbody tr:nth-child(even) { background: #faf5ff; }
+.inv-doc.tpl-corporate tfoot .total-row td      { border-top: 3px solid #4c1d95; }
+
+.inv-doc.tpl-corporate .inv-notes {
+  background: #faf5ff;
+  border-left: 4px solid #7c3aed;
+}
+
+
+/* ==========================================================================
+   13. Dark-mode overrides for invoice body (.inv-doc)
+       The hardcoded dark-text colours in Section 12 become invisible when
+       .invoice-doc sets background: #16213e in dark mode.  These rules
+       restore readable light values for every element inside .inv-doc.
+   ========================================================================== */
+
+/* ── Base body text ─────────────────────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc {
+  color: #e2e8f0;
+}
+
+/* ── Address / bill-to blocks ───────────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc .addr-block {
+  color: #e2e8f0;
+}
+
+body.dark-mode .invoice-doc .inv-doc .addr-label {
+  color: #94a3b8;
+  border-bottom-color: #334155;
+}
+
+/* ── Brand tagline / sub-text ───────────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc .brand-tagline,
+body.dark-mode .invoice-doc .inv-doc .brand-sub,
+body.dark-mode .invoice-doc .inv-doc .company-from {
+  color: #94a3b8;
+}
+
+/* ── Invoice number / meta text ─────────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc .inv-num {
+  color: #93c5fd;
+}
+
+/* ── Table body ─────────────────────────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc tbody tr {
+  border-bottom-color: #334155;
+}
+
+body.dark-mode .invoice-doc .inv-doc tbody td {
+  color: #e2e8f0;
+}
+
+body.dark-mode .invoice-doc .inv-doc tfoot td {
+  color: #e2e8f0;
+}
+
+/* ── Notes block ────────────────────────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc .inv-notes {
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+}
+
+/* ── Page footer ────────────────────────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc .inv-foot {
+  color: #94a3b8;
+  border-top-color: #334155;
+}
+
+/* ── Template-specific header backgrounds (keep dark, lighten text) ──────── */
+body.dark-mode .invoice-doc .inv-doc.tpl-modern .inv-head {
+  background: #0f2744;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-bold .inv-head {
+  background: #111827;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-corporate .inv-head {
+  border-bottom-color: #7c3aed;
+}
+
+/* ── Template-specific addr-label brand colours (lightened for dark bg) ─── */
+body.dark-mode .invoice-doc .inv-doc.tpl-classic .addr-label {
+  color: #86efac;
+  border-bottom-color: #166534;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-modern .addr-label {
+  color: #93c5fd;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-bold .addr-label {
+  color: #fcd34d;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-minimal .addr-label {
+  color: #94a3b8;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-corporate .addr-label {
+  color: #c4b5fd;
+  border-bottom-color: #4c1d95;
+}
+
+/* ── Classic: head border ───────────────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc.tpl-classic .inv-head {
+  border-bottom-color: #166534;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-classic .brand-name {
+  color: #86efac;
+}
+
+/* ── Minimal: head border and brand ────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc.tpl-minimal .inv-head {
+  border-bottom-color: #475569;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-minimal .brand-name {
+  color: #f1f5f9;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-minimal .inv-title {
+  color: #f1f5f9;
+}
+
+/* ── Minimal: table thead (no background in light mode, keep it subtle) ── */
+body.dark-mode .invoice-doc .inv-doc.tpl-minimal thead th {
+  border-top-color: #475569;
+  border-bottom-color: #475569;
+  color: #cbd5e1;
+  background: transparent;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-minimal tfoot .total-row td {
+  border-top-color: #475569;
+}
+
+/* ── Bold: total-row text (normally #1f2937 on amber border — flip light) ─ */
+body.dark-mode .invoice-doc .inv-doc.tpl-bold tfoot .total-row td {
+  color: #f1f5f9;
+}
+
+/* ── Corporate: brand colours ───────────────────────────────────────────── */
+body.dark-mode .invoice-doc .inv-doc.tpl-corporate .brand-name {
+  color: #c4b5fd;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-corporate .brand-tagline {
+  color: #a78bfa;
+}
+
+body.dark-mode .invoice-doc .inv-doc.tpl-corporate .inv-title {
+  color: #c4b5fd;
+}
+
+
+/* ==========================================================================
+   14. Payment Tracking Panel (.pmt-panel)
+       Shown on view.php between the toolbar and the invoice document.
+       Includes: lifecycle stepper, status badge + due chip, action buttons,
+       inline action forms, client feedback, and follow-up notes.
+   ========================================================================== */
+
+.pmt-panel {
+  background: var(--color-card-bg, #fff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+body.dark-mode .pmt-panel {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+/* ── Lifecycle stepper ─────────────────────────────────────────────────── */
+.pmt-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.pmt-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 60px;
+}
+
+.pmt-step-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-border, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  border: 2px solid var(--color-border, #e5e7eb);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.pmt-step.done .pmt-step-dot {
+  background: #dcfce7;
+  border-color: #16a34a;
+}
+
+.pmt-step.active .pmt-step-dot {
+  background: #dbeafe;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+body.dark-mode .pmt-step-dot          { background: #334155; border-color: #475569; }
+body.dark-mode .pmt-step.done .pmt-step-dot   { background: #14532d; border-color: #16a34a; }
+body.dark-mode .pmt-step.active .pmt-step-dot { background: #1e3a5f; border-color: #2563eb; }
+
+.pmt-step-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6b7280);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pmt-step.done .pmt-step-label  { color: #16a34a; }
+.pmt-step.active .pmt-step-label { color: #2563eb; }
+
+.pmt-step-line {
+  flex: 1;
+  height: 3px;
+  background: var(--color-border, #e5e7eb);
+  margin-bottom: 16px; /* align with dot centre */
+  min-width: 20px;
+  transition: background 0.2s;
+}
+
+.pmt-step-line.done {
+  background: #16a34a;
+}
+
+body.dark-mode .pmt-step-line         { background: #334155; }
+body.dark-mode .pmt-step-line.done    { background: #16a34a; }
+
+.pmt-overdue-flag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #dc2626;
+  background: rgba(220,38,38,0.08);
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+.pmt-cancelled-flag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #374151;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+body.dark-mode .pmt-cancelled-flag {
+  background: #334155;
+  border-color: #475569;
+  color: #94a3b8;
+}
+
+/* ── Status badge + due chips ──────────────────────────────────────────── */
+.pmt-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.pmt-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.pmt-due-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.pmt-due-ok    { background: rgba(22,163,74,0.1);  color: #166534; border-color: #86efac; }
+.pmt-due-today { background: rgba(234,179,8,0.1);  color: #854d0e; border-color: #fde047; }
+.pmt-due-late  { background: rgba(220,38,38,0.1);  color: #991b1b; border-color: #fca5a5; }
+
+body.dark-mode .pmt-due-ok    { color: #86efac; }
+body.dark-mode .pmt-due-today { color: #fde047; }
+body.dark-mode .pmt-due-late  { color: #fca5a5; }
+
+/* ── Action buttons row ────────────────────────────────────────────────── */
+.pmt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pmt-btn {
+  font-size: 0.85rem;
+  padding: 7px 14px;
+}
+
+.pmt-btn-warn {
+  background: #d97706;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.pmt-btn-warn:hover { background: #b45309; }
+
+.pmt-btn-red {
+  color: #dc2626 !important;
+  border-color: #fca5a5 !important;
+}
+.pmt-btn-red:hover {
+  background: rgba(220,38,38,0.08) !important;
+}
+
+.pmt-hint {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-style: italic;
+}
+
+/* ── Inline forms ──────────────────────────────────────────────────────── */
+.pmt-form {
+  background: var(--color-bg, #f8fafc);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  animation: pmt-fade-in 0.15s ease;
+}
+
+@keyframes pmt-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+body.dark-mode .pmt-form {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.pmt-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.pmt-form-grid {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+}
+
+.pmt-form-grid label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6b7280);
+  text-align: right;
+}
+
+/* ── Client feedback ───────────────────────────────────────────────────── */
+.pmt-feedback-wrap {
+  border-top: 1px solid var(--color-border, #e5e7eb);
+  padding-top: 0.75rem;
+}
+
+.pmt-feedback-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.4rem;
+}
+
+.pmt-feedback-text {
+  font-size: 0.9rem;
+  color: var(--color-text, #1f2937);
+  border-left: 3px solid #7c3aed;
+  padding-left: 0.75rem;
+  margin: 0 0 0.5rem 0;
+  font-style: italic;
+}
+
+body.dark-mode .pmt-feedback-text {
+  color: #e2e8f0;
+  border-left-color: #a78bfa;
+}
+
+/* ── Follow-up notes display ───────────────────────────────────────────── */
+.pmt-notes-display {
+  background: rgba(37,99,235,0.05);
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.87rem;
+  color: var(--color-text, #1f2937);
+}
+
+.pmt-notes-display p {
+  margin: 0.3rem 0 0;
+  color: var(--color-text-secondary, #374151);
+}
+
+body.dark-mode .pmt-notes-display {
+  background: rgba(37,99,235,0.08);
+  border-color: #1e3a5f;
+  color: #e2e8f0;
+}
+
+body.dark-mode .pmt-notes-display p {
+  color: #94a3b8;
+}
+
+/* ── Responsive tweaks ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .pmt-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .pmt-form-grid label {
+    text-align: left;
+  }
+  .pmt-stepper {
+    gap: 2px;
+  }
+  .pmt-step {
+    min-width: 44px;
+  }
+  .pmt-step-dot {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+}

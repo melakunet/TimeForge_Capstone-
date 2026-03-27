@@ -1,6 +1,9 @@
 # ── Composer tool (binary — not source code) ──────────────────
 composer.phar
 
+# ── Sensitive local files (never commit) ──────────────────────
+CREDENTIALS.md
+
 # ── OS & editor noise ──────────────────────────────────────────
 .DS_Store
 Thumbs.db

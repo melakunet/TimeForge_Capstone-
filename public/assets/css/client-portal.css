@@ -1,0 +1,454 @@
+/* =============================================================================
+   Client Portal Stylesheet
+   Covers: client/dashboard.php, client/project_report.php
+   Depends on: css/style.css (base styles, cards, buttons, badges, dark mode vars)
+   DO NOT add base/global styles here — those belong in style.css
+   ============================================================================= */
+
+/* ── Page Header ─────────────────────────────────────────────────────────────── */
+.client-hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+}
+
+.client-hero h1 {
+    margin: 0;
+}
+
+.client-hero p {
+    margin: 0.25rem 0 0;
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+body.dark-mode .client-hero p {
+    color: #9ca3af;
+}
+
+/* ── Summary Stat Cards ──────────────────────────────────────────────────────── */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.stat-card {
+    padding: 1.25rem 1.5rem;
+    border-radius: 10px;
+    /* inherits .card background/border from style.css */
+}
+
+.stat-card .stat-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+    margin-bottom: 0.4rem;
+}
+
+.stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2563eb;
+    line-height: 1.1;
+}
+
+.stat-card .stat-sub {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+body.dark-mode .stat-card .stat-label,
+body.dark-mode .stat-card .stat-sub {
+    color: #9ca3af;
+}
+
+body.dark-mode .stat-card .stat-value {
+    color: #4a90e2;
+}
+
+/* ── Section Header (shared by dashboard and report) ─────────────────────────── */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.15rem;
+}
+
+/* ── Project Cards (dashboard list) ─────────────────────────────────────────── */
+.project-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.project-row {
+    border-radius: 10px;
+    padding: 1.1rem 1.4rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem 1.5rem;
+    align-items: start;
+    transition: border-color 0.2s;
+    /* inherits .card background/border */
+}
+
+.project-row:hover {
+    border-color: #2563eb;
+}
+
+body.dark-mode .project-row:hover {
+    border-color: #4a90e2;
+}
+
+.project-row .proj-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.project-row .proj-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    font-size: 0.83rem;
+    color: #6b7280;
+    margin-top: 0.4rem;
+}
+
+.project-row .proj-meta span strong {
+    color: #1f2937;
+}
+
+body.dark-mode .project-row .proj-meta {
+    color: #9ca3af;
+}
+
+body.dark-mode .project-row .proj-meta span strong {
+    color: #e0e0e0;
+}
+
+.proj-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+/* ── Progress Bar ─────────────────────────────────────────────────────────────── */
+.progress-bar-wrap {
+    width: 100%;
+    height: 5px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    margin-top: 0.6rem;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: #2563eb;
+    transition: width 0.4s ease;
+}
+
+body.dark-mode .progress-bar-wrap {
+    background: #374151;
+}
+
+body.dark-mode .progress-bar-fill {
+    background: #4a90e2;
+}
+
+/* ── Pending Badge ────────────────────────────────────────────────────────────── */
+.badge-pending {
+    display: inline-block;
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+/* ── Empty State (portal-specific, extends .empty-state from style.css) ──────── */
+.empty-portal {
+    text-align: center;
+    padding: 3.5rem 1rem;
+    color: #6b7280;
+}
+
+.empty-portal .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+}
+
+.empty-portal h3 {
+    margin: 0 0 0.5rem;
+    color: #1f2937;
+}
+
+.empty-portal p {
+    color: #6b7280;
+}
+
+body.dark-mode .empty-portal h3 {
+    color: #e0e0e0;
+}
+
+body.dark-mode .empty-portal {
+    color: #9ca3af;
+}
+
+/* ── Report Page ─────────────────────────────────────────────────────────────── */
+.report-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin: 1.25rem 0;
+}
+
+.report-summary-item {
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    border-left: 3px solid #2563eb;
+    /* inherits .card background */
+}
+
+.report-summary-item .rs-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin-bottom: 0.3rem;
+}
+
+.report-summary-item .rs-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.report-summary-item.highlight .rs-value {
+    color: #2563eb;
+}
+
+.report-summary-item.danger .rs-value {
+    color: #dc2626;
+}
+
+.report-summary-item.success .rs-value {
+    color: #16a34a;
+}
+
+body.dark-mode .report-summary-item .rs-label {
+    color: #9ca3af;
+}
+
+body.dark-mode .report-summary-item .rs-value {
+    color: #e0e0e0;
+}
+
+body.dark-mode .report-summary-item.highlight .rs-value {
+    color: #4a90e2;
+}
+
+body.dark-mode .report-summary-item.danger .rs-value {
+    color: #f87171;
+}
+
+body.dark-mode .report-summary-item.success .rs-value {
+    color: #4ade80;
+}
+
+/* ── Project Info Block (report header detail) ───────────────────────────────── */
+.project-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem 1.5rem;
+    margin-top: 0.75rem;
+}
+
+.project-info-item .pi-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin-bottom: 0.2rem;
+}
+
+.project-info-item .pi-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+body.dark-mode .project-info-item .pi-label {
+    color: #9ca3af;
+}
+
+body.dark-mode .project-info-item .pi-value {
+    color: #e0e0e0;
+}
+
+/* ── Time Entry Table (report view — client sees approved only) ───────────────── */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.report-table thead tr {
+    background-color: #f8f9fa;
+    text-align: left;
+}
+
+.report-table th {
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #e9ecef;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b7280;
+}
+
+.report-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: top;
+}
+
+.report-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.report-table .td-desc {
+    color: #4b5563;
+    font-size: 0.88rem;
+    max-width: 300px;
+}
+
+.report-table tfoot tr {
+    background-color: #f0f4ff;
+    font-weight: 700;
+}
+
+.report-table tfoot td {
+    padding: 0.85rem 1rem;
+    border-top: 2px solid #2563eb;
+}
+
+body.dark-mode .report-table thead tr {
+    background: #1f2937;
+}
+
+body.dark-mode .report-table th {
+    color: #9ca3af;
+    border-bottom-color: #374151;
+}
+
+body.dark-mode .report-table td {
+    border-bottom-color: #374151;
+}
+
+body.dark-mode .report-table .td-desc {
+    color: #9ca3af;
+}
+
+body.dark-mode .report-table tfoot tr {
+    background: #1e3a5f;
+}
+
+body.dark-mode .report-table tfoot td {
+    border-top-color: #4a90e2;
+}
+
+/* ── Print Button ─────────────────────────────────────────────────────────────── */
+.btn-print {
+    background: transparent;
+    border: 1px solid #2563eb;
+    color: #2563eb;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-print:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+body.dark-mode .btn-print {
+    border-color: #4a90e2;
+    color: #4a90e2;
+}
+
+body.dark-mode .btn-print:hover {
+    background: #4a90e2;
+    color: #fff;
+}
+
+/* ── Print Media ──────────────────────────────────────────────────────────────── */
+@media print {
+    header,
+    footer,
+    nav,
+    .btn,
+    .btn-print,
+    .breadcrumb {
+        display: none !important;
+    }
+
+    body,
+    .container {
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .report-table th,
+    .report-table td {
+        border: 1px solid #ccc;
+    }
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .project-row {
+        grid-template-columns: 1fr;
+    }
+
+    .proj-actions {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .stats-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .report-summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
