@@ -1,6 +1,9 @@
 # ── Composer tool (binary — not source code) ──────────────────
 composer.phar
 
+# ── Composer dependencies (never commit — run composer install) ─
+vendor/
+
 # ── Sensitive local files (never commit) ──────────────────────
 CREDENTIALS.md
 
