@@ -46,7 +46,18 @@ $current_user = getCurrentUser();
         <!-- NEW: Quick Start Widget -->
         <?php include __DIR__ . '/dashboard_quick_start.php'; ?>
     </div>
-    
+
+    <!-- Phase 6.7: Live Freelancer Presence Panel -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 style="color: var(--color-accent); margin: 0;">🟢 Live Freelancer Presence</h2>
+            <span id="presence-updated" style="font-size: 0.8rem; color: var(--color-text-secondary);">Updating…</span>
+        </div>
+        <div id="presence-panel">
+            <p style="color: var(--color-text-secondary);">Loading…</p>
+        </div>
+    </div>
+
     <div class="card">
         <h2 style="color: var(--color-accent); margin-bottom: 1.5rem;">Admin Functions</h2>
         <ul style="list-style: none; padding: 0;">
@@ -75,5 +86,6 @@ $current_user = getCurrentUser();
     <script src="/TimeForge_Capstone/js/theme.js"></script>
     <script src="/TimeForge_Capstone/js/animations.js"></script>
     <script src="/TimeForge_Capstone/js/time_tracker.js"></script>
+    <script src="/TimeForge_Capstone/js/presence.js"></script>
 </body>
 </html>
