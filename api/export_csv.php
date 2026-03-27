@@ -88,6 +88,9 @@ $entries = $entries_stmt->fetchAll();
 $safe_name = preg_replace('/[^A-Za-z0-9_\-]/', '_', $project['project_name']);
 $filename  = 'TimeLog_' . $safe_name . '_' . date('Ymd') . '.csv';
 
+// Flush any stray buffered output from includes before sending headers
+while (ob_get_level()) ob_end_clean();
+
 // Send headers that force a file download
 header('Content-Type: text/csv; charset=UTF-8');
 header('Content-Disposition: attachment; filename="' . $filename . '"');

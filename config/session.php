@@ -42,4 +42,3 @@ $_SESSION['last_activity'] = time();
 if (!isset($_SESSION['theme'])) {
     $_SESSION['theme'] = 'light';
 }
-?>
