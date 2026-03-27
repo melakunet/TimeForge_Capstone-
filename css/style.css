@@ -515,6 +515,88 @@ footer {
   color: #6b7280;
 }
 
+/*
+ * Global form helpers — used across all pages (not just modals).
+ * Mirrors the modal-scoped styles so form layouts work outside of modals.
+ */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+  color: inherit;
+}
+
+.form-group small {
+  display: block;
+  font-size: 0.78rem;
+  color: #6b7280;
+  margin-top: 0.2rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #dedfe3;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #1f2937;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+body.dark-mode .form-control {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+body.dark-mode .form-control:focus {
+  border-color: #4a90e2;
+}
+
+/* Flash messages for setFlash() helpers */
+.flash {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border-left: 4px solid;
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
+}
+
+.flash-success {
+  background: #f0fdf4;
+  border-left-color: #16a34a;
+  color: #166534;
+}
+
+.flash-error {
+  background: #fef2f2;
+  border-left-color: #dc2626;
+  color: #991b1b;
+}
+
+.flash-info {
+  background: #eff6ff;
+  border-left-color: #2563eb;
+  color: #1e40af;
+}
+
+body.dark-mode .flash-success { background: rgba(22, 163, 74, 0.12); color: #86efac; }
+body.dark-mode .flash-error   { background: rgba(220, 38,  38, 0.12); color: #fca5a5; }
+body.dark-mode .flash-info    { background: rgba(37,  99, 235, 0.12); color: #93c5fd; }
+
 /* Simple grid for dashboards */
 .grid {
   display: grid;

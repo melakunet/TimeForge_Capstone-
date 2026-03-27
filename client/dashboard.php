@@ -120,6 +120,12 @@ $stage_labels = [
             <div class="stat-value">$<?php echo number_format($total_cost, 2); ?></div>
             <div class="stat-sub">Based on approved time entries</div>
         </div>
+        <!-- Phase 7: quick link to invoice history -->
+        <div class="stat-card" style="cursor:pointer;" onclick="location.href='/TimeForge_Capstone/invoices/history.php'">
+            <div class="stat-label">Invoices</div>
+            <div class="stat-value">🧾</div>
+            <div class="stat-sub"><a href="/TimeForge_Capstone/invoices/history.php">View your invoices</a></div>
+        </div>
     </div>
 
     <!-- ── Project List ── -->

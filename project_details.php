@@ -95,6 +95,18 @@ $total_cost = $total_hours * ($project['hourly_rate'] ?? 0);
 $budget = $project['budget'] ?? 0;
 $budget_remaining = $budget - $total_cost;
 
+// Count approved billable entries — used to gate the invoice pre-flight modal
+$approved_stmt = $pdo->prepare("
+    SELECT COUNT(*) AS cnt
+    FROM time_entries
+    WHERE project_id  = :pid
+      AND status      = 'approved'
+      AND is_billable = 1
+      AND end_time   IS NOT NULL
+");
+$approved_stmt->execute([':pid' => $project_id]);
+$approved_billable_count = (int)$approved_stmt->fetchColumn();
+
 $page_title = 'Project Details: ' . $project['project_name'];
 $flash = getFlash();
 ?>
@@ -246,8 +258,13 @@ $flash = getFlash();
                                             <td>
                                                 <?php if ($entry['status'] === 'running'): ?>
                                                     <span class="status-badge status-active">Running</span>
-                                                <?php elseif ($entry['status'] === 'pending'): ?>
-                                                    <span class="status-badge status-warning">Pending Approval</span>
+                                                <?php elseif (in_array($entry['status'], ['pending', 'completed', 'abandoned'])): ?>
+                                                    <span class="status-badge status-warning">
+                                                        <?php
+                                                        $label_map = ['pending' => 'Pending', 'completed' => 'Completed', 'abandoned' => 'Abandoned'];
+                                                        echo $label_map[$entry['status']];
+                                                        ?>
+                                                    </span>
                                                     <?php if ($role === 'admin'): ?>
                                                         <div class="approval-actions mt-1">
                                                             <form action="approve_time_entry.php" method="POST" class="d-inline">
@@ -417,6 +434,35 @@ $flash = getFlash();
                                 <button type="submit" class="btn btn-archive btn-full">Archive Project</button>
                             </form>
                         <?php endif; ?>
+
+                        <!-- Phase 7: Invoice and CSV export — opens pre-flight checklist modal -->
+                        <hr style="margin: 1rem 0; border-color: var(--color-border, #e5e7eb);">
+
+                        <?php if ($approved_billable_count === 0): ?>
+                            <!-- No approved entries yet — button is disabled with a clear reason -->
+                            <button class="btn btn-primary btn-full"
+                                    style="margin-bottom:0.5rem; display:block; width:100%; opacity:0.55; cursor:not-allowed;"
+                                    title="Approve at least one billable time entry before generating an invoice."
+                                    disabled>
+                                🧾 Generate Invoice
+                            </button>
+                            <p style="font-size:0.78rem; color:#ef4444; margin:0 0 0.75rem; line-height:1.4;">
+                                ⚠️ No approved billable entries yet. Approve time entries in the table below first.
+                            </p>
+                        <?php else: ?>
+                            <!-- Entries ready — open the pre-flight checklist modal -->
+                            <button class="btn btn-primary btn-full"
+                                    style="margin-bottom:0.5rem; display:block; width:100%;"
+                                    onclick="openInvoicePreflight()">
+                                🧾 Generate Invoice
+                            </button>
+                        <?php endif; ?>
+
+                        <button class="btn btn-secondary btn-full"
+                                style="display:block; width:100%;"
+                                onclick="openCsvPreflight()">
+                            📥 Export Time Log CSV
+                        </button>
                     </div>
                 </div>
             <?php endif; ?>
@@ -478,5 +524,175 @@ $flash = getFlash();
 </main>
 
 <?php include_once __DIR__ . '/includes/footer_partial.php'; ?>
+
+<!-- ── Invoice Pre-flight Checklist Modal ────────────────────────────────── -->
+<!-- Shows the admin a summary of key settings before going to generate.php. -->
+<!-- If anything looks wrong they can cancel and fix it first.               -->
+<div id="invoicePreflightModal" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.55); align-items:center; justify-content:center;">
+    <div style="background:var(--color-card-bg,#1e293b); border:1px solid var(--color-border,#334155); border-radius:12px; padding:2rem; width:min(520px,94vw); max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+        <h2 style="margin:0 0 0.25rem; font-size:1.25rem;">🧾 Invoice Pre-flight Check</h2>
+        <p style="color:var(--color-text-secondary,#94a3b8); font-size:0.85rem; margin:0 0 1.5rem;">
+            Review these settings before generating. You can change them on the next page too.
+        </p>
+
+        <!-- Step 1: Approved entries -->
+        <div style="display:flex; align-items:flex-start; gap:0.75rem; padding:0.85rem; background:rgba(22,163,74,0.1); border:1px solid rgba(22,163,74,0.35); border-radius:8px; margin-bottom:1rem;">
+            <span style="font-size:1.3rem; line-height:1;">✅</span>
+            <div>
+                <strong style="font-size:0.9rem;">Approved Billable Entries</strong>
+                <div style="font-size:0.82rem; color:var(--color-text-secondary,#94a3b8); margin-top:2px;">
+                    <?php echo $approved_billable_count; ?> entr<?php echo $approved_billable_count === 1 ? 'y' : 'ies'; ?> ready to bill
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Hourly rate -->
+        <div style="display:flex; align-items:flex-start; gap:0.75rem; padding:0.85rem; background:var(--color-bg-secondary,#0f172a); border:1px solid var(--color-border,#334155); border-radius:8px; margin-bottom:1rem;">
+            <span style="font-size:1.3rem; line-height:1;">💲</span>
+            <div>
+                <strong style="font-size:0.9rem;">Hourly Rate</strong>
+                <div style="font-size:0.82rem; color:var(--color-text-secondary,#94a3b8); margin-top:2px;">
+                    $<?php echo number_format((float)$project['hourly_rate'], 2); ?>/hr
+                    <?php if ((float)$project['hourly_rate'] === 0.0): ?>
+                        &nbsp;<span style="color:#f59e0b;">⚠️ Rate is $0 — <a href="/TimeForge_Capstone/edit_project.php?id=<?php echo $project['id']; ?>" style="color:#f59e0b;">edit project</a> to set it.</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Tax rate -->
+        <div style="display:flex; align-items:flex-start; gap:0.75rem; padding:0.85rem; background:var(--color-bg-secondary,#0f172a); border:1px solid var(--color-border,#334155); border-radius:8px; margin-bottom:1rem;">
+            <span style="font-size:1.3rem; line-height:1;">🏷️</span>
+            <div>
+                <strong style="font-size:0.9rem;">Default Tax Rate</strong>
+                <div style="font-size:0.82rem; color:var(--color-text-secondary,#94a3b8); margin-top:2px;">
+                    <?php echo number_format((float)($project['tax_rate'] ?? 0), 2); ?>%
+                    — you can adjust this on the generate page.
+                    <?php if ((float)($project['tax_rate'] ?? 0) === 0.0): ?>
+                        &nbsp;<span style="color:#94a3b8;">(0% = no tax)</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Logo -->
+        <div style="display:flex; align-items:flex-start; gap:0.75rem; padding:0.85rem; background:var(--color-bg-secondary,#0f172a); border:1px solid var(--color-border,#334155); border-radius:8px; margin-bottom:1rem;">
+            <span style="font-size:1.3rem; line-height:1;">🖼️</span>
+            <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+                <div>
+                    <strong style="font-size:0.9rem;">Company Logo</strong>
+                    <div style="font-size:0.82rem; color:var(--color-text-secondary,#94a3b8); margin-top:2px;">Used in the invoice header on all templates.</div>
+                </div>
+                <img src="/TimeForge_Capstone/icons/logo.png" alt="Logo preview"
+                     style="height:36px; border-radius:4px; border:1px solid var(--color-border,#334155);">
+            </div>
+        </div>
+
+        <!-- Step 5: Template picker (inline, default classic) -->
+        <div style="margin-bottom:1.5rem;">
+            <strong style="font-size:0.9rem; display:block; margin-bottom:0.6rem;">🎨 Choose Invoice Template</strong>
+            <p style="font-size:0.78rem; color:var(--color-text-secondary,#94a3b8); margin:0 0 0.75rem;">
+                Pick a style below. You can change it again on the generate page.
+            </p>
+            <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:0.6rem;" id="preflightTplPicker">
+                <?php
+                $tpl_opts = [
+                    'classic'   => ['label' => 'Classic',   'color' => '#14532d'],
+                    'modern'    => ['label' => 'Modern',    'color' => '#1e3a5f'],
+                    'bold'      => ['label' => 'Bold',      'color' => '#1f2937'],
+                    'minimal'   => ['label' => 'Minimal',   'color' => '#6b7280'],
+                    'corporate' => ['label' => 'Corporate', 'color' => '#4c1d95'],
+                ];
+                foreach ($tpl_opts as $key => $opt): ?>
+                <label style="display:flex; flex-direction:column; align-items:center; gap:0.35rem; padding:0.6rem 0.4rem; border:2px solid var(--color-border,#334155); border-radius:8px; cursor:pointer; transition:border-color 0.15s;" class="pf-tpl-card" data-key="<?php echo $key; ?>">
+                    <input type="radio" name="pf_template" value="<?php echo $key; ?>" <?php echo $key === 'classic' ? 'checked' : ''; ?>
+                           style="position:absolute;opacity:0;width:0;height:0;"
+                           onchange="pfSelectTemplate('<?php echo $key; ?>')">
+                    <span style="display:block; width:100%; height:22px; border-radius:4px; background:<?php echo $opt['color']; ?>;"></span>
+                    <span style="font-size:0.72rem; font-weight:700; color:var(--color-text,#f1f5f9);"><?php echo $opt['label']; ?></span>
+                </label>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
+            <button onclick="closeInvoicePreflight()" class="btn btn-secondary">Cancel</button>
+            <a id="preflightContinueBtn"
+               href="/TimeForge_Capstone/invoices/generate.php?project_id=<?php echo $project['id']; ?>&tpl=classic"
+               class="btn btn-primary">
+                Continue to Generate →
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ── CSV Pre-flight Modal ───────────────────────────────────────────────── -->
+<!-- Prevents an accidental silent download by showing a confirmation step.  -->
+<div id="csvPreflightModal" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.55); align-items:center; justify-content:center;">
+    <div style="background:var(--color-card-bg,#1e293b); border:1px solid var(--color-border,#334155); border-radius:12px; padding:2rem; width:min(440px,94vw); box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+        <h2 style="margin:0 0 0.25rem; font-size:1.25rem;">📥 Export Time Log CSV</h2>
+        <p style="color:var(--color-text-secondary,#94a3b8); font-size:0.85rem; margin:0 0 1.5rem;">
+            This will download a CSV of <strong>all approved time entries</strong> for this project.
+        </p>
+        <div style="padding:0.85rem; background:var(--color-bg-secondary,#0f172a); border:1px solid var(--color-border,#334155); border-radius:8px; margin-bottom:1.25rem; font-size:0.85rem; line-height:1.7;">
+            <strong>Project:</strong> <?php echo htmlspecialchars($project['project_name']); ?><br>
+            <strong>Client:</strong> <?php echo htmlspecialchars($project['client_name'] ?? '—'); ?><br>
+            <strong>Approved entries:</strong>
+            <?php echo $approved_billable_count > 0
+                ? $approved_billable_count . ' billable entr' . ($approved_billable_count === 1 ? 'y' : 'ies')
+                : '<span style="color:#f59e0b;">None yet — CSV will be empty</span>'; ?>
+        </div>
+        <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
+            <button onclick="closeCsvPreflight()" class="btn btn-secondary">Cancel</button>
+            <a href="/TimeForge_Capstone/api/export_csv.php?project_id=<?php echo $project['id']; ?>"
+               class="btn btn-primary">⬇ Download CSV</a>
+        </div>
+    </div>
+</div>
+
+<script>
+// ── Invoice pre-flight modal ────────────────────────────────────────────────
+function openInvoicePreflight() {
+    document.getElementById('invoicePreflightModal').style.display = 'flex';
+}
+function closeInvoicePreflight() {
+    document.getElementById('invoicePreflightModal').style.display = 'none';
+}
+
+// Highlight the selected template card and update the continue link
+function pfSelectTemplate(key) {
+    document.querySelectorAll('.pf-tpl-card').forEach(function(card) {
+        card.style.borderColor = 'var(--color-border, #334155)';
+    });
+    var chosen = document.querySelector('.pf-tpl-card[data-key="' + key + '"]');
+    if (chosen) chosen.style.borderColor = '#3b82f6';
+
+    var btn = document.getElementById('preflightContinueBtn');
+    var base = '/TimeForge_Capstone/invoices/generate.php?project_id=<?php echo $project['id']; ?>';
+    btn.href = base + '&tpl=' + key;
+}
+
+// Highlight classic on first open
+document.addEventListener('DOMContentLoaded', function() {
+    pfSelectTemplate('classic');
+});
+
+// Close modals when clicking the backdrop
+document.getElementById('invoicePreflightModal').addEventListener('click', function(e) {
+    if (e.target === this) closeInvoicePreflight();
+});
+
+// ── CSV pre-flight modal ────────────────────────────────────────────────────
+function openCsvPreflight() {
+    document.getElementById('csvPreflightModal').style.display = 'flex';
+}
+function closeCsvPreflight() {
+    document.getElementById('csvPreflightModal').style.display = 'none';
+}
+document.getElementById('csvPreflightModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCsvPreflight();
+});
+</script>
 </body>
 </html>

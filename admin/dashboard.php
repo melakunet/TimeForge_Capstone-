@@ -73,6 +73,13 @@ $current_user = getCurrentUser();
             <li style="margin-bottom: 1rem;">
                 <a href="/TimeForge_Capstone/admin/session_audit.php" class="btn btn-primary" style="display: inline-block;">Session Audit Log</a>
             </li>
+            <!-- Phase 7: Reporting and Invoicing -->
+            <li style="margin-bottom: 1rem;">
+                <a href="/TimeForge_Capstone/admin/reports.php" class="btn btn-primary" style="display: inline-block;">📊 Financial Reports</a>
+            </li>
+            <li style="margin-bottom: 1rem;">
+                <a href="/TimeForge_Capstone/invoices/history.php" class="btn btn-primary" style="display: inline-block;">🧾 Invoice History</a>
+            </li>
         </ul>
     </div>
 </div>
