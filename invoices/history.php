@@ -1,11 +1,4 @@
 <?php
-/*
- * Task 7.5 — Invoice History
- * Lists all generated invoices.
- * Admin sees every invoice; clients see only those tied to their projects.
- * Admins can also trigger bulk PDF downloads from this page (Task 7.3 extension).
- */
-
 $page_title = 'Invoice History';
 
 require_once __DIR__ . '/../config/session.php';
@@ -189,7 +182,7 @@ $status_colors = [
                         </td>
                         <td style="text-align:center; white-space:nowrap;">
                             <a href="/TimeForge_Capstone/invoices/view.php?id=<?php echo $inv['id']; ?>" class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;">View</a>
-                            <a href="/TimeForge_Capstone/invoices/download.php?id=<?php echo $inv['id']; ?>" class="btn btn-primary" style="padding:4px 10px; font-size:0.8rem;">PDF</a>
+                            <a href="/TimeForge_Capstone/invoices/download.php?id=<?php echo $inv['id']; ?>" class="btn btn-primary" style="padding:4px 10px; font-size:0.8rem;" target="_blank" rel="noopener">PDF</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>

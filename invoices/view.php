@@ -1,11 +1,4 @@
 <?php
-/*
- * Task 7.1 / 7.6 — Invoice Viewer
- * Renders the saved invoice using whichever template was chosen at
- * generation time. Admin sees all invoices; client sees only their own.
- * The "Download PDF" button links to download.php (Task 7.2).
- */
-
 $page_title = 'View Invoice';
 
 require_once __DIR__ . '/../config/session.php';
@@ -237,7 +230,7 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
             <?php endif; ?>
 
             <a href="/TimeForge_Capstone/invoices/download.php?id=<?php echo $invoice_id; ?>"
-               class="btn btn-primary">⬇ Download PDF</a>
+               class="btn btn-primary" target="_blank" rel="noopener">⬇ Download PDF</a>
         </div>
     </div>
 
