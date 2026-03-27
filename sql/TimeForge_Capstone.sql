@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 13, 2026 at 04:18 PM
+-- Generation Time: Mar 27, 2026 at 02:06 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `audit_logs`
 --
 
+DROP TABLE IF EXISTS `audit_logs`;
 CREATE TABLE `audit_logs` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -58,7 +59,11 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `ip_address`, `user_agent`,
 (17, 4, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-13 13:40:57'),
 (18, 6, 'login_failed_wrong_password', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-13 15:06:57'),
 (19, 0, 'login_failed_invalid_user', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-13 15:07:19'),
-(20, 3, 'login_failed_wrong_password', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-13 15:08:06');
+(20, 3, 'login_failed_wrong_password', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-13 15:08:06'),
+(21, 3, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-13 15:19:05'),
+(22, 1, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-13 15:23:25'),
+(23, 2, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-13 15:38:14'),
+(24, 4, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-27 12:22:16');
 
 -- --------------------------------------------------------
 
@@ -66,6 +71,7 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `ip_address`, `user_agent`,
 -- Table structure for table `clients`
 --
 
+DROP TABLE IF EXISTS `clients`;
 CREATE TABLE `clients` (
   `id` int(11) NOT NULL,
   `client_name` varchar(100) NOT NULL,
@@ -97,6 +103,7 @@ INSERT INTO `clients` (`id`, `client_name`, `company_name`, `email`, `phone`, `a
 -- Table structure for table `projects`
 --
 
+DROP TABLE IF EXISTS `projects`;
 CREATE TABLE `projects` (
   `id` int(11) NOT NULL,
   `project_name` varchar(100) NOT NULL,
@@ -137,6 +144,7 @@ INSERT INTO `projects` (`id`, `project_name`, `description`, `client_id`, `creat
 -- Table structure for table `session_activity`
 --
 
+DROP TABLE IF EXISTS `session_activity`;
 CREATE TABLE `session_activity` (
   `id` int(11) NOT NULL,
   `time_entry_id` int(11) NOT NULL,
@@ -147,12 +155,34 @@ CREATE TABLE `session_activity` (
   `activity_score` int(11) DEFAULT 0 COMMENT 'Total events (mouse + key) in this minute'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `session_activity`
+--
+
+INSERT INTO `session_activity` (`id`, `time_entry_id`, `user_id`, `recorded_at`, `mouse_events`, `key_events`, `activity_score`) VALUES
+(1, 4, 2, '2026-03-13 11:46:40', 154, 0, 154),
+(2, 4, 2, '2026-03-13 11:47:40', 0, 0, 0),
+(3, 4, 2, '2026-03-13 11:49:56', 165, 0, 165),
+(4, 4, 2, '2026-03-13 11:50:56', 0, 0, 0),
+(5, 4, 2, '2026-03-13 11:51:56', 0, 0, 0),
+(6, 4, 2, '2026-03-13 11:52:56', 0, 0, 0),
+(7, 4, 2, '2026-03-13 11:53:56', 0, 0, 0),
+(8, 4, 2, '2026-03-13 11:54:56', 0, 0, 0),
+(9, 4, 2, '2026-03-13 11:55:56', 0, 0, 0),
+(10, 4, 2, '2026-03-13 11:56:56', 0, 0, 0),
+(11, 4, 2, '2026-03-13 11:57:56', 0, 0, 0),
+(12, 4, 2, '2026-03-13 11:58:56', 0, 0, 0),
+(13, 4, 2, '2026-03-13 12:00:08', 0, 0, 0),
+(14, 4, 2, '2026-03-13 12:01:08', 0, 0, 0),
+(15, 4, 2, '2026-03-13 12:23:51', 0, 0, 0);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `time_entries`
 --
 
+DROP TABLE IF EXISTS `time_entries`;
 CREATE TABLE `time_entries` (
   `id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL,
@@ -183,7 +213,8 @@ CREATE TABLE `time_entries` (
 INSERT INTO `time_entries` (`id`, `project_id`, `user_id`, `start_time`, `end_time`, `total_seconds`, `description`, `is_billable`, `is_idle_detected`, `status`, `entry_type`, `reviewed_by`, `reviewed_at`, `rejection_reason`, `created_at`, `updated_at`, `idle_seconds`, `discarded_idle_seconds`, `activity_score_avg`, `close_reason`) VALUES
 (1, 1, NULL, '2025-10-20 09:00:00', '2025-10-20 12:00:00', 10800, 'Initial layout design', 1, 0, 'completed', 'timer', NULL, NULL, NULL, '2026-02-27 14:16:21', '2026-03-06 14:30:13', 0, 0, NULL, 'manual'),
 (2, 1, NULL, '2025-10-21 14:00:00', '2025-10-21 16:30:00', 9000, 'Fixing navigation bar bug', 1, 0, 'completed', 'timer', NULL, NULL, NULL, '2026-02-27 14:16:21', '2026-03-06 14:30:13', 0, 0, NULL, 'manual'),
-(3, 4, 4, '2026-03-06 10:49:46', NULL, 0, 'Melaku Digital Inc.', 1, 0, 'running', 'timer', NULL, NULL, NULL, '2026-03-06 15:49:46', '2026-03-06 15:49:46', 0, 0, NULL, 'manual');
+(3, 4, 4, '2026-03-06 10:49:46', '2026-03-27 08:24:38', 1805692, 'Melaku Digital Inc.', 1, 0, 'abandoned', 'timer', NULL, NULL, NULL, '2026-03-06 15:49:46', '2026-03-27 12:24:38', 0, 0, NULL, 'abandoned'),
+(4, 4, 2, '2026-03-13 11:45:40', '2026-03-27 08:24:38', 1197538, 'Freelance work', 1, 0, 'abandoned', 'timer', NULL, NULL, NULL, '2026-03-13 15:45:40', '2026-03-27 12:24:38', 0, 0, NULL, 'abandoned');
 
 -- --------------------------------------------------------
 
@@ -191,6 +222,7 @@ INSERT INTO `time_entries` (`id`, `project_id`, `user_id`, `start_time`, `end_ti
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
@@ -213,10 +245,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `full_name`, `is_active`, `last_login`, `last_active_at`, `current_project_id`, `password_reset_token`, `password_reset_expires`, `created_at`, `updated_at`) VALUES
-(1, 'admin_user', 'admin@timeforge.local', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'admin', 'Super Admin', 1, NULL, NULL, NULL, NULL, NULL, '2026-01-30 13:57:53', '2026-03-13 15:17:32'),
-(2, 'dev_sarah', 'sarah@timeforge.local', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'freelancer', 'Sarah Developer', 1, NULL, NULL, NULL, NULL, NULL, '2026-01-30 13:57:53', '2026-03-13 15:17:32'),
-(3, 'client_bob', 'bob@timeforge.local', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'client', 'Bob The Client', 1, NULL, NULL, NULL, NULL, NULL, '2026-01-30 13:57:53', '2026-03-13 15:17:32'),
-(4, 'admin', 'admin@example.com', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'admin', 'Administrator', 1, '2026-03-13 09:40:57', '2026-03-06 14:40:38', 4, NULL, NULL, '2026-02-06 14:47:00', '2026-03-13 15:17:32'),
+(1, 'admin_user', 'admin@timeforge.local', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'admin', 'Super Admin', 1, '2026-03-13 11:23:25', NULL, NULL, NULL, NULL, '2026-01-30 13:57:53', '2026-03-13 15:23:25'),
+(2, 'dev_sarah', 'sarah@timeforge.local', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'freelancer', 'Sarah Developer', 1, '2026-03-13 11:38:14', '2026-03-13 12:23:51', 4, NULL, NULL, '2026-01-30 13:57:53', '2026-03-13 16:23:51'),
+(3, 'client_bob', 'bob@timeforge.local', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'client', 'Bob The Client', 1, '2026-03-13 11:19:05', NULL, NULL, NULL, NULL, '2026-01-30 13:57:53', '2026-03-13 15:19:05'),
+(4, 'admin', 'admin@example.com', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'admin', 'Administrator', 1, '2026-03-27 08:22:16', '2026-03-06 14:40:38', 4, NULL, NULL, '2026-02-06 14:47:00', '2026-03-27 12:22:16'),
 (5, 'freelancer1', 'freelancer1@example.com', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'freelancer', 'Sample Freelancer', 1, NULL, NULL, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-03-13 15:17:32'),
 (6, 'client1', 'client1@example.com', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'client', 'Sample Client', 1, NULL, NULL, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-03-13 15:17:32'),
 (7, 'sara', 'sarakey@timeforge.com', '$2y$10$gM4HuEs1G1zlqIFsoQEHIe0IpYEnig.Omygc4jJtONKBXMzvx/btG', 'freelancer', 'sara key', 1, '2026-02-13 11:27:27', NULL, NULL, NULL, NULL, '2026-02-13 14:10:55', '2026-02-13 16:27:27'),
@@ -292,7 +324,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `clients`
@@ -310,13 +342,13 @@ ALTER TABLE `projects`
 -- AUTO_INCREMENT for table `session_activity`
 --
 ALTER TABLE `session_activity`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `time_entries`
 --
 ALTER TABLE `time_entries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
