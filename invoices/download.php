@@ -299,7 +299,14 @@ $html = ob_get_clean();
 // ── Configure and run Dompdf ──────────────────────────────────────────────
 // Font directory must be set explicitly so Dompdf can locate the .ttf files
 // and write its font cache. Without this, fopen('','rb+') throws a ValueError.
-$font_dir = realpath(__DIR__ . '/../vendor/dompdf/dompdf/lib/fonts');
+// Use dirname(__DIR__) to build the absolute path — realpath() can return false
+// if Apache runs as a different user and causes path resolution to fail.
+$font_dir = dirname(__DIR__) . '/vendor/dompdf/dompdf/lib/fonts';
+if (!is_dir($font_dir)) {
+    error_log('[download.php] Font directory not found: ' . $font_dir);
+    http_response_code(500);
+    exit('PDF generation error: font directory missing.');
+}
 
 $options = new Options();
 $options->set('isRemoteEnabled', false);   // no external HTTP resources — all CSS is inline
