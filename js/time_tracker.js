@@ -149,6 +149,9 @@ class TimeTracker {
         document.addEventListener('keydown',   () => { this.keyEvents++;   this.resetIdleTimer(); });
         document.addEventListener('scroll',    () => { this.resetIdleTimer(); });
 
+        // Phase 6.8: Tab focus / visibility guard
+        document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
+
         // Idle modal buttons — Task 6.1
         document.getElementById('tf-idle-keep').addEventListener('click',    () => this.resolveIdle('keep'));
         document.getElementById('tf-idle-discard').addEventListener('click', () => this.resolveIdle('discard'));
@@ -169,6 +172,26 @@ class TimeTracker {
             this.isIdle    = false;
             this.idleSince = null;
             this.elements.widget.classList.remove('tf-timer-idle');
+        }
+    }
+
+    // ── Phase 6.8: Tab Visibility Guard ───────────────────────────────────────
+    handleVisibilityChange() {
+        if (!this.startTime) return; // only when timer is running
+
+        if (document.hidden) {
+            this._tabHiddenAt = Date.now();
+            this.elements.widget.classList.add('tf-timer-unfocused');
+        } else {
+            this.elements.widget.classList.remove('tf-timer-unfocused');
+            if (this._tabHiddenAt) {
+                const awayMs = Date.now() - this._tabHiddenAt;
+                this._tabHiddenAt = null;
+                // If away long enough, trigger the existing idle modal
+                if (awayMs >= this.IDLE_THRESHOLD_MS) {
+                    this.triggerIdleModal(awayMs);
+                }
+            }
         }
     }
 

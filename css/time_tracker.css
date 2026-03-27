@@ -29,6 +29,15 @@
     pointer-events: none;
 }
 
+/* Phase 6.8: Tab unfocused state — yellow border pulse */
+.tf-timer-unfocused {
+    border-color: var(--tf-timer-idle) !important;
+    box-shadow: 0 0 12px rgba(243, 156, 18, 0.5);
+}
+.tf-timer-unfocused .tf-timer-status-dot {
+    background: var(--tf-timer-idle) !important;
+}
+
 /* Status Indicator */
 .tf-timer-status-dot {
     width: 8px;
