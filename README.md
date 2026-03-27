@@ -1,263 +1,256 @@
-# TimeForge Capstone Project
+# TimeForge — Freelancer Time Tracking & Invoicing Platform
 
-**Student:** Etefworkie Melaku  
-**Course:** Mobile and Web App Development  
-**Institution:** triOS College  
-**Date:** February 2026
-
----
-
-## 📖 Project Description
-
-TimeForge helps freelancers maximize revenue through accurate time tracking. This web app features project management, professional reporting, and a client portal for billing transparency. Replace manual spreadsheets and capture every billable hour.
+**Student:** Etefworkie Melaku
+**Course:** Mobile and Web App Development
+**Institution:** triOS College
+**Last Updated:** March 2026
 
 ---
 
-## ✨ Features Implemented
+## Project Description
 
-### Phase 1: Authentication System ✅
+TimeForge is a full-stack PHP/MariaDB web application that helps freelancers and small agencies capture every billable hour, generate professional invoices, and track payments through to completion — replacing manual spreadsheets with a structured, role-aware workflow.
+
+The system supports three roles: **Admin** (full control), **Freelancer** (time logging), and **Client** (portal view). Every feature is accessible from a clean, dark-mode-capable UI that works on desktop and mobile.
+
+---
+
+## Why This Project Matters
+
+### Problem It Solves
+
+Freelancers routinely lose 10–20% of their billable revenue through forgotten time, informal payment agreements, and no visibility into whether an invoice has even been seen by the client. TimeForge addresses all three:
+
+| Pain Point | TimeForge Solution |
+|---|---|
+| Missed billable minutes | Real-time timer + idle detection + manual entry |
+| No proof of work | Approval workflow — every entry reviewed before billing |
+| Invoices sent into the void | 8-step payment lifecycle with timestamps and follow-up notes |
+| Client disputes | Built-in client feedback field on every invoice |
+| Late payments undetected | Auto-overdue flip + due-date countdown on every invoice |
+
+### Academic Significance
+
+This project demonstrates end-to-end full-stack development: database design (normalized schema, foreign keys, multi-phase migrations), server-side PHP with PDO, role-based access control, PDF generation (Dompdf), a REST API layer, CSV export, and a multi-template invoicing system — all built without a framework.
+
+---
+
+## Features Implemented
+
+### Phase 1 — Authentication System
 - User registration and login
 - Role-based access control (Admin, Freelancer, Client)
-- Secure password hashing
-- Session management
-- Logout functionality
+- Secure bcrypt password hashing
+- Session management and logout
 
-### Phase 2: Project Management ✅
-- Add new projects
-- View project list (dashboard)
-- Archive/soft delete projects
+### Phase 2 — Project Management
+- Create, view, archive (soft delete), and restore projects
 - Role-based project visibility
-- Project tracking with created_by field
+- Budget and deadline tracking
 
-### Phase 3: Client Management ✅
-- **Add new clients** with full validation
-- **Edit existing clients** with duplicate prevention
-- **Client list view** with search and filtering
-- **Search functionality** (name, company, email, phone)
-- **Filter by status** (Active, Inactive, All)
-- **Role-based permissions** (Admin & Freelancer manage, Client views own)
-- **Empty states** with helpful CTAs
-- **Breadcrumb navigation**
-- **Success/Error messages**
-- **Dark mode support**
+### Phase 3 — Client Management
+- Add and edit clients with duplicate prevention
+- Client list with search (name, company, email, phone) and status filter
+- Role-based permissions — Admin and Freelancer manage, Client views own
 
-### Phase 4: Time Tracking ✅
-- **Real-Time Timer**: JavaScript-based stopwatch with start/stop functionality and persistence.
-- **Manual Time Entry**: Modal for logging offline work hours.
-- **Mobile Responsiveness**: Fully optimized layout for mobile devices to track time on the go.
-- **Live Presence**: Heartbeat system to track active sessions.
-- **Security Enhancements**: Password strength enforcement and visibility toggles.
+### Phase 4 — Time Tracking
+- Real-time JavaScript timer with start/stop/pause and localStorage persistence
+- Manual time entry modal for offline or retrospective work
+- Live presence heartbeat API
+- Mobile-responsive layout
 
-### Phase 4.5: Enhanced Project Management ✅ (Bonus Features)
-- **Project Hub**: Centralized dashboard (`project_details.php`) for project details, financials, and time logs.
-- **Budget Tracking**: Real-time calculation of remaining budget based on approved hours.
-- **Approval Workflow**: Admins review and approve/reject freelancer time entries.
-- **Edit/Delete Controls**: Secure permissions for modifying entry mistakes.
+### Phase 4.5 — Project Hub & Approval Workflow
+- `project_details.php` — centralized hub for entries, financials, and approvals
+- Budget tracking with real-time remaining-budget calculation
+- Admin approve/reject time entries with reason logging
+- Edit and delete controls with role-based guards
 
-### Phase 5: Client Portal ✅
-- **Client Dashboard**: Live stats — total projects, approved hours, total billed amount, all scoped to the logged-in client only.
-- **My Projects Page**: Filterable project list (Active / Completed / All) with budget progress bars and status badges.
-- **Project Report Page**: Per-project approved time log with full financial breakdown — hours, rate, cost, and budget remaining.
-- **Role-Aware Navigation**: Header dynamically shows different links for client vs admin vs freelancer roles.
-- **403 Access Control**: Styled access-denied page replaces all raw `die()` calls. `requireRole()` is enforced on every portal page.
-- **File Separation**: All portal styles in `css/client-portal.css`, all portal JS in `js/client-portal.js` — zero inline code.
+### Phase 5 — Client Portal
+- Client dashboard with total projects, approved hours, and total billed
+- My Projects page with status filter and budget progress bars
+- Per-project report with full financial breakdown
+- 403 access-denied page replacing all raw `die()` calls
 
-### Coming Soon — See `ROADMAP.md` for full details:
-
-#### Phase 6: Smart Idle Detection & Honest Time
-- Idle popup modal — pauses timer and asks what to do with inactive minutes
-- Stale session guard — prevents 21-hour ghost timers on laptop resume
+### Phase 6 — Idle Detection & Session Integrity
+- Idle popup modal — pauses timer after inactivity
+- Stale session guard — prevents ghost timers on laptop resume
 - Activity score heartbeat — keyboard and mouse events tracked per minute
-- Server-side auto-close of abandoned sessions via cron
+- Server-side cron auto-closes abandoned sessions
+- Discard idle toggle for admins
 
-#### Phase 7: Reporting and Invoicing
-- Generate formatted HTML/PDF invoices from approved time sheets
-- Financial reports and profitability analysis per project
-- CSV export for time logs
-- Invoice history with Draft / Sent / Paid status
+### Phase 7 — Reporting & Invoicing
+- Pre-flight modal on `project_details.php` — shows entry count, rate, and logo preview before generating
+- `invoices/generate.php` — 5 visual templates (Classic, Modern, Bold, Minimal, Corporate) with live color swatches
+- `invoices/view.php` — rendered invoice with template switcher in toolbar
+- `invoices/download.php` — Dompdf PDF generation with DejaVu font and UTF-8 support
+- `invoices/history.php` — invoice list with status badges for admin and client
+- `admin/reports.php` — financial summary and profitability analysis
+- `api/export_csv.php` — CSV export of approved time entries per project
 
-#### Phase 8: Email Notifications
-- Approval and rejection notifications for freelancers
-- Budget threshold alerts (75% / 90% / 100%) for admins and clients
-- Weekly digest emails for all roles
+### Phase 8 — Payment Tracking & Invoice Lifecycle
 
-#### Phase 9: Desktop Agent (Real Activity Monitoring)
-- Electron.js desktop app to detect active application and window title
-- OS-level keyboard and mouse event counting
-- Screenshot capture (optional, admin-controlled)
-- Productive vs unproductive app categorization
+This phase upgrades the invoice system from a simple Draft/Sent/Paid dropdown into a complete 8-step payment follow-up workflow that gives the freelancer full visibility into where every invoice stands.
 
-#### Phase 10: Advanced Frontend (React + Real-Time)
-- Full REST API layer replacing PHP-rendered pages
-- React + Vite frontend consuming the API
-- Real-time timer feed for admin via WebSockets
-- Analytics charts — line, bar, pie, activity heatmap
+**Invoice lifecycle:**
+
+```
+Draft -> Sent -> Viewed -> [Overdue] -> Partial -> Paid -> Completed
+                                                        -> Cancelled
+```
+
+**What was built:**
+
+| Component | What it does |
+|---|---|
+| `sql/Phase8_PaymentTracking.sql` | Expands status ENUM to 8 values; adds 8 tracking columns |
+| `invoices/payment_action.php` | Central POST handler for all transitions (admin) and client feedback |
+| Visual stepper in `view.php` | 6-dot progress bar showing current position in the lifecycle |
+| Smart action buttons | Only valid next-steps shown per current status |
+| Inline action forms | Payment method, reference/transaction ID, and notes open on click |
+| Auto-overdue detection | Sent/Viewed invoices past due date flip to Overdue automatically |
+| Due-date countdown | "Due in 3 days" / "Due today!" / "5 days overdue" chip |
+| Partial payment recording | Logs partial amount, shows remaining balance |
+| Client feedback | Clients submit dispute notes directly on the invoice |
+| Admin follow-up notes | Save internal notes at any stage without changing status |
+| History page upgrade | All 8 status badges, overdue row highlighting, partial amount shown |
+| Dark mode | Full dark-mode support for all new payment panel components |
+
+**New database columns added to `invoices`:**
+
+| Column | Type | Purpose |
+|---|---|---|
+| `sent_at` | DATETIME | Timestamp when marked Sent |
+| `viewed_at` | DATETIME | Timestamp when client viewed |
+| `paid_at` | DATETIME | Timestamp when full payment confirmed |
+| `partial_amount` | DECIMAL(10,2) | Amount received in a partial payment |
+| `payment_method` | VARCHAR(50) | Bank Transfer, PayPal, Stripe, Cheque, Cash, etc. |
+| `payment_reference` | VARCHAR(100) | Transaction ID or cheque number |
+| `payment_notes` | TEXT | Admin internal follow-up notes |
+| `client_feedback` | TEXT | Client dispute or question notes |
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
-- XAMPP (Apache + MySQL + PHP)
+- XAMPP (Apache + MariaDB + PHP 8.1+)
+- Composer dependencies already in `vendor/` (Dompdf)
 - Modern web browser
-- Text editor (VS Code recommended)
 
 ### Installation
 
-1. **Clone or download** this project to your XAMPP htdocs folder:
+1. Copy project to XAMPP htdocs:
    ```
    /Applications/XAMPP/xamppfiles/htdocs/TimeForge_Capstone
    ```
 
-2. **Start XAMPP:**
-   - Open XAMPP Control Panel
-   - Start Apache
-   - Start MySQL
+2. Start XAMPP — Apache and MySQL.
 
-3. **Create Database:**
-   - Open phpMyAdmin: http://localhost/phpmyadmin
-   - Create new database: `TimeForge_Capstone`
-   - Import SQL file: `sql/TimeForge_Capstone_Phase3.sql`
+3. Import SQL files in order:
+   ```
+   sql/TimeForge_Capstone.sql        -- base schema + seed data
+   sql/Phase7_Invoicing.sql          -- invoices table
+   sql/Phase7b_Templates.sql         -- template column
+   sql/Phase8_PaymentTracking.sql    -- payment lifecycle columns
+   ```
 
-4. **Access the Application:**
-   ```
-   http://localhost/TimeForge_Capstone/
-   ```
+4. Open: `http://localhost/TimeForge_Capstone/`
 
 ---
 
-## 🔐 Test Credentials
+## Test Credentials
 
 | Role | Username | Password |
-|------|----------|----------|
-| **Admin** | admin_user | password123 |
-| **Freelancer** | dev_sarah | password123 |
-| **Client** | client_bob | password123 |
+|---|---|---|
+| Admin | admin_user | password123 |
+| Freelancer | dev_sarah | password123 |
+| Client | client_bob | password123 |
 
-*See `CREDENTIALS.md` for complete list*
+*See `CREDENTIALS.md` for complete list.*
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 TimeForge_Capstone/
-├── index.php                    # Main dashboard/landing page
-├── login.php                    # User login
-├── register.php                 # User registration
-├── add_project.php              # Add new project form
-├── add_project_process.php      # Project creation logic
-├── delete_project.php           # Archive project (soft delete)
-├── add_client.php               # Add new client form
-├── add_client_process.php       # Client creation logic
-├── clients.php                  # Client list with search/filter
-├── edit_client.php              # Edit client form
-├── edit_client_process.php      # Client update logic
+├── index.php                          # Landing / main dashboard
+├── login.php / register.php           # Auth pages
+├── project_details.php                # Project hub — entries, budget, approvals, invoice trigger
+├── clients.php                        # Client list
 ├── admin/
-│   └── dashboard.php            # Admin portal
+│   ├── dashboard.php
+│   ├── reports.php                    # Financial reports
+│   ├── users.php
+│   └── audit_logs.php
 ├── client/
-│   └── dashboard.php            # Client portal
+│   ├── dashboard.php
+│   ├── projects.php
+│   └── project_report.php
 ├── freelancer/
-│   └── dashboard.php            # Freelancer portal
-├── config/
-│   ├── session.php              # Session configuration
-│   └── theme.php                # Theme settings
+│   ├── dashboard.php
+│   └── quick_start.php
+├── invoices/
+│   ├── generate.php                   # Template picker + line-item preview
+│   ├── view.php                       # Invoice viewer + payment tracking panel (Phase 8)
+│   ├── download.php                   # Dompdf PDF generation
+│   ├── history.php                    # Invoice list with status badges
+│   ├── payment_action.php             # POST handler for all lifecycle transitions (Phase 8)
+│   └── templates/                     # classic / modern / bold / minimal / corporate
+├── api/
+│   ├── time_tracking.php              # Timer API
+│   ├── presence.php                   # Heartbeat API
+│   └── export_csv.php                 # CSV export
+├── cron/
+│   └── auto_close_timers.php          # Abandons stale running timers
 ├── css/
-│   ├── style.css                # Main stylesheet
-│   └── auth_layout.css          # Authentication page styles
-├── includes/
-│   ├── auth.php                 # Authentication functions
-│   ├── header_partial.php       # Header component
-│   ├── footer_partial.php       # Footer component
-│   ├── login_process.php        # Login logic
-│   ├── register_process.php     # Registration logic
-│   ├── logout.php               # Logout logic
-│   └── theme_handler.php        # Theme toggle logic
+│   ├── style.css                      # Global styles + dark mode
+│   ├── invoice.css                    # Invoice + payment panel styles (14 sections)
+│   ├── reports.css
+│   └── ...
 ├── js/
-│   ├── theme.js                 # Dark mode toggle
-│   ├── animations.js            # UI animations
-│   └── hero.js                  # Landing page effects
+│   ├── theme.js
+│   ├── time_tracker.js
+│   ├── presence.js
+│   └── ...
 ├── sql/
-│   └── TimeForge_Capstone_Phase3.sql  # Database schema
-└── db.php                       # Database connection
+│   ├── TimeForge_Capstone.sql
+│   ├── Phase7_Invoicing.sql
+│   ├── Phase7b_Templates.sql
+│   └── Phase8_PaymentTracking.sql     # Payment lifecycle migration
+├── vendor/                            # Dompdf (Composer)
+├── composer.json
+└── db.php                             # PDO connection
 ```
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
-- **Backend:** PHP 8.1+
-- **Database:** MySQL/MariaDB
-- **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
-- **Server:** Apache (XAMPP)
-- **Version Control:** Git
-
----
-
-## 🎨 Design Features
-
-- ✅ Clean, modern UI design
-- ✅ Dark mode support
-- ✅ Responsive/mobile-friendly
-- ✅ Accessible navigation
-- ✅ Professional color scheme
-- ✅ Smooth animations
-- ✅ Intuitive user flows
+| Layer | Technology |
+|---|---|
+| Backend | PHP 8.1 |
+| Database | MariaDB 10.4 via PDO |
+| PDF Generation | Dompdf 3.x |
+| Frontend | HTML5, CSS3, Vanilla JavaScript |
+| Server | Apache via XAMPP |
+| Version Control | Git + GitHub |
 
 ---
 
-## 🔒 Security Features
+## Security
 
-- ✅ Password hashing (bcrypt)
-- ✅ Prepared SQL statements (PDO)
-- ✅ XSS protection (htmlspecialchars)
-- ✅ CSRF protection (session validation)
-- ✅ Role-based access control
-- ✅ Input validation (client & server-side)
-- ✅ Session security
-
----
-
-## 📚 Documentation
-
-- `CREDENTIALS.md` - Test user credentials
-- `ROADMAP.md` - Full product roadmap: Phases 6–10 with tasks, files, and DB schema plans
-- `PHASE3_PROGRESS.md` - Phase 3 progress report
-- `TESTING_GUIDE.md` - Step-by-step testing scenarios
-- `DATABASE_UPDATE_GUIDE.md` - Database setup instructions
+- bcrypt password hashing
+- PDO prepared statements — zero raw SQL interpolation
+- `htmlspecialchars()` on all output
+- `requireRole()` enforced on every page
+- Soft deletes — no accidental data loss from UI
+- Session-based guards on all destructive actions
 
 ---
 
-## 🧪 Testing
+## Author
 
-See `TESTING_GUIDE.md` for comprehensive testing scenarios covering:
-- Client management (add, edit, search, filter)
-- Authentication and authorization
-- Role-based permissions
-- Input validation
-- Dark mode compatibility
-- Mobile responsiveness
-
----
-
-## 📝 License
-
-This project is created for educational purposes as part of the Web Development Capstone course at triOS College.
-
----
-
-## 👨‍💻 Author
-
-**Etefworkie Melaku**  
-Mobile and Web App Development Student  
-triOS College  
-February 2026
-
----
-
-## 🙏 Acknowledgments
-
-- triOS College instructors and staff
-- XAMPP development team
-- PHP and MySQL communities
-- Open source contributors
+**Etefworkie Melaku**
+Mobile and Web App Development — Capstone Project
+triOS College, 2026

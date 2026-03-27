@@ -18,11 +18,14 @@ $current_user = getCurrentUser();
         <!-- Client-only nav -->
         <a href="/TimeForge_Capstone/client/dashboard.php">My Dashboard</a>
         <a href="/TimeForge_Capstone/client/projects.php">My Projects</a>
+        <a href="/TimeForge_Capstone/invoices/history.php">Invoices</a>
       <?php else: ?>
         <!-- Admin & Freelancer nav -->
         <a href="/TimeForge_Capstone/clients.php">Clients</a>
         <?php if (hasRole('admin')): ?>
           <a href="/TimeForge_Capstone/admin/dashboard.php">Admin Dashboard</a>
+          <a href="/TimeForge_Capstone/admin/reports.php">Reports</a>
+          <a href="/TimeForge_Capstone/invoices/history.php">Invoices</a>
         <?php elseif (hasRole('freelancer')): ?>
           <a href="/TimeForge_Capstone/freelancer/dashboard.php">Freelancer Portal</a>
         <?php endif; ?>

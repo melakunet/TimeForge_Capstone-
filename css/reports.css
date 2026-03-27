@@ -1,0 +1,56 @@
+/*
+ * Reports stylesheet — used by admin/reports.php.
+ * Keeps report-specific layout separate from global styles.
+ */
+
+/* ── Filter bar ──────────────────────────────────────────────────────────── */
+.report-filters {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+}
+
+/* ── Summary stat card grid ──────────────────────────────────────────────── */
+.report-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.report-stat {
+  text-align: center;
+  padding: 1.25rem 1rem;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+body.dark-mode .stat-label {
+  color: #9ca3af;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-accent, #1f2937);
+}
+
+body.dark-mode .stat-value {
+  color: #e0e0e0;
+}
+
+/* ── Margin percentage coloring is done inline (dynamic values) ───────────── */
+
+/* ── Responsive stacking ─────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .report-filters form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
