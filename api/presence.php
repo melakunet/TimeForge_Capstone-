@@ -32,10 +32,13 @@ $sql = "
     LEFT JOIN time_entries te
            ON te.user_id = u.id AND te.status = 'running'
     WHERE u.role IN ('freelancer', 'admin')
+      AND u.company_id = :company_id
     ORDER BY u.full_name ASC
 ";
 
-$rows = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+$rows = $pdo->prepare($sql);
+$rows->execute([':company_id' => $_SESSION['company_id']]);
+$rows = $rows->fetchAll(PDO::FETCH_ASSOC);
 $now  = new DateTime();
 
 $result = [];
