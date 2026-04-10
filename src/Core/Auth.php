@@ -59,6 +59,7 @@ function startSession($user) {
     $_SESSION['role']       = $user['role'];
     $_SESSION['full_name']  = $user['full_name'];
     $_SESSION['is_active']  = $user['is_active'];
+    $_SESSION['company_id'] = $user['company_id'] ?? null;
     $_SESSION['login_time'] = time();
 }
 
@@ -106,7 +107,7 @@ function authenticateUser($username, $password) {
 
     try {
         $stmt = $pdo->prepare("
-            SELECT id, username, email, password, role, full_name, is_active, last_login
+            SELECT id, username, email, password, role, full_name, is_active, last_login, company_id
             FROM users WHERE username = ? OR email = ? LIMIT 1
         ");
         $stmt->execute([$username, $username]);
@@ -137,7 +138,7 @@ function authenticateUser($username, $password) {
 
 // ── Registration ──────────────────────────────────────────────────────────
 
-function registerUser($username, $email, $password, $confirmPassword, $fullName, $role = 'freelancer') {
+function registerUser($username, $email, $password, $confirmPassword, $fullName, $role = 'freelancer', $companyName = '') {
     global $pdo;
     $errors = [];
 
@@ -147,6 +148,7 @@ function registerUser($username, $email, $password, $confirmPassword, $fullName,
     if ($password !== $confirmPassword)                      $errors[] = 'Passwords do not match';
     if (empty($fullName) || strlen($fullName) < 3)          $errors[] = 'Full name must be at least 3 characters';
     if (!in_array($role, ['freelancer', 'client', 'admin'])) $errors[] = 'Invalid role selected';
+    if ($role === 'admin' && empty(trim($companyName)))      $errors[] = 'Company name is required for admin accounts';
 
     if (!empty($errors)) return ['success' => false, 'errors' => $errors];
 
@@ -159,16 +161,29 @@ function registerUser($username, $email, $password, $confirmPassword, $fullName,
         $stmt->execute([$email]);
         if ($stmt->rowCount() > 0) return ['success' => false, 'errors' => ['Email already registered']];
 
+        $pdo->beginTransaction();
+
+        // Admins create a new company; freelancers/clients get NULL (assigned later by admin)
+        $company_id = null;
+        if ($role === 'admin') {
+            $pdo->prepare("INSERT INTO companies (name) VALUES (?)")->execute([trim($companyName)]);
+            $company_id = (int)$pdo->lastInsertId();
+        }
+
         $stmt = $pdo->prepare("
-            INSERT INTO users (username, email, password, role, full_name, is_active, created_at)
-            VALUES (?, ?, ?, ?, ?, 1, NOW())
+            INSERT INTO users (username, email, password, role, full_name, company_id, is_active, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, 1, NOW())
         ");
-        $stmt->execute([$username, $email, hashPassword($password), $role, $fullName]);
-        $userId = $pdo->lastInsertId();
+        $stmt->execute([$username, $email, hashPassword($password), $role, $fullName, $company_id]);
+        $userId = (int)$pdo->lastInsertId();
+
+        $pdo->commit();
+
         logAuditAction($userId, 'user_registered', $_SERVER['REMOTE_ADDR']);
         return ['success' => true, 'message' => 'Registration successful! Please log in.', 'user_id' => $userId];
 
     } catch (PDOException $e) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
         return ['success' => false, 'errors' => ['Database error: ' . $e->getMessage()]];
     }
 }

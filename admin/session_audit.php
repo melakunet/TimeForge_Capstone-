@@ -23,8 +23,8 @@ $valid_statuses = ['all', 'completed', 'approved', 'abandoned'];
 if (!in_array($filter_status, $valid_statuses)) $filter_status = 'all';
 
 // ── Build query ────────────────────────────────────────────────────────────
-$where   = ['te.status IN ("completed","approved","abandoned")'];
-$params  = [];
+$where   = ['te.status IN ("completed","approved","abandoned")', 'te.company_id = :company_id'];
+$params  = [':company_id' => $_SESSION['company_id']];
 
 if ($filter_user > 0) {
     $where[]               = 'te.user_id = :uid';
@@ -66,8 +66,13 @@ $stmt->execute($params);
 $entries = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // ── Dropdown data ──────────────────────────────────────────────────────────
-$users    = $pdo->query("SELECT id, full_name FROM users WHERE role IN ('freelancer','admin') ORDER BY full_name")->fetchAll(PDO::FETCH_ASSOC);
-$projects = $pdo->query("SELECT id, project_name FROM projects ORDER BY project_name")->fetchAll(PDO::FETCH_ASSOC);
+$users_stmt = $pdo->prepare("SELECT id, full_name FROM users WHERE role IN ('freelancer','admin') AND company_id = :company_id ORDER BY full_name");
+$users_stmt->execute([':company_id' => $_SESSION['company_id']]);
+$users = $users_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$projects_stmt = $pdo->prepare("SELECT id, project_name FROM projects WHERE company_id = :company_id ORDER BY project_name");
+$projects_stmt->execute([':company_id' => $_SESSION['company_id']]);
+$projects = $projects_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 function fmtSeconds(int $s): string {

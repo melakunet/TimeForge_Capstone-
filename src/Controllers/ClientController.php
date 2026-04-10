@@ -48,8 +48,8 @@ if ($action === 'add') {
 
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO clients (client_name, company_name, email, phone, address, created_by, is_active)
-            VALUES (:client_name, :company_name, :email, :phone, :address, :created_by, :is_active)
+            INSERT INTO clients (client_name, company_name, email, phone, address, created_by, company_id, is_active)
+            VALUES (:client_name, :company_name, :email, :phone, :address, :created_by, :company_id, :is_active)
         ");
         $stmt->execute([
             ':client_name'  => $client_name,
@@ -58,6 +58,7 @@ if ($action === 'add') {
             ':phone'        => $phone    ?: null,
             ':address'      => $address  ?: null,
             ':created_by'   => $created_by,
+            ':company_id'   => $_SESSION['company_id'],
             ':is_active'    => $is_active,
         ]);
         setFlash('success', 'Client added successfully!');

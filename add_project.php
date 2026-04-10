@@ -9,9 +9,10 @@ if (!isLoggedIn()) {
     exit();
 }
 
-// Fetch active clients for dropdown
-$clients_query = $pdo->query("SELECT id, client_name, company_name FROM clients WHERE is_active = 1 ORDER BY client_name");
-$clients = $clients_query->fetchAll();
+// Fetch active clients for dropdown — scoped to this company
+$clients_stmt = $pdo->prepare("SELECT id, client_name, company_name FROM clients WHERE is_active = 1 AND company_id = :company_id ORDER BY client_name");
+$clients_stmt->execute([':company_id' => $_SESSION['company_id']]);
+$clients = $clients_stmt->fetchAll();
 
 $page_title = 'Add Project';
 $error_message = '';

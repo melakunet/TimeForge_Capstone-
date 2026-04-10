@@ -119,11 +119,18 @@ if (isset($_SESSION['register_form_data'])) {
             
             <div class="form-group">
                 <label>Register as</label>
-                <select name="role">
+                <select name="role" id="role_select">
                     <option value="freelancer" <?php echo ($form_data['role'] ?? '') === 'freelancer' ? 'selected' : ''; ?>>Freelancer</option>
                     <option value="client" <?php echo ($form_data['role'] ?? '') === 'client' ? 'selected' : ''; ?>>Client</option>
                     <option value="admin" <?php echo ($form_data['role'] ?? '') === 'admin' ? 'selected' : ''; ?>>Admin</option>
                 </select>
+            </div>
+
+            <div class="form-group" id="company_name_group" style="display:none;">
+                <label>Company Name <span style="color:#e74c3c;">*</span></label>
+                <input type="text" name="company_name" id="company_name_input"
+                       value="<?php echo htmlspecialchars($form_data['company_name'] ?? ''); ?>"
+                       placeholder="Your company or business name">
             </div>
 
             <div class="form-group form-group-top-margin">
@@ -140,6 +147,19 @@ if (isset($_SESSION['register_form_data'])) {
 
 <script src="js/theme.js"></script>
 <script>
+    // Show company name field only when Admin role is selected
+    const roleSelect       = document.getElementById('role_select');
+    const companyGroup     = document.getElementById('company_name_group');
+    const companyInput     = document.getElementById('company_name_input');
+
+    function toggleCompanyField() {
+        const isAdmin = roleSelect.value === 'admin';
+        companyGroup.style.display = isAdmin ? 'block' : 'none';
+        companyInput.required = isAdmin;
+    }
+
+    roleSelect.addEventListener('change', toggleCompanyField);
+    toggleCompanyField(); // run on page load (handles back-navigation with admin pre-selected)
     document.addEventListener('DOMContentLoaded', () => {
         const passwordInput = document.getElementById('password');
         const confirmPasswordInput = document.getElementById('confirm_password');

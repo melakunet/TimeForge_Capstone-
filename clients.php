@@ -51,6 +51,10 @@ if ($user_role === 'client') {
     // Clients can only see their own record
     $sql .= " AND c.user_id = :user_id";
     $params[':user_id'] = $_SESSION['user_id'];
+} else {
+    // Admin and freelancer only see their company's clients
+    $sql .= " AND c.company_id = :company_id";
+    $params[':company_id'] = $_SESSION['company_id'];
 }
 
 $sql .= " ORDER BY c.client_name ASC";

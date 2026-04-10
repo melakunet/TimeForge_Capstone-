@@ -13,13 +13,15 @@ $password         = filter_input(INPUT_POST, 'password');
 $confirm_password = filter_input(INPUT_POST, 'confirm_password');
 $full_name        = filter_input(INPUT_POST, 'full_name');
 $role             = filter_input(INPUT_POST, 'role');
+$company_name     = filter_input(INPUT_POST, 'company_name') ?? '';
 $terms            = filter_input(INPUT_POST, 'terms');
 
 $_SESSION['register_form_data'] = [
-    'username'  => $username,
-    'email'     => $email,
-    'full_name' => $full_name,
-    'role'      => $role,
+    'username'     => $username,
+    'email'        => $email,
+    'full_name'    => $full_name,
+    'role'         => $role,
+    'company_name' => $company_name,
 ];
 
 $errors = [];
@@ -38,7 +40,7 @@ if (!empty($errors)) {
     exit;
 }
 
-$result = registerUser($username, $email, $password, $confirm_password, $full_name, $role);
+$result = registerUser($username, $email, $password, $confirm_password, $full_name, $role, $company_name);
 
 if ($result['success']) {
     unset($_SESSION['register_form_data']);

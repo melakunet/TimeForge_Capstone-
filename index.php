@@ -32,9 +32,10 @@ if (isLoggedIn() && $view !== 'welcome') {
         $query = "SELECT p.*, c.client_name, c.company_name
                   FROM projects p
                   LEFT JOIN clients c ON c.id = p.client_id
-                  $whereClause
+                  $whereClause AND p.company_id = :company_id
                   ORDER BY p.id DESC";
         $p_stmt = $pdo->prepare($query);
+        $p_stmt->bindValue(':company_id', $_SESSION['company_id'], PDO::PARAM_INT);
         $p_stmt->execute();
     } elseif ($role === 'client') {
         // Clients can view ONLY their own projects.
@@ -48,13 +49,14 @@ if (isLoggedIn() && $view !== 'welcome') {
         $p_stmt->bindValue(':user_id', $user_id);
         $p_stmt->execute();
     } else {
-        // Freelancer logic
+        // Freelancer — scoped to same company
         $query = "SELECT p.*, c.client_name, c.company_name
                   FROM projects p
                   LEFT JOIN clients c ON c.id = p.client_id
-                  $whereClause
+                  $whereClause AND p.company_id = :company_id
                   ORDER BY p.id DESC";
         $p_stmt = $pdo->prepare($query);
+        $p_stmt->bindValue(':company_id', $_SESSION['company_id'], PDO::PARAM_INT);
         $p_stmt->execute();
     }
     $projects = $p_stmt->fetchAll();
