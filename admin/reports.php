@@ -24,8 +24,8 @@ if ($filter_date_to   && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $filter_date_to)) 
 
 // ── Summary totals across all projects ───────────────────────────────────────
 // Approved entries only — these are the hours the client signed off on
-$summary_params = [];
-$summary_where  = "WHERE te.status = 'approved' AND te.end_time IS NOT NULL AND p.deleted_at IS NULL";
+$summary_params = [':company_id' => $_SESSION['company_id']];
+$summary_where  = "WHERE te.status = 'approved' AND te.end_time IS NOT NULL AND p.deleted_at IS NULL AND p.company_id = :company_id";
 
 if ($filter_client) {
     $summary_where .= " AND p.client_id = :client_id";
@@ -66,8 +66,8 @@ $total_billed = round($summary['total_billed']   ?? 0, 2);
 $total_budget = round($summary['total_budget']   ?? 0, 2);
 
 // ── Per-project profitability ─────────────────────────────────────────────────
-$proj_params = [];
-$proj_where  = "WHERE p.deleted_at IS NULL";
+$proj_params = [':company_id' => $_SESSION['company_id']];
+$proj_where  = "WHERE p.deleted_at IS NULL AND p.company_id = :company_id";
 
 if ($filter_client) {
     $proj_where .= " AND p.client_id = :client_id";
@@ -121,8 +121,8 @@ try {
 }
 
 // ── Per-freelancer earnings ───────────────────────────────────────────────────
-$fl_params = [];
-$fl_where  = "WHERE te.status = 'approved' AND te.end_time IS NOT NULL AND p.deleted_at IS NULL";
+$fl_params = [':company_id' => $_SESSION['company_id']];
+$fl_where  = "WHERE te.status = 'approved' AND te.end_time IS NOT NULL AND p.deleted_at IS NULL AND p.company_id = :company_id";
 
 if ($filter_client) {
     $fl_where .= " AND p.client_id = :client_id";
@@ -162,7 +162,9 @@ try {
 
 // Client dropdown for the filter — fallback to empty list on failure
 try {
-    $client_list = $pdo->query("SELECT id, client_name, company_name FROM clients WHERE is_active = 1 ORDER BY client_name")->fetchAll();
+    $client_list = $pdo->prepare("SELECT id, client_name, company_name FROM clients WHERE is_active = 1 AND company_id = :company_id ORDER BY client_name");
+    $client_list->execute([':company_id' => $_SESSION['company_id']]);
+    $client_list = $client_list->fetchAll();
 } catch (PDOException $e) {
     error_log('reports.php client list error: ' . $e->getMessage());
     $client_list = [];
