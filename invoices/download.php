@@ -1,19 +1,6 @@
 <?php
-/*
- * Task 7.2 / 7.6 — PDF Invoice Download
- *
- * Generates a PDF copy of a saved invoice using the Dompdf library and
- * streams it directly to the browser as a file download.
- *
- * WHY styles are embedded in this file (not in css/invoice.css):
- * Dompdf renders HTML/CSS in an isolated context and cannot load external
- * stylesheets over HTTP. Every rule the PDF needs must be inlined inside
- * the HTML string passed to $dompdf->loadHtml(). This is a documented
- * library constraint, not a structural choice.
- *
- * CSS for the browser-rendered invoice lives in css/invoice.css.
- * Any visual change to PDF output must be made here as well.
- */
+// PDF invoice download — generates via Dompdf and streams to browser.
+// All CSS is inlined here because Dompdf cannot load external stylesheets.
 
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/auth.php';
@@ -301,7 +288,9 @@ $html = ob_get_clean();
 // and write its font cache. Without this, fopen('','rb+') throws a ValueError.
 // Use dirname(__DIR__) to build the absolute path — realpath() can return false
 // if Apache runs as a different user and causes path resolution to fail.
-$font_dir = dirname(__DIR__) . '/vendor/dompdf/dompdf/lib/fonts';
+$dompdf_root = dirname(__DIR__) . '/vendor/dompdf/dompdf';
+$font_dir    = $dompdf_root . '/lib/fonts';
+
 if (!is_dir($font_dir)) {
     error_log('[download.php] Font directory not found: ' . $font_dir);
     http_response_code(500);
@@ -309,9 +298,11 @@ if (!is_dir($font_dir)) {
 }
 
 $options = new Options();
-$options->set('isRemoteEnabled', false);   // no external HTTP resources — all CSS is inline
-$options->set('defaultFont', 'dejavu sans'); // must match key in installed-fonts.dist.json
-$options->set('fontDir',  $font_dir);
+$options->set('isRemoteEnabled', false);
+$options->set('defaultFont', 'dejavu sans');
+$options->setRootDir($dompdf_root);
+$options->setChroot([$dompdf_root, dirname(__DIR__)]);
+$options->set('fontDir',   $font_dir);
 $options->set('fontCache', $font_dir);
 
 $dompdf = new Dompdf($options);
