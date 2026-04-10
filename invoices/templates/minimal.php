@@ -11,7 +11,7 @@
 <div class="inv-doc tpl-minimal">
   <div class="inv-head">
     <div class="brand-wrap">
-      <img src="/TimeForge_Capstone/icons/logo.png" alt="logo" class="brand-logo">
+      <img src="<?php echo htmlspecialchars($logo_src); ?>" alt="logo" class="brand-logo">
       <div>
         <div class="brand-name"><?php echo htmlspecialchars($creator_company ?: $creator_name); ?></div>
         <?php if (!empty($creator_tagline)): ?>
