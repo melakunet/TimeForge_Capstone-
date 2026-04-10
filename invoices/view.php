@@ -36,7 +36,8 @@ try {
             u.full_name        AS created_by_name,
             u.email            AS creator_email,
             u.company_name     AS creator_company,
-            u.business_tagline AS creator_tagline
+            u.business_tagline AS creator_tagline,
+            u.company_logo     AS creator_logo
         FROM invoices inv
         INNER JOIN projects p ON p.id = inv.project_id
         INNER JOIN clients  c ON c.id = inv.client_id
@@ -163,6 +164,12 @@ $creator_company = $invoice['creator_company'] ?? '';
 $creator_tagline = $invoice['creator_tagline'] ?? '';
 $creator_name    = $invoice['created_by_name'] ?? '';
 $creator_email   = $invoice['creator_email']   ?? '';
+$creator_logo    = $invoice['creator_logo']    ?? '';
+// Resolve logo: use company logo if uploaded and file exists, else fall back to TimeForge app logo
+$logo_src = (!empty($creator_logo) && file_exists(__DIR__ . '/../' . $creator_logo))
+    ? '/TimeForge_Capstone/' . $creator_logo
+    : '/TimeForge_Capstone/icons/logo.png';
+$logo_is_custom = (!empty($creator_logo) && file_exists(__DIR__ . '/../' . $creator_logo));
 
 // Client company — shown in the BILL TO section
 $client_company  = $invoice['client_company']  ?? '';
