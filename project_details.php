@@ -19,7 +19,7 @@ if (!$project_id) {
     exit;
 }
 
-// Fetch project details with client info
+// Fetch project details with client info — scoped to the logged-in user's company
 $query = "
     SELECT 
         p.*, 
@@ -31,10 +31,12 @@ $query = "
     LEFT JOIN clients c ON p.client_id = c.id
     LEFT JOIN users u ON p.created_by = u.id
     WHERE p.id = :id
+      AND p.company_id = :company_id
 ";
 
 $stmt = $pdo->prepare($query);
 $stmt->bindValue(':id', $project_id, PDO::PARAM_INT);
+$stmt->bindValue(':company_id', $_SESSION['company_id'] ?? 0, PDO::PARAM_INT);
 $stmt->execute();
 $project = $stmt->fetch(PDO::FETCH_ASSOC);
 

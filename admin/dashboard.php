@@ -3,10 +3,29 @@ $page_title = 'Admin Dashboard';
 
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../db.php';
 
 requireRole('admin');
 
+$company_id  = $_SESSION['company_id'];
 $current_user = getCurrentUser();
+
+// Live stats — scoped to this company
+$user_count    = $pdo->prepare("SELECT COUNT(*) FROM users WHERE company_id = :cid");
+$user_count->execute([':cid' => $company_id]);
+$total_users   = (int)$user_count->fetchColumn();
+
+$role_counts   = $pdo->prepare("SELECT role, COUNT(*) AS n FROM users WHERE company_id = :cid GROUP BY role");
+$role_counts->execute([':cid' => $company_id]);
+$roles_raw     = $role_counts->fetchAll(PDO::FETCH_KEY_PAIR);
+
+$proj_count    = $pdo->prepare("SELECT COUNT(*) FROM projects WHERE company_id = :cid AND deleted_at IS NULL");
+$proj_count->execute([':cid' => $company_id]);
+$total_projects = (int)$proj_count->fetchColumn();
+
+$entry_count   = $pdo->prepare("SELECT COUNT(*) FROM time_entries WHERE company_id = :cid");
+$entry_count->execute([':cid' => $company_id]);
+$total_entries  = (int)$entry_count->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,20 +46,24 @@ $current_user = getCurrentUser();
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
         <div class="card">
             <h3 style="color: var(--color-accent); margin-bottom: 1rem;">Total Users</h3>
-            <p style="font-size: 2rem; font-weight: bold;">3</p>
-            <p style="color: var(--color-text-secondary);">1 Admin, 1 Freelancer, 1 Client</p>
+            <p style="font-size: 2rem; font-weight: bold;"><?php echo $total_users; ?></p>
+            <p style="color: var(--color-text-secondary);">
+                <?php echo $roles_raw['admin'] ?? 0; ?> Admin,
+                <?php echo $roles_raw['freelancer'] ?? 0; ?> Freelancer,
+                <?php echo $roles_raw['client'] ?? 0; ?> Client
+            </p>
         </div>
         
         <div class="card">
             <h3 style="color: var(--color-accent); margin-bottom: 1rem;">Active Projects</h3>
-            <p style="font-size: 2rem; font-weight: bold;">2</p>
-            <p style="color: var(--color-text-secondary);">Website Redesign, SEO Audit</p>
+            <p style="font-size: 2rem; font-weight: bold;"><?php echo $total_projects; ?></p>
+            <p style="color: var(--color-text-secondary);">Across your company</p>
         </div>
         
         <div class="card">
             <h3 style="color: var(--color-accent); margin-bottom: 1rem;">Time Entries</h3>
-            <p style="font-size: 2rem; font-weight: bold;">2</p>
-            <p style="color: var(--color-text-secondary);">Total billable hours tracked</p>
+            <p style="font-size: 2rem; font-weight: bold;"><?php echo $total_entries; ?></p>
+            <p style="color: var(--color-text-secondary);">Total tracked sessions</p>
         </div>
         
         <!-- NEW: Quick Start Widget -->

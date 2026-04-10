@@ -33,9 +33,10 @@ try {
             FROM invoices inv
             INNER JOIN projects p ON p.id = inv.project_id
             INNER JOIN clients  c ON c.id = inv.client_id
+            WHERE inv.company_id = :company_id
             ORDER BY inv.created_at DESC
         ");
-        $list_stmt->execute();
+        $list_stmt->execute([':company_id' => $_SESSION['company_id']]);
     } elseif ($role === 'client') {
         // Client sees invoices for projects they own
         $list_stmt = $pdo->prepare("
