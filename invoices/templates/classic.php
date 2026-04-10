@@ -11,14 +11,11 @@
 <div class="inv-doc tpl-classic">
   <div class="inv-head">
     <div class="brand-wrap">
-      <img src="/TimeForge_Capstone/icons/logo.png" alt="TimeForge logo" class="brand-logo">
+      <img src="/TimeForge_Capstone/icons/logo.png" alt="logo" class="brand-logo">
       <div>
-        <div class="brand-name">TimeForge</div>
-        <div class="brand-tagline">Professional Time Tracking &amp; Project Management</div>
-        <?php if (!empty($company_name)): ?>
-          <div class="company-from" style="margin-top:4px; font-weight:600; color:#14532d;">
-            <?php echo htmlspecialchars($company_name); ?>
-          </div>
+        <div class="brand-name"><?php echo htmlspecialchars($creator_company ?: $creator_name); ?></div>
+        <?php if (!empty($creator_tagline)): ?>
+          <div class="brand-tagline"><?php echo htmlspecialchars($creator_tagline); ?></div>
         <?php endif; ?>
       </div>
     </div>

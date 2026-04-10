@@ -19,7 +19,7 @@ if (!$invoice_id) {
     exit;
 }
 
-// Fetch the invoice with project and client data
+// Fetch the invoice with project, client, and creator profile data
 try {
     $inv_stmt = $pdo->prepare("
         SELECT
@@ -28,12 +28,15 @@ try {
             p.description  AS project_description,
             p.hourly_rate,
             c.client_name,
-            c.company_name,
+            c.company_name AS client_company,
             c.email        AS client_email,
             c.address      AS client_address,
             c.phone        AS client_phone,
             c.user_id      AS client_user_id,
-            u.full_name    AS created_by_name
+            u.full_name        AS created_by_name,
+            u.email            AS creator_email,
+            u.company_name     AS creator_company,
+            u.business_tagline AS creator_tagline
         FROM invoices inv
         INNER JOIN projects p ON p.id = inv.project_id
         INNER JOIN clients  c ON c.id = inv.client_id
@@ -154,7 +157,15 @@ $status_color = $status_colors[$invoice['status']] ?? '#6b7280';
 
 // Days until/since due
 $days_diff = (int)round((strtotime($invoice['due_date']) - strtotime('today')) / 86400);
-$company_name  = $invoice['company_name'] ?? '';   // client's company name shown in template
+
+// Creator (sender) profile — shown in the FROM section of every template
+$creator_company = $invoice['creator_company'] ?? '';
+$creator_tagline = $invoice['creator_tagline'] ?? '';
+$creator_name    = $invoice['created_by_name'] ?? '';
+$creator_email   = $invoice['creator_email']   ?? '';
+
+// Client company — shown in the BILL TO section
+$client_company  = $invoice['client_company']  ?? '';
 
 // Resolve which template file to load — fall back to classic if unknown
 $allowed_templates = ['classic', 'modern', 'bold', 'minimal', 'corporate'];
