@@ -170,11 +170,13 @@ ob_start();
   <table class="hdr-table" cellspacing="0" cellpadding="0">
     <tr>
       <td style="width:60%;">
-        <div class="brand-name">TimeForge</div>
-        <?php if (!empty($invoice['company_name'])): ?>
-          <div class="brand-co"><?php echo htmlspecialchars($invoice['company_name']); ?></div>
+        <div class="brand-name"><?php echo htmlspecialchars($invoice['creator_company'] ?: ($invoice['creator_name'] ?? 'TimeForge')); ?></div>
+        <?php if (!empty($invoice['creator_tagline'])): ?>
+          <div class="brand-co"><?php echo htmlspecialchars($invoice['creator_tagline']); ?></div>
         <?php endif; ?>
-        <div class="brand-tag">Professional Time Tracking &amp; Project Management</div>
+        <?php if (!empty($invoice['creator_email'])): ?>
+          <div class="brand-tag"><?php echo htmlspecialchars($invoice['creator_email']); ?></div>
+        <?php endif; ?>
       </td>
       <td style="width:40%; text-align:right;">
         <div class="inv-label">INVOICE</div>
