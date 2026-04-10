@@ -36,8 +36,8 @@ if ($action === 'add') {
     }
 
     $stmt = $pdo->prepare("
-        INSERT INTO projects (project_name, description, client_id, hourly_rate, budget, deadline, status, created_by)
-        VALUES (:project_name, :description, :client_id, :hourly_rate, :budget, :deadline, :status, :created_by)
+        INSERT INTO projects (project_name, description, client_id, hourly_rate, budget, deadline, status, created_by, company_id)
+        VALUES (:project_name, :description, :client_id, :hourly_rate, :budget, :deadline, :status, :created_by, :company_id)
     ");
     $stmt->bindValue(':project_name', $project_name);
     $stmt->bindValue(':description',  $description);
@@ -47,6 +47,7 @@ if ($action === 'add') {
     $stmt->bindValue(':deadline',     $deadline);
     $stmt->bindValue(':status',       $status);
     $stmt->bindValue(':created_by',   $_SESSION['user_id']);
+    $stmt->bindValue(':company_id',   $_SESSION['company_id'], PDO::PARAM_INT);
     $stmt->execute();
 
     setFlash('success', 'Project added successfully!');
@@ -77,16 +78,18 @@ if ($action === 'edit') {
         header('Location: /TimeForge_Capstone/edit_project.php?id=' . urlencode((string)$project_id)); exit;
     }
 
-    $chk = $pdo->prepare('SELECT id FROM projects WHERE id = :id AND deleted_at IS NULL LIMIT 1');
-    $chk->bindValue(':id', $project_id, PDO::PARAM_INT);
+    $chk = $pdo->prepare('SELECT id FROM projects WHERE id = :id AND company_id = :cid AND deleted_at IS NULL LIMIT 1');
+    $chk->bindValue(':id',  $project_id, PDO::PARAM_INT);
+    $chk->bindValue(':cid', $_SESSION['company_id'], PDO::PARAM_INT);
     $chk->execute();
     if (!$chk->fetchColumn()) {
         setFlash('error', 'Project not found.');
         header('Location: /TimeForge_Capstone/index.php'); exit;
     }
 
-    $cchk = $pdo->prepare('SELECT id FROM clients WHERE id = :id AND is_active = 1 LIMIT 1');
-    $cchk->bindValue(':id', $client_id, PDO::PARAM_INT);
+    $cchk = $pdo->prepare('SELECT id FROM clients WHERE id = :id AND company_id = :cid AND is_active = 1 LIMIT 1');
+    $cchk->bindValue(':id',  $client_id, PDO::PARAM_INT);
+    $cchk->bindValue(':cid', $_SESSION['company_id'], PDO::PARAM_INT);
     $cchk->execute();
     if (!$cchk->fetchColumn()) {
         setFlash('error', 'Selected client does not exist or is inactive.');

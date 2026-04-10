@@ -54,19 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $entry_type = 'manual';
 
     try {
-        $sql = "INSERT INTO time_entries (project_id, user_id, start_time, end_time, total_seconds, description, status, entry_type) 
-                VALUES (:pid, :uid, :start, :end, :seconds, :desc, :status, :type)";
+        $sql = "INSERT INTO time_entries (project_id, user_id, start_time, end_time, total_seconds, description, status, entry_type, company_id) 
+                VALUES (:pid, :uid, :start, :end, :seconds, :desc, :status, :type, :company_id)";
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            ':pid' => $project_id,
-            ':uid' => $_SESSION['user_id'],
-            ':start' => $start_ts,
-            ':end' => $end_ts,
-            ':seconds' => $total_seconds,
-            ':desc' => $description,
-            ':status' => $status,
-            ':type' => $entry_type
+            ':pid'        => $project_id,
+            ':uid'        => $_SESSION['user_id'],
+            ':start'      => $start_ts,
+            ':end'        => $end_ts,
+            ':seconds'    => $total_seconds,
+            ':desc'       => $description,
+            ':status'     => $status,
+            ':type'       => $entry_type,
+            ':company_id' => $_SESSION['company_id'],
         ]);
 
         $msg = hasRole('admin') 

@@ -4,10 +4,9 @@
 
 require_once __DIR__ . '/../db.php';
 
-// Fetch active projects
-// Note: In Phase 1-5 logic, freelancers see ALL active projects.
-// In later phases, we might filter by assignment.
-$qs_stmt = $pdo->query("SELECT id, project_name FROM projects WHERE status = 'active' ORDER BY id DESC LIMIT 5");
+// Fetch active projects — scoped to this company
+$qs_stmt = $pdo->prepare("SELECT id, project_name FROM projects WHERE status = 'active' AND company_id = :company_id ORDER BY id DESC LIMIT 5");
+$qs_stmt->execute([':company_id' => $_SESSION['company_id']]);
 $qs_projects = $qs_stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <div class="card">

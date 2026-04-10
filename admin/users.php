@@ -10,9 +10,10 @@ require_once __DIR__ . '/../includes/auth.php';
 
 requireRole('admin');
 
-// Fetch all users
+// Fetch users belonging to the same company
 try {
-    $stmt = $pdo->query("SELECT id, username, email, full_name, role, is_active, last_login, created_at FROM users ORDER BY created_at DESC");
+    $stmt = $pdo->prepare("SELECT id, username, email, full_name, role, is_active, last_login, created_at FROM users WHERE company_id = :company_id ORDER BY created_at DESC");
+    $stmt->execute([':company_id' => $_SESSION['company_id']]);
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error fetching users: " . $e->getMessage());

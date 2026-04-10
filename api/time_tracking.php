@@ -44,10 +44,10 @@ try {
         // ── START ─────────────────────────────────────────────────────────────
         case 'start':
             $sql = "INSERT INTO time_entries
-                        (project_id, user_id, start_time, description, status, close_reason)
-                    VALUES (:pid, :uid, NOW(), :desc, 'running', 'manual')";
+                        (project_id, user_id, start_time, description, status, close_reason, company_id)
+                    VALUES (:pid, :uid, NOW(), :desc, 'running', 'manual', :company_id)";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([':pid' => $project_id, ':uid' => $user_id, ':desc' => $description]);
+            $stmt->execute([':pid' => $project_id, ':uid' => $user_id, ':desc' => $description, ':company_id' => $_SESSION['company_id']]);
             $new_entry_id = $pdo->lastInsertId();
 
             updateUserPresence($pdo, $user_id, $project_id);
