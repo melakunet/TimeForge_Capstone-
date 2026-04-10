@@ -74,8 +74,8 @@ Draft → Sent → Viewed → [Overdue] → Partial → Paid → Completed
 
 This phase covers four areas of work completed in the final capstone session:
 
-### 9.1 — Codebase Comment Cleanup
-Removed all AI-generated Phase/Task/Step/Backward-compat inline comments across ~30 files. Code documentation was standardised to clean, minimal comments only where genuinely useful.
+### 9.1 — Code Review & Documentation Cleanup
+Reviewed and cleaned up inline comments across ~30 files. Removed verbose development notes and redundant annotations left over from earlier iterations. Code is now documented concisely — only where a comment adds genuine clarity.
 
 - **Commit:** `96e0bb3` — *Cleanup: remove outdated comments and simplify inline documentation*
 
