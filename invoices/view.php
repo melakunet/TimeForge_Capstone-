@@ -309,18 +309,25 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
                     <?php endif; ?>
                 </span>
             <?php endif; ?>
+            <?php if ($invoice['email_sent_at']): ?>
+                <span class="pmt-due-chip" style="background:rgba(37,99,235,0.07);color:#1d4ed8;border-color:#93c5fd;"
+                      title="Sent to <?php echo htmlspecialchars($invoice['sent_to_email']); ?>">
+                    ✉ Emailed <?php echo date('M j, Y', strtotime($invoice['email_sent_at'])); ?>
+                </span>
+            <?php endif; ?>
         </div>
 
         <?php if (hasRole('admin') && !in_array($cur, ['completed','cancelled'])): ?>
-        <!-- ── Admin action buttons ── -->
+        <!-- Admin action buttons -->
         <div class="pmt-actions">
 
             <?php if ($cur === 'draft'): ?>
             <!-- DRAFT → SENT -->
-            <button class="btn btn-primary pmt-btn" onclick="pmt_show('form-sent')">📤 Mark as Sent</button>
+            <button class="btn btn-primary pmt-btn" onclick="pmt_show('form-sent')">📤 Send via Email</button>
 
             <?php elseif (in_array($cur, ['sent','overdue'])): ?>
             <!-- SENT/OVERDUE → next steps -->
+            <button class="btn btn-secondary pmt-btn" onclick="pmt_show('form-resend')">🔁 Resend Invoice</button>
             <button class="btn btn-secondary pmt-btn" onclick="pmt_show('form-viewed')">👁 Mark Viewed</button>
             <button class="btn pmt-btn pmt-btn-warn" onclick="pmt_show('form-partial')">💰 Record Partial</button>
             <button class="btn btn-primary pmt-btn" onclick="pmt_show('form-paid')">✅ Mark Paid</button>
@@ -363,13 +370,47 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
         $method_select .= '</select>';
         ?>
 
-        <!-- SENT form -->
+        <!-- Send via Email form (draft → sent) -->
         <div id="form-sent" class="pmt-form" style="display:none;">
-            <form method="post" action="<?php echo $act_url; ?>">
-                <?php echo $hid; ?><input type="hidden" name="action" value="mark_sent">
-                <div class="pmt-form-row">
-                    <textarea name="payment_notes" class="form-control" placeholder="Optional: note to self about sending (e.g. emailed via Gmail)" rows="2" style="flex:1;"><?php echo htmlspecialchars($invoice['payment_notes']??''); ?></textarea>
-                    <button type="submit" class="btn btn-primary">📤 Confirm Sent</button>
+            <form method="post" action="/TimeForge_Capstone/invoices/send.php">
+                <?php echo $hid; ?>
+                <div class="pmt-form-grid">
+                    <label>Send to (email address)</label>
+                    <input type="email" name="send_to_email" class="form-control" required
+                           value="<?php echo htmlspecialchars($invoice['sent_to_email'] ?: $invoice['client_email']); ?>"
+                           placeholder="client@example.com">
+                    <label>Optional message to client</label>
+                    <textarea name="email_note" class="form-control" rows="2"
+                              placeholder="e.g. Please find your invoice attached. Let me know if you have any questions."></textarea>
+                </div>
+                <div class="pmt-form-row" style="margin-top:0.75rem;">
+                    <button type="submit" class="btn btn-primary">📤 Send Invoice</button>
+                    <button type="button" class="btn btn-secondary" onclick="pmt_hide_all()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Resend form (already sent/overdue) -->
+        <div id="form-resend" class="pmt-form" style="display:none;">
+            <?php if ($invoice['email_sent_at']): ?>
+            <p class="pmt-hint" style="margin-bottom:0.5rem;">
+                Last sent to <strong><?php echo htmlspecialchars($invoice['sent_to_email']); ?></strong>
+                on <?php echo date('M j, Y g:i a', strtotime($invoice['email_sent_at'])); ?>.
+            </p>
+            <?php endif; ?>
+            <form method="post" action="/TimeForge_Capstone/invoices/send.php">
+                <?php echo $hid; ?>
+                <div class="pmt-form-grid">
+                    <label>Send to (email address)</label>
+                    <input type="email" name="send_to_email" class="form-control" required
+                           value="<?php echo htmlspecialchars($invoice['sent_to_email'] ?: $invoice['client_email']); ?>"
+                           placeholder="client@example.com">
+                    <label>Optional follow-up message</label>
+                    <textarea name="email_note" class="form-control" rows="2"
+                              placeholder="e.g. Just a friendly reminder — payment is due on ..."></textarea>
+                </div>
+                <div class="pmt-form-row" style="margin-top:0.75rem;">
+                    <button type="submit" class="btn btn-primary">� Resend Invoice</button>
                     <button type="button" class="btn btn-secondary" onclick="pmt_hide_all()">Cancel</button>
                 </div>
             </form>
