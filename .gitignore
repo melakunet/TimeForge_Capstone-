@@ -6,6 +6,7 @@ vendor/
 
 # ── Sensitive local files (never commit) ──────────────────────
 CREDENTIALS.md
+config/mail.php
 
 # ── OS & editor noise ──────────────────────────────────────────
 .DS_Store
