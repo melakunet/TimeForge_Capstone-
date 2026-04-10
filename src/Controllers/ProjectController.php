@@ -2,8 +2,8 @@
 /**
  * src/Controllers/ProjectController.php
  * Handles add, edit, delete (archive), and restore project POST processing.
- * Loaded by add_project_process.php, edit_project_process.php,
- * delete_project.php, restore_project.php (backward-compat wrappers).
+ * Entry points: add_project_process.php, edit_project_process.php,
+ * delete_project.php, restore_project.php
  */
 
 require_once __DIR__ . '/../../config/session.php';

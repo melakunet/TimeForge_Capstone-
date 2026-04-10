@@ -1,9 +1,8 @@
 <?php
 /**
- * api/presence.php — Phase 6.7
- * Returns live presence status for all freelancers.
- * Called by admin dashboard AJAX every 30 seconds.
- * Uses existing last_active_at + current_project_id columns — no new DB tables.
+ * api/presence.php — Live freelancer presence
+ * Returns active status for all freelancers in the company.
+ * Called by the admin dashboard via AJAX every 30 seconds.
  */
 
 require_once __DIR__ . '/../config/session.php';

@@ -2,7 +2,7 @@
 /**
  * src/Controllers/ClientController.php
  * Handles add and edit client POST processing.
- * Loaded by add_client_process.php and edit_client_process.php (backward-compat wrappers).
+ * Entry points: add_client_process.php, edit_client_process.php
  */
 
 require_once __DIR__ . '/../../config/session.php';

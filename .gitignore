@@ -1,26 +1,26 @@
-# ── Composer tool (binary — not source code) ──────────────────
+# Composer tool (binary)
 composer.phar
 
-# ── Composer dependencies (never commit — run composer install) ─
+# Composer dependencies (run composer install locally)
 vendor/
 
-# ── Sensitive local files (never commit) ──────────────────────
+# Sensitive local files
 CREDENTIALS.md
 config/mail.php
 
-# ── OS & editor noise ──────────────────────────────────────────
+# OS and editor noise
 .DS_Store
 Thumbs.db
 .vscode/settings.json
 
-# ── XAMPP / Apache ─────────────────────────────────────────────
+# XAMPP / Apache
 # .htaccess is tracked — it contains security rules (Options -Indexes,
 # src/ block, error pages). Do NOT ignore it.
 # .htaccess
 
-# ── Uploaded screenshots (Phase 9) ────────────────────────────
+# Uploaded screenshots
 uploads/screenshots/
 
-# ── Logs ───────────────────────────────────────────────────────
+# Logs
 *.log
 php_error_log

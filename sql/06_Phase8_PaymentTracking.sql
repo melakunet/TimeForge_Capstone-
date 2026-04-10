@@ -1,14 +1,7 @@
--- =============================================================
--- Phase 8: Payment Tracking & Invoice Lifecycle
--- Expands the invoices table to support a full payment
--- follow-up workflow:
---   draft → sent → viewed → overdue (auto) → partial → paid → completed
--- Also adds:
---   • sent_at / viewed_at / paid_at timestamps
---   • payment_method, payment_reference, payment_notes
---   • partial_amount for partial payment tracking
---   • client_feedback for notes from the client side
--- =============================================================
+-- Payment tracking and invoice lifecycle
+-- Expands the invoices table to support the full lifecycle:
+--   draft → sent → viewed → overdue → partial → paid → completed
+-- Adds timestamps, payment method/reference, partial amounts, and client feedback.
 
 -- 1. Expand the status ENUM
 ALTER TABLE invoices

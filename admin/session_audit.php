@@ -1,9 +1,8 @@
 <?php
 /**
- * admin/session_audit.php — Phase 6, Task 6.5
- * Idle Time Audit Log for Admin
- * Shows every timed session with: tracked time, idle detected, idle discarded,
- * net billable time, and average activity score.
+ * admin/session_audit.php
+ * Idle time audit log — shows tracked time, idle detected, idle discarded,
+ * net billable time, and average activity score per session.
  */
 
 $page_title = 'Session Audit Log';

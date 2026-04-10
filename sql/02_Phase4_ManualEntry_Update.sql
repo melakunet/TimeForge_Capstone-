@@ -1,5 +1,5 @@
--- Phase 4.5: Manual Time Entry & Approval Workflow
--- Run this script to support "Pending" statuses and manual entry tracking
+-- Manual time entry and approval workflow
+-- Adds pending/approved/rejected statuses and reviewer columns to time_entries
 
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";

@@ -1,9 +1,7 @@
 <?php
 /**
  * src/Core/Flash.php — Session flash message helpers
- *
- * Loaded by includes/flash.php (backward-compat wrapper).
- * Do not require this file directly from pages — use the wrapper.
+ * Required via includes/flash.php
  */
 
 function setFlash(string $type, string $message): void {

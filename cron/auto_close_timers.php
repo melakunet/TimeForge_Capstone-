@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto-Close Stale Timers Cron Job — Phase 6 Upgrade
+ * cron/auto_close_timers.php — Auto-close stale timers
  *
  * Behaviour:
  *  - Any time entry with status='running' whose owner has not sent
@@ -21,8 +21,8 @@ $IDLE_GRACE_MINUTES = 30; // abandon after 30 min of no heartbeat
 echo "[" . date('Y-m-d H:i:s') . "] Auto-Close Job starting...\n";
 
 try {
-    // ── Step 1: Find all running entries where the user's last heartbeat
-    //            is older than the grace period
+    // Find all running entries where the user's last heartbeat
+    // is older than the grace period
     $findSql = "
         SELECT te.id AS entry_id,
                te.project_id,
@@ -47,8 +47,8 @@ try {
         exit(0);
     }
 
-    // ── Step 2: Close each stale entry individually so we can set
-    //            end_time = last_active_at (not NOW())
+    // Close each stale entry individually so we can set
+    // end_time = last_active_at (not NOW())
     $closeSql = "
         UPDATE time_entries
         SET status        = 'abandoned',
@@ -61,7 +61,7 @@ try {
     ";
     $closeStmt = $pdo->prepare($closeSql);
 
-    // ── Step 3: Finalise activity_score_avg
+    // Finalise activity_score_avg from session_activity
     $avgSql = "
         UPDATE time_entries
         SET activity_score_avg = (
@@ -73,7 +73,7 @@ try {
     ";
     $avgStmt = $pdo->prepare($avgSql);
 
-    // ── Step 4: Clear user presence
+    // Clear user presence
     $presenceSql = "UPDATE users SET current_project_id = NULL WHERE id = :uid";
     $presenceStmt = $pdo->prepare($presenceSql);
 
@@ -95,7 +95,7 @@ try {
         $count++;
     }
 
-    // ── Step 5: Audit log
+    // Write audit log entry
     try {
         $auditSql = "INSERT INTO audit_logs (user_id, action, ip_address, created_at)
                      VALUES (0, :action, '127.0.0.1', NOW())";

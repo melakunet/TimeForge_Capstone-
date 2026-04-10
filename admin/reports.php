@@ -1,13 +1,9 @@
 <?php
 /*
- * Task 7.4 — Financial Summary Report (Admin only)
- * Shows profitability across all active projects:
- *   - Total billed vs budget
- *   - Per-project profit margin
- *   - Per-freelancer hours and earnings
- * Supports optional date-range and client filtering via GET params.
+ * Financial Summary Report (admin only)
+ * Shows profitability across projects: billed vs budget, margins,
+ * per-freelancer hours. Supports date-range and client filtering.
  */
-
 $page_title = 'Financial Reports';
 
 require_once __DIR__ . '/../config/session.php';

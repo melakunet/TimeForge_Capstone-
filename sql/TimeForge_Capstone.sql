@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 10, 2026 at 04:05 PM
+-- Generation Time: Apr 10, 2026 at 04:28 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -69,7 +69,9 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `ip_address`, `user_agent`,
 (27, 4, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-27 14:06:36'),
 (28, 9, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-10 12:54:19'),
 (29, 13, 'user_registered', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-10 13:40:07'),
-(30, 13, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-10 13:40:46');
+(30, 13, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-10 13:40:46'),
+(31, 4, 'login_failed_wrong_password', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-10 14:18:41'),
+(32, 8, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-10 14:18:50');
 
 -- --------------------------------------------------------
 
@@ -154,6 +156,8 @@ CREATE TABLE `invoices` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `template` varchar(20) NOT NULL DEFAULT 'classic' COMMENT 'Visual template chosen at generation time',
   `sent_at` datetime DEFAULT NULL,
+  `sent_to_email` varchar(100) DEFAULT NULL COMMENT 'Email address the invoice PDF was sent to',
+  `email_sent_at` datetime DEFAULT NULL COMMENT 'Timestamp of the most recent email send',
   `viewed_at` datetime DEFAULT NULL,
   `paid_at` datetime DEFAULT NULL,
   `partial_amount` decimal(10,2) DEFAULT NULL,
@@ -167,9 +171,9 @@ CREATE TABLE `invoices` (
 -- Dumping data for table `invoices`
 --
 
-INSERT INTO `invoices` (`id`, `company_id`, `project_id`, `client_id`, `invoice_number`, `issue_date`, `due_date`, `tax_rate`, `subtotal`, `tax_amount`, `total_amount`, `notes`, `status`, `created_by`, `created_at`, `updated_at`, `template`, `sent_at`, `viewed_at`, `paid_at`, `partial_amount`, `payment_method`, `payment_reference`, `payment_notes`, `client_feedback`) VALUES
-(1, 2, 4, 9, 'INV-202603-0004', '2026-03-27', '2026-04-26', 13.00, 11642.73, 1513.55, 13156.28, 'please see last month fee', 'draft', 4, '2026-03-27 14:58:42', '2026-04-10 14:04:10', 'classic', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, 2, 4, 9, 'INV-202603-0004-R2', '2026-03-27', '2026-04-26', 13.00, 11642.73, 1513.55, 13156.28, NULL, 'draft', 4, '2026-03-27 15:40:50', '2026-04-10 14:04:10', 'modern', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `invoices` (`id`, `company_id`, `project_id`, `client_id`, `invoice_number`, `issue_date`, `due_date`, `tax_rate`, `subtotal`, `tax_amount`, `total_amount`, `notes`, `status`, `created_by`, `created_at`, `updated_at`, `template`, `sent_at`, `sent_to_email`, `email_sent_at`, `viewed_at`, `paid_at`, `partial_amount`, `payment_method`, `payment_reference`, `payment_notes`, `client_feedback`) VALUES
+(1, 2, 4, 9, 'INV-202603-0004', '2026-03-27', '2026-04-26', 13.00, 11642.73, 1513.55, 13156.28, 'please see last month fee', 'draft', 4, '2026-03-27 14:58:42', '2026-04-10 14:21:51', 'classic', NULL, NULL, NULL, NULL, NULL, NULL, 'PayPal', NULL, 'please send me email when you pay', 'we are developed the frontend , i how you can see the scalability and the stability of the app'),
+(6, 2, 4, 9, 'INV-202603-0004-R2', '2026-03-27', '2026-04-26', 13.00, 11642.73, 1513.55, 13156.28, NULL, 'draft', 4, '2026-03-27 15:40:50', '2026-04-10 14:04:10', 'modern', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -332,7 +336,7 @@ INSERT INTO `users` (`id`, `company_id`, `username`, `email`, `password`, `role`
 (5, 1, 'freelancer1', 'freelancer1@example.com', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'freelancer', 'Sample Freelancer', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-04-10 14:04:10'),
 (6, 1, 'client1', 'client1@example.com', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'client', 'Sample Client', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-04-10 14:04:10'),
 (7, 1, 'sara', 'sarakey@timeforge.com', '$2y$10$gM4HuEs1G1zlqIFsoQEHIe0IpYEnig.Omygc4jJtONKBXMzvx/btG', 'freelancer', 'sara key', NULL, NULL, 1, '2026-02-13 11:27:27', NULL, NULL, NULL, NULL, '2026-02-13 14:10:55', '2026-04-10 14:04:10'),
-(8, 3, 'Etef', 'etefmelaku@gmail.com', '$2y$10$zQe9n49AM0U3zq6S.O9uHOcxJpPRkkd719./6b6faaDJs0f1YPjIG', 'admin', 'Etefworkie Melaku', NULL, NULL, 1, '2026-02-20 10:48:13', NULL, NULL, NULL, NULL, '2026-02-13 15:58:57', '2026-04-10 14:04:10'),
+(8, 3, 'Etef', 'etefmelaku@gmail.com', '$2y$10$zQe9n49AM0U3zq6S.O9uHOcxJpPRkkd719./6b6faaDJs0f1YPjIG', 'admin', 'Etefworkie Melaku', NULL, NULL, 1, '2026-04-10 10:18:50', NULL, NULL, NULL, NULL, '2026-02-13 15:58:57', '2026-04-10 14:18:50'),
 (9, 1, 'Rose', 'rose@timeforge.com', '$2y$10$HQxSMJiCwzmnIV3x9TPDf.VvzwvgnZf7B1A8KNLgxwE4rtsN8aXYW', 'client', 'Rose Etef', NULL, NULL, 1, '2026-04-10 08:54:19', NULL, NULL, NULL, NULL, '2026-02-13 16:07:33', '2026-04-10 14:04:10'),
 (10, 1, 'ademe', 'abelconltd@gmail.com', '$2y$10$Src9cEOBTf1n1zdRp3tANO9MaXg5XxzucgO2mBFsKhO5zlD5o7aeO', 'freelancer', 'abel', NULL, NULL, 1, '2026-02-20 08:14:09', NULL, NULL, NULL, NULL, '2026-02-20 13:13:52', '2026-04-10 14:04:10'),
 (11, 1, 'Abi', 'gizieart@gmail.com', '$2y$10$afzkYYWImgw5/3VkSx0yYuMB9L0l6aiBlnLIjhOTlRV7r0yKyFNR.', 'freelancer', 'Abegaile', NULL, NULL, 1, '2026-02-27 08:06:31', NULL, NULL, NULL, NULL, '2026-02-27 13:06:12', '2026-04-10 14:04:10'),
@@ -428,7 +432,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `clients`
