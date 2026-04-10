@@ -1,10 +1,8 @@
 <?php
 /*
- * Task 7.3 — CSV Export for Time Logs
- * Outputs a downloadable CSV of all approved billable time entries
- * for a given project. Accessible by admin; clients can export their
- * own projects via the client portal.
- * No HTML — this is a raw file download response.
+ * api/export_csv.php — CSV export for time logs
+ * Outputs a downloadable CSV of approved billable time entries for a project.
+ * Admin-accessible; clients can export their own projects via the client portal.
  */
 
 require_once __DIR__ . '/../config/session.php';

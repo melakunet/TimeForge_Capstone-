@@ -435,7 +435,7 @@ $flash = getFlash();
                             </form>
                         <?php endif; ?>
 
-                        <!-- Phase 7: Invoice and CSV export — opens pre-flight checklist modal -->
+                        <!-- Invoice and CSV export — opens pre-flight checklist modal -->
                         <hr style="margin: 1rem 0; border-color: var(--color-border, #e5e7eb);">
 
                         <?php if ($approved_billable_count === 0): ?>

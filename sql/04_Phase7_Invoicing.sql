@@ -1,7 +1,5 @@
--- ============================================================
--- Phase 7: Reporting and Invoicing
+-- Invoicing schema
 -- Adds the invoices table and a tax_rate column to projects.
--- ============================================================
 
 -- The invoices table ties a generated invoice to a project and client.
 -- status tracks the lifecycle: draft → sent → paid.

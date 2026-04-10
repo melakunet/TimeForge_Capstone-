@@ -1,8 +1,5 @@
--- ============================================================
--- Phase 7b: Invoice Templates
--- Adds template selection to the invoices table so each
--- invoice remembers which visual layout was used.
--- ============================================================
+-- Invoice template column
+-- Records which visual layout was selected when the invoice was generated.
 
 ALTER TABLE invoices
   ADD COLUMN template VARCHAR(20) NOT NULL DEFAULT 'classic'

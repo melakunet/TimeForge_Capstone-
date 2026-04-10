@@ -1,4 +1,4 @@
 <?php
-// Backward-compat wrapper — real logic in src/Controllers/ProjectController.php
+// Routes to ProjectController with action=add
 $_GET["action"] = "add";
 require_once __DIR__ . '/src/Controllers/ProjectController.php';

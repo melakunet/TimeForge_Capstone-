@@ -2,7 +2,7 @@
 /**
  * src/Controllers/TimeController.php
  * Handles delete and approve time entry POST processing.
- * Loaded by delete_time_entry.php and approve_time_entry.php (backward-compat wrappers).
+ * Entry points: delete_time_entry.php, approve_time_entry.php
  */
 
 require_once __DIR__ . '/../../config/session.php';

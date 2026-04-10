@@ -1,8 +1,7 @@
 <?php
 /**
  * Time Tracking API Endpoint
- * Phase 6 upgrade: activity score heartbeat, idle recording, abandoned close_reason
- * Handles Start, Stop, Pulse, and IdleResolved actions from the JS Widget
+ * Handles Start, Stop, Pulse, and IdleResolved actions from the JS widget.
  */
 
 require_once __DIR__ . '/../config/session.php';
@@ -24,12 +23,12 @@ $entry_id    = filter_input(INPUT_POST, 'entry_id',    FILTER_VALIDATE_INT);
 $description = $_POST['description'] ?? '';
 $user_id     = $_SESSION['user_id'];
 
-// Activity score fields from JS (Task 6.3)
+// Activity score fields from JS
 $mouse_events   = filter_input(INPUT_POST, 'mouse_events',   FILTER_VALIDATE_INT) ?? 0;
 $key_events     = filter_input(INPUT_POST, 'key_events',     FILTER_VALIDATE_INT) ?? 0;
 $activity_score = filter_input(INPUT_POST, 'activity_score', FILTER_VALIDATE_INT) ?? 0;
 
-// Idle fields from JS (Task 6.1)
+// Idle fields from JS
 $idle_seconds          = filter_input(INPUT_POST, 'idle_seconds',          FILTER_VALIDATE_INT) ?? 0;
 $discarded_idle_seconds = filter_input(INPUT_POST, 'discarded_idle_seconds', FILTER_VALIDATE_INT) ?? 0;
 
@@ -106,7 +105,7 @@ try {
         case 'pulse':
             updateUserPresence($pdo, $user_id, $project_id);
 
-            // Task 6.3: Store activity snapshot if entry_id known
+            // Store activity snapshot if entry_id is available
             if ($entry_id) {
                 $sql = "INSERT INTO session_activity
                             (time_entry_id, user_id, recorded_at, mouse_events, key_events, activity_score)

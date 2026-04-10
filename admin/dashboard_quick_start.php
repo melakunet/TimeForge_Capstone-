@@ -29,21 +29,21 @@ $qs_projects = $qs_stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
-    // Phase 6.8: Per-Task Declaration — replaces plain prompt()
+    // Show the task-type modal before starting a timer
     window.startProjectTimer = function(id, name) {
         if (!window.timeTracker) { console.error('TimeTracker not initialized'); return; }
         if (window.timeTracker.projectId) {
             alert('A timer is already running. Please stop it first.');
             return;
         }
-        // Show inline task-type modal (6.8)
+        // Show inline task-type modal
         window._tfPendingProject = { id, name };
         document.getElementById('tf-task-modal-title').textContent = name;
         document.getElementById('tf-task-modal').style.display = 'flex';
     };
 </script>
 
-<!-- Phase 6.8 Task Type Modal — shared across admin quick start -->
+<!-- Task type modal -->
 <div id="tf-task-modal" style="
     display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
     z-index:10000; align-items:center; justify-content:center;">

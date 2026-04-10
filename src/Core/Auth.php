@@ -1,9 +1,7 @@
 <?php
 /**
- * src/Core/Auth.php — Authentication & authorisation helpers
- *
- * Loaded by includes/auth.php (backward-compat wrapper).
- * Do not require this file directly from pages — use the wrapper.
+ * src/Core/Auth.php — Authentication and authorisation helpers
+ * Required via includes/auth.php
  */
 
 require_once __DIR__ . '/../../db.php';

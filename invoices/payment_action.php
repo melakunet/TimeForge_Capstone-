@@ -1,21 +1,11 @@
 <?php
 /*
- * Phase 8 — Payment Action Handler
- * Handles all invoice lifecycle transitions via POST.
- * Only admins may change invoice status; clients may add feedback.
+ * Invoice Payment Action Handler
+ * Handles all invoice lifecycle transitions via POST (admin only).
+ * Clients may submit feedback only.
  *
- * Valid status flow:
- *   draft → sent → viewed → overdue (auto-cron) → partial → paid → completed
- *   Any status → cancelled  (admin only)
- *
- * POST params:
- *   invoice_id      int      required
- *   action          string   required — see $allowed_actions below
- *   payment_method  string   optional (for partial / paid transitions)
- *   payment_reference string optional
- *   payment_notes   string   optional
- *   partial_amount  float    required when action = record_partial
- *   client_feedback string   required when action = add_feedback
+ * Status flow: draft → sent → viewed → partial → paid → completed
+ * Any status → cancelled (admin only)
  */
 
 require_once __DIR__ . '/../config/session.php';

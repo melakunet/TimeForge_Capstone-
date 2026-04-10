@@ -1,9 +1,7 @@
 <?php
 /**
  * src/Core/Redirect.php — Role-based redirect helper
- *
- * Loaded by includes/redirect.php (backward-compat wrapper).
- * Do not require this file directly from pages — use the wrapper.
+ * Required via includes/redirect.php
  */
 
 function redirectBasedOnRole($role) {

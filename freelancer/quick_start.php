@@ -29,7 +29,7 @@ $qs_projects = $qs_stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
-    // Phase 6.8: Per-Task Declaration
+    // Show the task-type modal before starting a timer
     if (!window.startProjectTimer) {
         window.startProjectTimer = function(id, name) {
             if (!window.timeTracker) { console.error('TimeTracker not initialized'); return; }
@@ -44,7 +44,7 @@ $qs_projects = $qs_stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 </script>
 
-<!-- Phase 6.8 Task Type Modal -->
+<!-- Task type modal -->
 <div id="tf-task-modal" style="
     display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
     z-index:10000; align-items:center; justify-content:center;">

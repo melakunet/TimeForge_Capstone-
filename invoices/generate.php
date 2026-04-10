@@ -1,10 +1,8 @@
 <?php
 /*
- * Task 7.1 / 7.6 — Invoice Generator
- * Admin selects a project and this page builds the invoice form,
- * pre-populating it with every approved time entry as a line item.
- * On POST it writes to the invoices table (including chosen template)
- * and redirects to view.php which renders using that template file.
+ * Invoice Generator
+ * Builds the invoice form pre-populated with approved time entries for a project.
+ * On POST writes to the invoices table and redirects to view.php.
  */
 
 $page_title = 'Generate Invoice';

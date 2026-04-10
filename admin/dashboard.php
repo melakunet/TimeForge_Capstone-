@@ -47,7 +47,7 @@ $current_user = getCurrentUser();
         <?php include __DIR__ . '/dashboard_quick_start.php'; ?>
     </div>
 
-    <!-- Phase 6.7: Live Freelancer Presence Panel -->
+    <!-- Live freelancer presence panel -->
     <div class="card" style="margin-bottom: 2rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
             <h2 style="color: var(--color-accent); margin: 0;">🟢 Live Freelancer Presence</h2>
@@ -68,12 +68,12 @@ $current_user = getCurrentUser();
                 <a href="/TimeForge_Capstone/admin/audit_logs.php" class="btn btn-primary" style="display: inline-block;">View Audit Logs</a>
             </li>
             <li style="margin-bottom: 1rem;">
-                <button class="btn btn-primary" style="display: inline-block; opacity: 0.6; cursor: not-allowed;" title="Coming in Phase 8">System Settings (Soon)</button>
+                <button class="btn btn-primary" style="display: inline-block; opacity: 0.6; cursor: not-allowed;" title="Coming soon">System Settings (Soon)</button>
             </li>
             <li style="margin-bottom: 1rem;">
                 <a href="/TimeForge_Capstone/admin/session_audit.php" class="btn btn-primary" style="display: inline-block;">Session Audit Log</a>
             </li>
-            <!-- Phase 7: Reporting and Invoicing -->
+            <!-- Reporting and invoicing -->
             <li style="margin-bottom: 1rem;">
                 <a href="/TimeForge_Capstone/admin/reports.php" class="btn btn-primary" style="display: inline-block;">📊 Financial Reports</a>
             </li>
