@@ -32,6 +32,7 @@ $current_user = getCurrentUser();
       <?php endif; ?>
 
       <span class="nav-text">Welcome, <?php echo htmlspecialchars($current_user['full_name'] ?? 'User'); ?></span>
+      <a href="/TimeForge_Capstone/profile.php" class="btn btn-secondary btn-compact">My Profile</a>
       <button id="themeToggle" class="theme-toggle">Dark mode</button>
       <a href="/TimeForge_Capstone/includes/logout.php" class="btn btn-danger btn-compact">Logout</a>
 
