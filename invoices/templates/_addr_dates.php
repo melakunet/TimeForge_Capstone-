@@ -8,19 +8,20 @@
 <div class="addr-row">
   <div class="addr-block">
     <div class="addr-label">From</div>
-    <strong>TimeForge Services</strong><br>
-    <?php if (!empty($company_name)): ?>
-      <?php echo htmlspecialchars($company_name); ?><br>
+    <strong><?php echo htmlspecialchars($creator_company ?: $creator_name); ?></strong><br>
+    <?php if (!empty($creator_tagline)): ?>
+      <?php echo htmlspecialchars($creator_tagline); ?><br>
     <?php endif; ?>
-    Professional Time Management<br>
-    triOS College — Web Capstone Project
+    <?php if (!empty($creator_email)): ?>
+      <?php echo htmlspecialchars($creator_email); ?>
+    <?php endif; ?>
   </div>
 
   <div class="addr-block">
     <div class="addr-label">Bill To</div>
     <strong><?php echo htmlspecialchars($invoice['client_name']); ?></strong><br>
-    <?php if (!empty($invoice['company_name'])): ?>
-      <?php echo htmlspecialchars($invoice['company_name']); ?><br>
+    <?php if (!empty($client_company)): ?>
+      <?php echo htmlspecialchars($client_company); ?><br>
     <?php endif; ?>
     <?php if (!empty($invoice['client_address'])): ?>
       <?php echo nl2br(htmlspecialchars($invoice['client_address'])); ?><br>
