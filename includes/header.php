@@ -14,7 +14,6 @@ $current_user = getCurrentUser();
     <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
     <link rel="stylesheet" href="/TimeForge_Capstone/css/time_tracker.css">
     <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
-    <script src="/TimeForge_Capstone/js/time_tracker.js"></script>
 </head>
 <body>
     <header>

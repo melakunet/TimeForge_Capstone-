@@ -526,6 +526,7 @@ $flash = getFlash();
 </main>
 
 <?php include_once __DIR__ . '/includes/footer_partial.php'; ?>
+<script src="/TimeForge_Capstone/js/time_tracker.js"></script>
 
 <!-- ── Invoice Pre-flight Checklist Modal ────────────────────────────────── -->
 <!-- Shows the admin a summary of key settings before going to generate.php. -->
