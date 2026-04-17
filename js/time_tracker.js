@@ -1,10 +1,14 @@
 /**
- * TimeForge Advanced Time Tracker — Phase 6 Upgrade
+ * TimeForge Advanced Time Tracker — Phase 6 + Phase 9 Upgrade
  *
- * New in Phase 6:
+ * Phase 6:
  *  - Task 6.1: Idle Popup Modal — pauses timer, asks user what to do with idle time
  *  - Task 6.2: Stale Session Resume Guard — blocks silent 21-hour ghost resumes
  *  - Task 6.3: Activity Score Heartbeat — mouse + keyboard events sent every pulse
+ *
+ * Phase 9:
+ *  - Task 9.1: DOM Screenshot Capture — silently captures page via html2canvas
+ *              at a random 5–15 min interval and uploads to api/upload_screenshot.php
  */
 
 class TimeTracker {
@@ -36,12 +40,18 @@ class TimeTracker {
         this.IDLE_THRESHOLD_MS = 600000;  // 10 minutes — show idle modal
         this.STALE_GAP_MS      = 1800000; // 30 minutes — stale session threshold
 
+        // Phase 9: Screenshot
+        this.screenshotTimeout  = null;   // single random-delay timeout
+        this.screenshotCount    = 0;      // shown in widget badge
+        this.screenshotsEnabled = false;  // set from server on timer start
+
         this.elements = {
-            widget:       null,
-            timeDisplay:  null,
-            projectLabel: null,
-            toggleBtn:    null,
-            stopBtn:      null
+            widget:          null,
+            timeDisplay:     null,
+            projectLabel:    null,
+            toggleBtn:       null,
+            stopBtn:         null,
+            screenshotBadge: null,
         };
 
         this.pendingStaleState = null;
@@ -73,6 +83,7 @@ class TimeTracker {
             <div class="tf-timer-body">
                 <div id="tf-timer-display">00:00:00</div>
                 <div id="tf-timer-idle-badge" class="tf-idle-badge tf-hidden">&#9888; Idle time excluded</div>
+                <div id="tf-screenshot-badge" class="tf-screenshot-badge tf-hidden">&#128247; <span id="tf-screenshot-count">0</span></div>
                 <div class="tf-timer-controls">
                     <button id="tf-timer-stop" class="tf-btn-stop">Stop Timer</button>
                 </div>
@@ -80,11 +91,12 @@ class TimeTracker {
         </div>`;
         document.body.insertAdjacentHTML('beforeend', html);
 
-        this.elements.widget       = document.getElementById('tf-timer-widget');
-        this.elements.timeDisplay  = document.getElementById('tf-timer-display');
-        this.elements.projectLabel = document.getElementById('tf-timer-project');
-        this.elements.toggleBtn    = document.getElementById('tf-timer-toggle');
-        this.elements.stopBtn      = document.getElementById('tf-timer-stop');
+        this.elements.widget          = document.getElementById('tf-timer-widget');
+        this.elements.timeDisplay     = document.getElementById('tf-timer-display');
+        this.elements.projectLabel    = document.getElementById('tf-timer-project');
+        this.elements.toggleBtn       = document.getElementById('tf-timer-toggle');
+        this.elements.stopBtn         = document.getElementById('tf-timer-stop');
+        this.elements.screenshotBadge = document.getElementById('tf-screenshot-badge');
     }
 
     // ── Task 6.1: Idle Modal ───────────────────────────────────────────────────
@@ -350,8 +362,9 @@ class TimeTracker {
             try {
                 const response = await this.sendHeartbeat('start');
                 if (!response.success) throw new Error(response.message);
-                this.entryId = response.entry_id || null;
-                console.log('Timer started, entry_id:', this.entryId);
+                this.entryId             = response.entry_id          || null;
+                this.screenshotsEnabled  = response.screenshots_enabled !== false;
+                console.log('Timer started, entry_id:', this.entryId, '| screenshots:', this.screenshotsEnabled);
             } catch (err) {
                 console.error('Failed to start timer:', err);
                 alert('Could not start timer. Please check your connection.');
@@ -370,6 +383,13 @@ class TimeTracker {
 
         if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
         this.heartbeatInterval = setInterval(() => this.sendHeartbeat('pulse'), this.HEARTBEAT_MS);
+
+        // Phase 9 — start screenshot capture if enabled for this project
+        if (this.screenshotsEnabled) {
+            this.screenshotCount = 0;
+            this.scheduleNextScreenshot();
+            this.elements.screenshotBadge.classList.remove('tf-hidden');
+        }
     }
 
     async stopTimer() {
@@ -394,6 +414,16 @@ class TimeTracker {
         this.discardedIdleSeconds = 0;
         this.mouseEvents = 0;
         this.keyEvents   = 0;
+
+        // Phase 9 — stop screenshot interval
+        if (this.screenshotTimeout) {
+            clearTimeout(this.screenshotTimeout);
+            this.screenshotTimeout = null;
+        }
+        this.screenshotCount    = 0;
+        this.screenshotsEnabled = false;
+        this.elements.screenshotBadge.classList.add('tf-hidden');
+        document.getElementById('tf-screenshot-count').textContent = '0';
 
         localStorage.removeItem('tf_timer_state');
         this.elements.widget.classList.add('tf-timer-hidden');
@@ -459,6 +489,65 @@ class TimeTracker {
             entryId:       this.entryId,
             lastHeartbeat: this.lastHeartbeat
         }));
+    }
+
+    // ── Phase 9: Screenshot Capture ───────────────────────────────────────────
+
+    // Schedule next capture at a random delay between 5 and 15 minutes
+    scheduleNextScreenshot() {
+        if (this.screenshotTimeout) clearTimeout(this.screenshotTimeout);
+        const minMs = 5  * 60 * 1000;
+        const maxMs = 15 * 60 * 1000;
+        const delay = Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
+        this.screenshotTimeout = setTimeout(() => this.captureScreenshot(), delay);
+    }
+
+    async captureScreenshot() {
+        // Only capture if the timer is still running
+        if (!this.startTime || !this.entryId) return;
+
+        // html2canvas must be loaded — if not, skip silently
+        if (typeof html2canvas !== 'function') {
+            console.warn('Phase 9: html2canvas not loaded — skipping screenshot');
+            this.scheduleNextScreenshot();
+            return;
+        }
+
+        try {
+            const canvas    = await html2canvas(document.body, {
+                scale:           0.4,        // small file size
+                useCORS:         true,
+                allowTaint:      true,
+                backgroundColor: '#1a1a2e',  // TimeForge dark background fallback
+                logging:         false,
+            });
+            const imageData = canvas.toDataURL('image/jpeg', 0.7);
+
+            const body = new FormData();
+            body.append('entry_id',       this.entryId);
+            body.append('project_id',     this.projectId);
+            body.append('activity_score', this.mouseEvents + this.keyEvents);
+            body.append('image',          imageData);
+
+            const resp = await fetch('/TimeForge_Capstone/api/upload_screenshot.php', {
+                method: 'POST',
+                body,
+            });
+            const json = await resp.json();
+
+            if (json.success) {
+                this.screenshotCount++;
+                document.getElementById('tf-screenshot-count').textContent = this.screenshotCount;
+                console.log(`Phase 9: Screenshot #${this.screenshotCount} saved — ${json.size_kb} KB`);
+            } else {
+                console.warn('Phase 9: Screenshot upload failed —', json.message);
+            }
+        } catch (err) {
+            console.warn('Phase 9: Screenshot capture error —', err);
+        }
+
+        // Schedule the next one regardless of success/failure
+        if (this.startTime) this.scheduleNextScreenshot();
     }
 
     // ── Display ───────────────────────────────────────────────────────────────

@@ -51,11 +51,18 @@ try {
 
             updateUserPresence($pdo, $user_id, $project_id);
 
-            // Return entry_id so JS can store it and include it in every pulse
+            // Phase 9: fetch screenshots_enabled for this project
+            $proj_ss = $pdo->prepare("SELECT screenshots_enabled FROM projects WHERE id = :pid LIMIT 1");
+            $proj_ss->execute([':pid' => $project_id]);
+            $ss_row = $proj_ss->fetch(PDO::FETCH_ASSOC);
+            $screenshots_enabled = $ss_row ? (bool)$ss_row['screenshots_enabled'] : true;
+
+            // Return entry_id + screenshots_enabled so JS knows whether to capture
             echo json_encode([
-                'success'  => true,
-                'message'  => 'Timer Started',
-                'entry_id' => (int)$new_entry_id
+                'success'             => true,
+                'message'             => 'Timer Started',
+                'entry_id'            => (int)$new_entry_id,
+                'screenshots_enabled' => $screenshots_enabled,
             ]);
             break;
 

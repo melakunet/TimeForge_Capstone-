@@ -70,6 +70,7 @@ if ($action === 'edit') {
     $budget       = filter_input(INPUT_POST, 'budget',      FILTER_VALIDATE_FLOAT);
     $deadline     = filter_input(INPUT_POST, 'deadline');
     $status       = filter_input(INPUT_POST, 'status');
+    $screenshots_enabled = isset($_POST['screenshots_enabled']) ? 1 : 0; // Phase 9
     $allowed      = ['active', 'completed', 'archived'];
 
     if (!$project_id || $project_name === null || $project_name === '' ||
@@ -99,17 +100,19 @@ if ($action === 'edit') {
     $stmt = $pdo->prepare("
         UPDATE projects
         SET project_name = :project_name, description = :description, client_id = :client_id,
-            hourly_rate = :hourly_rate, budget = :budget, deadline = :deadline, status = :status
+            hourly_rate = :hourly_rate, budget = :budget, deadline = :deadline, status = :status,
+            screenshots_enabled = :screenshots_enabled
         WHERE id = :project_id
     ");
-    $stmt->bindValue(':project_id',   $project_id,  PDO::PARAM_INT);
-    $stmt->bindValue(':project_name', $project_name);
-    $stmt->bindValue(':description',  $description);
-    $stmt->bindValue(':client_id',    $client_id,   PDO::PARAM_INT);
-    $stmt->bindValue(':hourly_rate',  $hourly_rate);
-    $stmt->bindValue(':budget',       $budget);
-    $stmt->bindValue(':deadline',     $deadline);
-    $stmt->bindValue(':status',       $status);
+    $stmt->bindValue(':project_id',          $project_id,         PDO::PARAM_INT);
+    $stmt->bindValue(':project_name',        $project_name);
+    $stmt->bindValue(':description',         $description);
+    $stmt->bindValue(':client_id',           $client_id,          PDO::PARAM_INT);
+    $stmt->bindValue(':hourly_rate',         $hourly_rate);
+    $stmt->bindValue(':budget',              $budget);
+    $stmt->bindValue(':deadline',            $deadline);
+    $stmt->bindValue(':status',              $status);
+    $stmt->bindValue(':screenshots_enabled', $screenshots_enabled, PDO::PARAM_INT);
     $stmt->execute();
 
     logAuditAction((int)($_SESSION['user_id'] ?? 0), 'project_updated');
