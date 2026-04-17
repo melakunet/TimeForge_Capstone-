@@ -42,7 +42,11 @@ $inv_stmt = $pdo->prepare("
     FROM invoices inv
     INNER JOIN projects p ON p.id = inv.project_id
     INNER JOIN clients  c ON c.id = inv.client_id
-    LEFT  JOIN users    u ON u.id = inv.created_by
+    LEFT  JOIN users    u ON u.id = (
+        SELECT id FROM users 
+        WHERE role = 'admin' AND company_id = inv.company_id 
+        ORDER BY id ASC LIMIT 1
+    )
     WHERE inv.id = :id
     LIMIT 1
 ");
