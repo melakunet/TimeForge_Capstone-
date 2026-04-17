@@ -362,9 +362,9 @@ class TimeTracker {
             try {
                 const response = await this.sendHeartbeat('start');
                 if (!response.success) throw new Error(response.message);
-                this.entryId             = response.entry_id          || null;
-                this.screenshotsEnabled  = response.screenshots_enabled !== false;
-                console.log('Timer started, entry_id:', this.entryId, '| screenshots:', this.screenshotsEnabled);
+                this.entryId             = response.entry_id || null;
+                this.screenshotsEnabled  = response.screenshots_enabled === true || response.screenshots_enabled === 1;
+                console.log('Timer started, entry_id:', this.entryId, '| screenshots_enabled:', this.screenshotsEnabled, '| raw:', response.screenshots_enabled);
             } catch (err) {
                 console.error('Failed to start timer:', err);
                 alert('Could not start timer. Please check your connection.');
@@ -496,9 +496,7 @@ class TimeTracker {
     // Schedule next capture at a random delay between 5 and 15 minutes
     scheduleNextScreenshot() {
         if (this.screenshotTimeout) clearTimeout(this.screenshotTimeout);
-        const minMs = 5  * 60 * 1000;
-        const maxMs = 15 * 60 * 1000;
-        const delay = Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
+        const delay = Math.floor(Math.random() * (15*60000 - 5*60000 + 1)) + 5*60000;
         this.screenshotTimeout = setTimeout(() => this.captureScreenshot(), delay);
     }
 
