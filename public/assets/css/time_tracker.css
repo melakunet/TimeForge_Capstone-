@@ -273,3 +273,20 @@
         font-size: 1.1rem;
     }
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   Phase 9 Additions — Screenshot badge on timer widget
+   ──────────────────────────────────────────────────────────────── */
+
+/* 📷 badge shown inside the floating timer widget */
+.tf-screenshot-badge {
+    font-size: 0.72rem;
+    color: #00d2b5;
+    background: rgba(0, 210, 181, 0.10);
+    border: 1px solid rgba(0, 210, 181, 0.30);
+    border-radius: 4px;
+    padding: 3px 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 0.03em;
+}

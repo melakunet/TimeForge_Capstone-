@@ -116,6 +116,17 @@ $flash = getFlash();
                     </select>
                 </div>
 
+                <!-- Phase 9: Screenshots toggle -->
+                <div class="form-group">
+                    <label>Activity Screenshots:</label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-weight:normal;">
+                        <input type="checkbox" name="screenshots_enabled" value="1"
+                            <?php echo !empty($project['screenshots_enabled']) ? 'checked' : ''; ?>>
+                        Enable automatic screenshots while timer runs
+                    </label>
+                    <small style="color:var(--color-text-secondary);">When ON, the timer widget captures a page snapshot every 5–15 minutes and saves it for admin review.</small>
+                </div>
+
                 <div class="form-group buttons">
                     <input type="submit" value="Save Changes" class="btn btn-primary">
                     <a href="index.php" class="btn btn-secondary" style="margin-left:8px;">Cancel</a>
