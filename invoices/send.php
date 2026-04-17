@@ -56,7 +56,11 @@ try {
         FROM invoices inv
         INNER JOIN projects p ON p.id = inv.project_id
         INNER JOIN clients  c ON c.id = inv.client_id
-        LEFT  JOIN users    u ON u.id = inv.created_by
+        LEFT  JOIN users    u ON u.id = (
+            SELECT id FROM users 
+            WHERE role = 'admin' AND company_id = inv.company_id 
+            ORDER BY id ASC LIMIT 1
+        )
         WHERE inv.id = :id
           AND inv.company_id = :company_id
         LIMIT 1
@@ -139,6 +143,9 @@ $pdf_logo_b64    = ($company_logo_path_s && file_exists($company_logo_path_s))
     ? pdfLogoBase64($company_logo_path_s)
     : pdfLogoBase64($tf_logo_path_s);
 $pdf_tf_logo_b64 = pdfLogoBase64($tf_logo_path_s);
+
+// Capture PDF HTML into a string — NEVER echo it directly to the browser
+ob_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
