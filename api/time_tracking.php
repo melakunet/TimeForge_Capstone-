@@ -52,10 +52,19 @@ try {
             updateUserPresence($pdo, $user_id, $project_id);
 
             // Phase 9: fetch screenshots_enabled for this project
-            $proj_ss = $pdo->prepare("SELECT screenshots_enabled FROM projects WHERE id = :pid LIMIT 1");
-            $proj_ss->execute([':pid' => $project_id]);
-            $ss_row = $proj_ss->fetch(PDO::FETCH_ASSOC);
-            $screenshots_enabled = $ss_row ? (bool)$ss_row['screenshots_enabled'] : true;
+            $screenshots_enabled = true; // default ON
+            try {
+                $proj_ss = $pdo->prepare("SELECT screenshots_enabled FROM projects WHERE id = :pid LIMIT 1");
+                $proj_ss->execute([':pid' => $project_id]);
+                $ss_row = $proj_ss->fetch(PDO::FETCH_ASSOC);
+                if ($ss_row !== false) {
+                    $screenshots_enabled = (bool)$ss_row['screenshots_enabled'];
+                }
+            } catch (PDOException $e) {
+                // Column may not exist yet — default to ON
+                error_log('Phase 9 screenshots_enabled fetch error: ' . $e->getMessage());
+                $screenshots_enabled = true;
+            }
 
             // Return entry_id + screenshots_enabled so JS knows whether to capture
             echo json_encode([
