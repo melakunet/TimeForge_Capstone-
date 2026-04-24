@@ -1,0 +1,30 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "git commit and push fixes",
+			"type": "shell",
+			"command": "cd /Applications/XAMPP/xamppfiles/htdocs/TimeForge_Capstone && git add profile.php includes/header.php includes/footer_partial.php project_details.php && git commit -m 'Fix: remove duplicate time_tracker.js loads; fix profile.php corruption; fix logo upload permissions' && git push origin main"
+		},
+		{
+			"label": "fix images folder permissions",
+			"type": "shell",
+			"command": "chmod -R 775 /Applications/XAMPP/xamppfiles/htdocs/TimeForge_Capstone/images && echo PERMS_OK"
+		},
+		{
+			"label": "fix-perms",
+			"type": "shell",
+			"command": "ls -la /Applications/XAMPP/xamppfiles/htdocs/TimeForge_Capstone/images/ && echo '---' && whoami && echo '---' && ls -la /Applications/XAMPP/xamppfiles/htdocs/TimeForge_Capstone/images/logos/"
+		},
+		{
+			"label": "delete-fixer",
+			"type": "shell",
+			"command": "rm -f /Applications/XAMPP/xamppfiles/htdocs/TimeForge_Capstone/fix_permissions.php && echo DELETED"
+		},
+		{
+			"label": "git-commit-push",
+			"type": "shell",
+			"command": "cd /Applications/XAMPP/xamppfiles/htdocs/TimeForge_Capstone && git add profile.php includes/header.php includes/footer_partial.php project_details.php && git commit -m 'Fix: remove duplicate time_tracker.js loads; fix profile.php corruption; fix logo upload dir permissions' && git push origin main && echo GIT_DONE"
+		}
+	]
+}
