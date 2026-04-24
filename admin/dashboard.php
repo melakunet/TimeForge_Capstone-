@@ -70,14 +70,10 @@ $total_entries  = (int)$entry_count->fetchColumn();
         <?php include __DIR__ . '/dashboard_quick_start.php'; ?>
     </div>
 
-    <!-- Live freelancer presence panel -->
+    <!-- Phase 10: Live Freelancer Presence — React component -->
     <div class="card" style="margin-bottom: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h2 style="color: var(--color-accent); margin: 0;">🟢 Live Freelancer Presence</h2>
-            <span id="presence-updated" style="font-size: 0.8rem; color: var(--color-text-secondary);">Updating…</span>
-        </div>
-        <div id="presence-panel">
-            <p style="color: var(--color-text-secondary);">Loading…</p>
+        <div id="react-live-feed">
+            <p style="color: var(--color-text-secondary);">Loading presence…</p>
         </div>
     </div>
 
@@ -157,5 +153,7 @@ $total_entries  = (int)$entry_count->fetchColumn();
     <script src="/TimeForge_Capstone/js/animations.js"></script>
     <script src="/TimeForge_Capstone/js/time_tracker.js"></script>
     <script src="/TimeForge_Capstone/js/presence.js"></script>
+    <!-- Phase 10: React bundle -->
+    <script type="module" src="/TimeForge_Capstone/public/assets/react/app.js"></script>
 </body>
 </html>

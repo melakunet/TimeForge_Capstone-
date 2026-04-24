@@ -346,7 +346,17 @@ $flash = getFlash();
 
 </div>
 
+<!-- Phase 10: React Analytics Charts -->
+<div class="container" style="margin-top: 2rem;">
+    <h2 style="color: var(--color-accent); margin-bottom: 1.5rem;">📊 Analytics Charts</h2>
+    <div id="react-hours-chart"></div>
+    <div id="react-project-chart"></div>
+    <div id="react-heatmap"></div>
+</div>
+
 <?php include __DIR__ . '/../includes/footer_partial.php'; ?>
 <script src="/TimeForge_Capstone/js/theme.js"></script>
+<!-- Phase 10: React bundle -->
+<script type="module" src="/TimeForge_Capstone/public/assets/react/app.js"></script>
 </body>
 </html>
