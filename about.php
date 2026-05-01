@@ -63,7 +63,6 @@ $page_title = 'About TimeForge';
     .tag-freelancer{ background: #0284c722; color: #38bdf8; border: 1px solid #0284c744; }
     .tag-client    { background: #05966922; color: #34d399; border: 1px solid #05966944; }
     .tag-system    { background: #92400e22; color: #fbbf24; border: 1px solid #92400e44; }
-    .tag-new       { background: #dc262622; color: #f87171; border: 1px solid #dc262644; }
 
     /* ── Demo Credentials ──────────────────────── */
     .cred-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
@@ -312,14 +311,14 @@ include __DIR__ . '/includes/header_partial.php';
     </div>
 
     <div class="feature-card">
-      <div class="feature-tag tag-new">NEW — Phase 11</div>
+      <div class="feature-tag tag-admin">Admin</div>
       <div class="feature-icon">📋</div>
       <h3>Task Management</h3>
       <p>Kanban board (Open → In Progress → Done) under each project. Tasks have assignee, priority, estimated hours, due date, and logged-time progress bars. Timer lets you pick a task before starting.</p>
     </div>
 
     <div class="feature-card">
-      <div class="feature-tag tag-new">NEW — Phase 12</div>
+      <div class="feature-tag tag-system">Everyone</div>
       <div class="feature-icon">💬</div>
       <h3>Task Discussion Thread</h3>
       <p>Every task has a private 3-way chat thread between the <strong>Admin</strong>, the assigned <strong>Freelancer</strong>, and the <strong>Client</strong>. Four message types keep communication structured:</p>
