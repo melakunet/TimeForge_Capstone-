@@ -29,7 +29,8 @@ if (isLoggedIn() && $view !== 'welcome') {
 
     // Dashboard Data Logic
     if ($role === 'admin') {
-        $query = "SELECT p.*, c.client_name, c.company_name
+        $query = "SELECT p.*, c.client_name, c.company_name,
+                  (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id AND t.status != 'done') AS open_task_count
                   FROM projects p
                   LEFT JOIN clients c ON c.id = p.client_id
                   $whereClause AND p.company_id = :company_id
@@ -40,7 +41,8 @@ if (isLoggedIn() && $view !== 'welcome') {
     } elseif ($role === 'client') {
         // Clients can view ONLY their own projects.
         // Map logged-in user -> clients.user_id -> projects.client_id
-        $query = "SELECT p.*, c.client_name, c.company_name
+        $query = "SELECT p.*, c.client_name, c.company_name,
+                  (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id AND t.status != 'done') AS open_task_count
                   FROM projects p
                   INNER JOIN clients c ON c.id = p.client_id
                   $whereClause AND c.user_id = :user_id
@@ -50,7 +52,8 @@ if (isLoggedIn() && $view !== 'welcome') {
         $p_stmt->execute();
     } else {
         // Freelancer — scoped to same company
-        $query = "SELECT p.*, c.client_name, c.company_name
+        $query = "SELECT p.*, c.client_name, c.company_name,
+                  (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id AND t.status != 'done') AS open_task_count
                   FROM projects p
                   LEFT JOIN clients c ON c.id = p.client_id
                   $whereClause AND p.company_id = :company_id
@@ -140,6 +143,8 @@ $flash = getFlash();
                                     <a class="action-link" href="project_details.php?id=<?php echo (int)$project['id']; ?>">View</a>
                                     
                                     <?php if ($role === 'admin' || $role === 'freelancer'): ?>
+                                    <span class="action-sep">|</span>
+                                    <a class="action-link" href="tasks.php?project_id=<?php echo (int)$project['id']; ?>">📋 Tasks<?php if (!empty($project['open_task_count']) && $project['open_task_count'] > 0): ?> <span style="background:#f59e0b;color:#000;border-radius:99px;padding:.05rem .4rem;font-size:.7rem;font-weight:700;vertical-align:middle;"><?php echo (int)$project['open_task_count']; ?></span><?php endif; ?></a>
                                     <span class="action-sep">|</span>
                                     <a class="action-link" href="edit_project.php?id=<?php echo (int)$project['id']; ?>">Edit</a>
                                     <?php endif; ?>
