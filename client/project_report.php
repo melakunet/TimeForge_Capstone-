@@ -93,6 +93,20 @@ $stage_labels = [
     'completed'   => 'Completed',
     'archived'    => 'Archived',
 ];
+
+// ── Fetch tasks for this project ──────────────────────────────────────────────
+$tasks_stmt = $pdo->prepare("
+    SELECT t.id, t.title, t.status, t.priority, t.due_date,
+           u.full_name AS assignee_name,
+           (SELECT COUNT(*) FROM task_comments tc WHERE tc.task_id = t.id) AS comment_count,
+           (SELECT COUNT(*) FROM task_comments tc WHERE tc.task_id = t.id AND tc.type = 'problem') AS problem_count
+    FROM tasks t
+    LEFT JOIN users u ON u.id = t.assigned_to
+    WHERE t.project_id = :pid
+    ORDER BY FIELD(t.status,'in_progress','open','done'), t.due_date ASC
+");
+$tasks_stmt->execute([':pid' => $project_id]);
+$tasks = $tasks_stmt->fetchAll(PDO::FETCH_ASSOC);
 $stage_label = $stage_labels[$project['stage']] ?? ucfirst($project['stage']);
 
 $page_title  = 'Report: ' . $project['project_name'];
@@ -276,6 +290,56 @@ $flash       = getFlash();
                     </tfoot>
                 </table>
             </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- ── Tasks ── -->
+    <div class="card" style="margin-top:1.5rem;">
+        <div class="section-header">
+            <h2>📋 Project Tasks</h2>
+        </div>
+        <?php if (empty($tasks)): ?>
+            <p style="color:var(--color-text-secondary); font-size:.9rem; padding:.5rem 0;">No tasks added yet.</p>
+        <?php else: ?>
+            <table class="data-table" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Assigned To</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Due</th>
+                        <th>Discussion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($tasks as $t): ?>
+                        <?php
+                            $statusCls = ['open'=>'#64748b','in_progress'=>'#1d4ed8','done'=>'#15803d'][$t['status']] ?? '#334155';
+                            $prioCls   = ['high'=>'#dc2626','medium'=>'#d97706','low'=>'#059669'][$t['priority']] ?? '#475569';
+                        ?>
+                        <tr>
+                            <td><strong><?= htmlspecialchars($t['title']) ?></strong></td>
+                            <td><?= $t['assignee_name'] ? htmlspecialchars($t['assignee_name']) : '<span style="color:#475569">Unassigned</span>' ?></td>
+                            <td><span style="background:<?= $prioCls ?>;color:#fff;padding:.15rem .45rem;border-radius:4px;font-size:.72rem;font-weight:700;text-transform:uppercase;"><?= $t['priority'] ?></span></td>
+                            <td><span style="background:<?= $statusCls ?>;color:#fff;padding:.15rem .5rem;border-radius:4px;font-size:.73rem;font-weight:600;"><?= str_replace('_',' ', $t['status']) ?></span></td>
+                            <td><?= $t['due_date'] ? date('M j', strtotime($t['due_date'])) : '—' ?></td>
+                            <td>
+                                <a href="/TimeForge_Capstone/task_detail.php?id=<?= $t['id'] ?>&project_id=<?= $project_id ?>"
+                                   style="text-decoration:none; font-size:.82rem; color:var(--color-accent);">
+                                    <?php if ($t['problem_count'] > 0): ?>
+                                        🐛 <?= $t['comment_count'] ?> comment<?= $t['comment_count'] != 1 ? 's' : '' ?>
+                                    <?php elseif ($t['comment_count'] > 0): ?>
+                                        💬 <?= $t['comment_count'] ?> comment<?= $t['comment_count'] != 1 ? 's' : '' ?>
+                                    <?php else: ?>
+                                        💬 Add feedback
+                                    <?php endif; ?>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         <?php endif; ?>
     </div>
 
