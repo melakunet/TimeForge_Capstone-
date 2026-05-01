@@ -38,6 +38,19 @@ if (isset($_SESSION['last_activity'])) {
 // Update last activity time
 $_SESSION['last_activity'] = time();
 
+// ── Live presence: update last_active_at on every page load (throttled to 1/min) ──
+// This ensures "Last seen" is always accurate regardless of which page the user is on.
+if (isset($_SESSION['user_id']) && isset($pdo)) {
+    $now_ts = time();
+    if (!isset($_SESSION['_presence_ping']) || ($now_ts - $_SESSION['_presence_ping']) >= 60) {
+        try {
+            $pdo->prepare("UPDATE users SET last_active_at = NOW() WHERE id = ? LIMIT 1")
+                ->execute([$_SESSION['user_id']]);
+            $_SESSION['_presence_ping'] = $now_ts;
+        } catch (Exception $e) { /* non-fatal */ }
+    }
+}
+
 // Initialize theme in session if not set
 if (!isset($_SESSION['theme'])) {
     $_SESSION['theme'] = 'light';

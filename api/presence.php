@@ -22,7 +22,13 @@ $sql = "
         u.id,
         u.full_name,
         u.role,
+        -- Use whichever is more recent: active ping OR login time
+        GREATEST(
+            COALESCE(u.last_active_at, '2000-01-01'),
+            COALESCE(u.last_login,     '2000-01-01')
+        ) AS last_seen_at,
         u.last_active_at,
+        u.last_login,
         u.current_project_id,
         p.project_name,
         te.start_time AS timer_start,
@@ -33,7 +39,7 @@ $sql = "
            ON te.user_id = u.id AND te.status = 'running'
     WHERE u.role IN ('freelancer', 'admin')
       AND u.company_id = :company_id
-    ORDER BY u.full_name ASC
+    ORDER BY last_seen_at DESC, u.full_name ASC
 ";
 
 $rows = $pdo->prepare($sql);
@@ -44,31 +50,34 @@ $now  = new DateTime();
 $result = [];
 foreach ($rows as $r) {
     // Determine presence status
-    $status = 'offline';
-    $label  = 'Offline';
-    $since  = null;
+    // Determine presence status using the most-recent timestamp
+    $status  = 'offline';
+    $label   = 'Never seen';
+    $since   = null;
     $elapsed = null;
 
-    if ($r['last_active_at']) {
-        $last   = new DateTime($r['last_active_at']);
+    $lastTimestamp = $r['last_seen_at'] ?? null;
+
+    if ($lastTimestamp && $lastTimestamp !== '2000-01-01 00:00:00') {
+        $last    = new DateTime($lastTimestamp);
         $diffSec = ($now->getTimestamp() - $last->getTimestamp());
 
-        if ($diffSec <= 180) {          // ping within 3 min = active (covers 60s ping interval)
+        if ($diffSec <= 180) {
             $status = 'active';
             $label  = $r['timer_start'] ? 'Active now' : 'Online';
-        } elseif ($diffSec <= 600) {    // within 10 min = idle
+        } elseif ($diffSec <= 600) {
             $status = 'idle';
-            $m = floor($diffSec / 60);
+            $m      = floor($diffSec / 60);
             $label  = "Idle {$m} min ago";
         } else {
             $status = 'offline';
-            // Show human-readable last seen
-            $diff = $now->diff($last);
-            if ($diff->days > 0)      $label = "Last seen {$diff->days}d ago";
-            elseif ($diff->h > 0)     $label = "Last seen {$diff->h}h ago";
-            else                       $label = "Last seen {$diff->i}m ago";
+            $diff   = $now->diff($last);
+            if ($diff->days > 0)        $label = "Last seen {$diff->days}d ago";
+            elseif ($diff->h > 0)       $label = "Last seen {$diff->h}h {$diff->i}m ago";
+            elseif ($diff->i > 0)       $label = "Last seen {$diff->i}m ago";
+            else                        $label = "Last seen just now";
         }
-        $since = $r['last_active_at'];
+        $since = $lastTimestamp;
     }
 
     // Elapsed timer time
@@ -84,12 +93,14 @@ foreach ($rows as $r) {
         'id'           => (int)$r['id'],
         'name'         => $r['full_name'],
         'role'         => $r['role'],
-        'status'       => $status,        // active | idle | offline
+        'status'       => $status,
         'label'        => $label,
         'project_name' => $r['project_name'] ?? null,
-        'timer_start'  => $r['timer_start'] ?? null,   // Phase 9 fix: needed by LiveFeed for live counter
+        'timer_start'  => $r['timer_start'] ?? null,
         'elapsed'      => $elapsed,
         'last_active'  => $since,
+        // Exact datetime for tooltip (e.g. "May 1, 15:23")
+        'last_seen_exact' => $since ? (new DateTime($since))->format('M j, H:i') : null,
     ];
 }
 
