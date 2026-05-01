@@ -94,7 +94,18 @@ $page_title = 'About TimeForge';
     .dark-role-card h3 { color: inherit; }
     .dark-role-card li span[style] { flex-shrink: 0; }
 
-    /* ── Footer ────────────────────────────────── */
+    /* ── Who Benefits ──────────────────────────── */
+    .benefits-section { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .benefits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 1.5rem; }
+    .benefit-card { border-radius: 14px; padding: 2rem; position: relative; overflow: hidden; }
+    .benefit-card .bc-accent { position: absolute; top:0; left:0; right:0; height:4px; }
+    .benefit-card h3 { font-size: 1.1rem; font-weight: 800; margin: .75rem 0 .4rem; }
+    .benefit-card .bc-sub { font-size: .85rem; color: #94a3b8; margin: 0 0 1.2rem; line-height: 1.6; }
+    .benefit-card ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .5rem; }
+    .benefit-card ul li { font-size: .85rem; display: flex; gap: .6rem; align-items: flex-start; color: #94a3b8; }
+    .benefit-card ul li span.ck { flex-shrink: 0; font-weight: 700; }
+
+
     .about-footer { text-align: center; padding: 3rem 1.5rem; color: #475569; font-size: .85rem; border-top: 1px solid #1e293b; }
     .about-footer a { color: #3b82f6; text-decoration: none; }
   </style>
@@ -125,6 +136,65 @@ include __DIR__ . '/includes/header_partial.php';
       <a href="/TimeForge_Capstone/index.php" class="btn-hero-primary">📋 Go to Dashboard</a>
     <?php endif; ?>
     <a href="https://github.com/melakunet/TimeForge_Capstone-" target="_blank" rel="noopener" class="btn-hero-secondary">⭐ GitHub Repo</a>
+  </div>
+</div>
+
+<!-- ── Who Benefits ──────────────────────────────────────────── -->
+<div class="benefits-section">
+  <div class="section-title">
+    <h2>🎯 Who Benefits from TimeForge?</h2>
+    <p>Three roles, one platform — each person gets exactly what they need, nothing they don't.</p>
+  </div>
+  <div class="benefits-grid">
+
+    <!-- Admin -->
+    <div class="benefit-card" style="background:#1e293b; border:1px solid #7c3aed44;">
+      <div class="bc-accent" style="background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div>
+      <div style="font-size:2rem;">🛡️</div>
+      <h3 style="color:#a78bfa;">Agency Admin</h3>
+      <p class="bc-sub">Run the whole operation from one dashboard — no spreadsheets, no manual chasing.</p>
+      <ul>
+        <li><span class="ck" style="color:#a78bfa;">✓</span> See who's working, on what, right now — live presence panel</li>
+        <li><span class="ck" style="color:#a78bfa;">✓</span> Approve time entries before anything gets billed</li>
+        <li><span class="ck" style="color:#a78bfa;">✓</span> Generate & send invoices with one click — PDF, 3 templates</li>
+        <li><span class="ck" style="color:#a78bfa;">✓</span> Track payments — partial, outstanding, fully paid</li>
+        <li><span class="ck" style="color:#a78bfa;">✓</span> Communicate with freelancers & clients per task — no email chains</li>
+        <li><span class="ck" style="color:#a78bfa;">✓</span> Full financial reports with CSV export</li>
+      </ul>
+    </div>
+
+    <!-- Freelancer -->
+    <div class="benefit-card" style="background:#1e293b; border:1px solid #0284c744;">
+      <div class="bc-accent" style="background:linear-gradient(90deg,#0284c7,#38bdf8);"></div>
+      <div style="font-size:2rem;">💼</div>
+      <h3 style="color:#38bdf8;">Freelancer / Worker</h3>
+      <p class="bc-sub">Focus on the work — the platform tracks your time, your tasks, and your progress automatically.</p>
+      <ul>
+        <li><span class="ck" style="color:#38bdf8;">✓</span> Start a timer in one click — keeps running as you navigate</li>
+        <li><span class="ck" style="color:#38bdf8;">✓</span> Pick a task before starting — time is linked automatically</li>
+        <li><span class="ck" style="color:#38bdf8;">✓</span> Idle popup — decide what to do with time when you step away</li>
+        <li><span class="ck" style="color:#38bdf8;">✓</span> Move tasks Open → In Progress → Done on your own Kanban board</li>
+        <li><span class="ck" style="color:#38bdf8;">✓</span> Flag a blocker 🐛 or suggest a fix 💡 directly on the task</li>
+        <li><span class="ck" style="color:#38bdf8;">✓</span> Submit past work as manual entries — admin reviews & approves</li>
+      </ul>
+    </div>
+
+    <!-- Client -->
+    <div class="benefit-card" style="background:#1e293b; border:1px solid #05966944;">
+      <div class="bc-accent" style="background:linear-gradient(90deg,#059669,#34d399);"></div>
+      <div style="font-size:2rem;">🤝</div>
+      <h3 style="color:#34d399;">Client</h3>
+      <p class="bc-sub">Stay informed and in control — without needing to ask for updates or wait for emails.</p>
+      <ul>
+        <li><span class="ck" style="color:#34d399;">✓</span> See your projects, task progress, and time logged — anytime</li>
+        <li><span class="ck" style="color:#34d399;">✓</span> Post feedback ⭐ or raise a concern directly on any task</li>
+        <li><span class="ck" style="color:#34d399;">✓</span> Read replies from the admin and assigned worker in one thread</li>
+        <li><span class="ck" style="color:#34d399;">✓</span> Access your invoices — view online or download as PDF</li>
+        <li><span class="ck" style="color:#34d399;">✓</span> View full payment history — nothing is hidden</li>
+        <li><span class="ck" style="color:#34d399;">✓</span> Only see your own data — clean, focused, no clutter</li>
+      </ul>
+    </div>
+
   </div>
 </div>
 
@@ -203,7 +273,7 @@ include __DIR__ . '/includes/header_partial.php';
       <div class="feature-tag tag-admin">Admin</div>
       <div class="feature-icon">👥</div>
       <h3>Client Management</h3>
-      <p>Create client records linked to user accounts. Clients get their own portal login to view only their projects, reports, and invoices.</p>
+      <p>Add clients and link them to a dedicated login. Clients can view their projects, review invoices, and join task discussion threads to give feedback directly — no emails, no back-and-forth.</p>
     </div>
 
     <div class="feature-card">
