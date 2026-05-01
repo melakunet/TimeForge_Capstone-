@@ -101,6 +101,21 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
     .priority-badge.low    { background: #22c55e22; color: #22c55e; }
     .overdue { color: #ef4444 !important; }
     .badge-count { background: #334155; color: #94a3b8; border-radius: 99px; padding: .1rem .55rem; font-size: .75rem; }
+
+    /* ── Task-start modal ── */
+    #tf-task-start-modal { position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index:9999; }
+    #tf-task-start-modal.hidden { display:none; }
+    .tf-task-modal-box { background:var(--color-card); border-radius:12px; padding:1.75rem 2rem; max-width:420px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,.5); }
+    .tf-task-modal-box h3 { margin:0 0 .3rem; color:var(--color-accent); font-size:1.1rem; }
+    .tf-task-modal-box p  { margin:0 0 1.2rem; color:var(--color-text-secondary); font-size:.85rem; }
+    .tf-task-modal-box label { display:block; font-size:.8rem; color:var(--color-text-secondary); margin-bottom:.3rem; text-transform:uppercase; letter-spacing:.04em; }
+    .tf-task-modal-box input { width:100%; background:var(--color-bg); border:1px solid #334155; color:var(--color-text); border-radius:6px; padding:.55rem .75rem; font-size:.9rem; margin-bottom:1rem; box-sizing:border-box; }
+    .tf-task-modal-actions { display:flex; gap:.75rem; justify-content:flex-end; }
+    .tf-task-modal-actions button { padding:.55rem 1.2rem; border-radius:6px; border:none; cursor:pointer; font-weight:600; font-size:.88rem; }
+    .btn-modal-start  { background:#3b82f6; color:#fff; }
+    .btn-modal-start:hover { background:#2563eb; }
+    .btn-modal-cancel { background:#334155; color:#94a3b8; }
+    .btn-modal-cancel:hover { background:#475569; color:#fff; }
   </style>
 </head>
 <body>
@@ -232,11 +247,10 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
         <!-- Action buttons -->
         <div class="task-actions">
           <?php if ($col_key === 'open' && $role !== 'client'): ?>
-            <form method="POST" action="task_action.php" style="display:inline;">
-              <input type="hidden" name="action" value="move"><input type="hidden" name="task_id" value="<?= $t['id'] ?>">
-              <input type="hidden" name="status" value="in_progress"><input type="hidden" name="project_id" value="<?= $project_id ?>">
-              <button class="btn-xs btn-move-prog" type="submit">▶ Start</button>
-            </form>
+            <button class="btn-xs btn-move-prog"
+                    onclick="openTaskStartModal(<?= $t['id'] ?>, <?= $project_id ?>, <?= json_encode($t['title']) ?>, <?= json_encode($project['project_name']) ?>)">
+              ▶ Start
+            </button>
           <?php elseif ($col_key === 'in_progress' && $role !== 'client'): ?>
             <form method="POST" action="task_action.php" style="display:inline;">
               <input type="hidden" name="action" value="move"><input type="hidden" name="task_id" value="<?= $t['id'] ?>">
@@ -307,11 +321,86 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
 
 <?php include __DIR__ . '/includes/footer_partial.php'; ?>
 <script src="/TimeForge_Capstone/js/time_tracker.js"></script>
+
+<!-- Task-Start Modal -->
+<div id="tf-task-start-modal" class="hidden">
+  <div class="tf-task-modal-box">
+    <h3>▶ Start Timer for Task</h3>
+    <p id="tf-task-modal-subtitle">Project: <strong id="tf-task-modal-project"></strong></p>
+    <label>Task</label>
+    <input type="text" id="tf-task-modal-taskname" readonly style="color:var(--color-accent); font-weight:600; cursor:default;">
+    <label>Description <span style="font-weight:400; text-transform:none;">(optional — what specifically are you doing?)</span></label>
+    <input type="text" id="tf-task-modal-desc" placeholder="e.g. Writing the intro section…" maxlength="200">
+    <div class="tf-task-modal-actions">
+      <button class="btn-modal-cancel" onclick="closeTaskStartModal()">Cancel</button>
+      <button class="btn-modal-start"  onclick="confirmTaskStart()">▶ Start Timer</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function toggleAddForm() {
   const f = document.getElementById('add-task-form');
   f.style.display = f.style.display === 'none' ? 'block' : 'none';
 }
+
+// ── Task-start modal ──────────────────────────────────────────────────────────
+let _pendingTaskId    = null;
+let _pendingProjectId = null;
+
+function openTaskStartModal(taskId, projectId, taskTitle, projectName) {
+  if (window.timeTracker && window.timeTracker.projectId) {
+    alert('A timer is already running. Please stop it first.');
+    return;
+  }
+  _pendingTaskId    = taskId;
+  _pendingProjectId = projectId;
+  document.getElementById('tf-task-modal-project').textContent  = projectName;
+  document.getElementById('tf-task-modal-taskname').value       = taskTitle;
+  document.getElementById('tf-task-modal-desc').value           = taskTitle;
+  document.getElementById('tf-task-start-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('tf-task-modal-desc').select(), 80);
+}
+
+function closeTaskStartModal() {
+  document.getElementById('tf-task-start-modal').classList.add('hidden');
+  _pendingTaskId    = null;
+  _pendingProjectId = null;
+}
+
+async function confirmTaskStart() {
+  if (!_pendingTaskId || !_pendingProjectId) return;
+  const desc = document.getElementById('tf-task-modal-desc').value.trim() || 'General work';
+
+  // Capture before closing modal clears globals
+  const tid = _pendingTaskId;
+  const pid = _pendingProjectId;
+  closeTaskStartModal();
+
+  // 1. Move task to in_progress via fetch (no page reload)
+  const fd = new FormData();
+  fd.append('action',     'move');
+  fd.append('task_id',    tid);
+  fd.append('status',     'in_progress');
+  fd.append('project_id', pid);
+
+  try {
+    await fetch('/TimeForge_Capstone/task_action.php', { method: 'POST', body: fd });
+  } catch(e) { console.warn('task move failed', e); }
+
+  // 2. Start the timer with this task linked
+  if (window.timeTracker) {
+    await window.timeTracker.startTimer(pid, desc, null, tid);
+  }
+
+  // 3. Reload the board so the card moves to In Progress column
+  window.location.reload();
+}
+
+// Close modal on backdrop click
+document.getElementById('tf-task-start-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeTaskStartModal();
+});
 </script>
 </body>
 </html>

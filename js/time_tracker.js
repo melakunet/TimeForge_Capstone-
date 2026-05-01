@@ -336,11 +336,13 @@ class TimeTracker {
     _doRestore(state) {
         this.projectId   = state.projectId;
         this.taskId      = state.taskId || null;
+        this.taskName    = state.taskName || null;
         this.description = state.description;
         this.entryId     = state.entryId || null;
         this.startTime   = state.startTime;
 
-        this.elements.projectLabel.textContent = `Project #${this.projectId}`;
+        const taskLabel = state.taskName ? ` · ${state.taskName}` : '';
+        this.elements.projectLabel.textContent = `Project #${this.projectId}${taskLabel}`;
         this.elements.widget.classList.remove('tf-timer-hidden');
 
         if (this.timerInterval) clearInterval(this.timerInterval);
@@ -353,11 +355,12 @@ class TimeTracker {
 
     // ── Start / Stop ──────────────────────────────────────────────────────────
 
-    async startTimer(projectId, description, explicitStartTime = null, taskId = null) {
+    async startTimer(projectId, description, explicitStartTime = null, taskId = null, taskName = null) {
         if (!projectId) return;
 
         this.projectId   = projectId;
         this.taskId      = taskId || null;
+        this.taskName    = taskName || null;
         this.description = description;
         this.startTime   = explicitStartTime || Date.now();
         this.mouseEvents = 0;
@@ -389,7 +392,8 @@ class TimeTracker {
         }
 
         this.saveState();
-        this.elements.projectLabel.textContent = `Project #${projectId}`;
+        const taskLabel = this.taskName ? ` · ${this.taskName}` : '';
+        this.elements.projectLabel.textContent = `Project #${projectId}${taskLabel}`;
         this.elements.widget.classList.remove('tf-timer-hidden');
 
         if (this.timerInterval) clearInterval(this.timerInterval);
@@ -507,6 +511,7 @@ class TimeTracker {
             running:       true,
             projectId:     this.projectId,
             taskId:        this.taskId,
+            taskName:      this.taskName,
             description:   this.description,
             startTime:     this.startTime,
             entryId:       this.entryId,
