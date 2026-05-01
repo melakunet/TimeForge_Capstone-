@@ -19,6 +19,7 @@ if (!isLoggedIn()) {
 
 $action      = $_POST['action']      ?? '';
 $project_id  = filter_input(INPUT_POST, 'project_id',  FILTER_VALIDATE_INT);
+$task_id     = filter_input(INPUT_POST, 'task_id',     FILTER_VALIDATE_INT) ?: null;
 $entry_id    = filter_input(INPUT_POST, 'entry_id',    FILTER_VALIDATE_INT);
 $description = $_POST['description'] ?? '';
 $user_id     = $_SESSION['user_id'];
@@ -43,10 +44,10 @@ try {
         // ── START ─────────────────────────────────────────────────────────────
         case 'start':
             $sql = "INSERT INTO time_entries
-                        (project_id, user_id, start_time, description, status, close_reason, company_id)
-                    VALUES (:pid, :uid, NOW(), :desc, 'running', 'manual', :company_id)";
+                        (project_id, task_id, user_id, start_time, description, status, close_reason, company_id)
+                    VALUES (:pid, :tid, :uid, NOW(), :desc, 'running', 'manual', :company_id)";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([':pid' => $project_id, ':uid' => $user_id, ':desc' => $description, ':company_id' => $_SESSION['company_id']]);
+            $stmt->execute([':pid' => $project_id, ':tid' => $task_id, ':uid' => $user_id, ':desc' => $description, ':company_id' => $_SESSION['company_id']]);
             $new_entry_id = $pdo->lastInsertId();
 
             updateUserPresence($pdo, $user_id, $project_id);
