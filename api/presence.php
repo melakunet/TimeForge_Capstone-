@@ -53,9 +53,9 @@ foreach ($rows as $r) {
         $last   = new DateTime($r['last_active_at']);
         $diffSec = ($now->getTimestamp() - $last->getTimestamp());
 
-        if ($diffSec <= 90) {           // heartbeat within 90 sec = active
+        if ($diffSec <= 180) {          // ping within 3 min = active (covers 60s ping interval)
             $status = 'active';
-            $label  = 'Active now';
+            $label  = $r['timer_start'] ? 'Active now' : 'Online';
         } elseif ($diffSec <= 600) {    // within 10 min = idle
             $status = 'idle';
             $m = floor($diffSec / 60);

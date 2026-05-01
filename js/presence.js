@@ -11,16 +11,20 @@
 
     if (!panel) return; // Only runs on pages that have the presence panel
 
-    function statusDot(status) {
+    function statusDot(status, label) {
         const colors = { active: '#2ecc71', idle: '#f39c12', offline: '#555' };
         const color  = colors[status] || '#555';
+        // Pulse animation only for active users
+        const pulse = status === 'active'
+            ? `box-shadow: 0 0 0 3px ${color}33, 0 0 8px ${color};`
+            : '';
         return `<span style="
             display: inline-block;
             width: 10px; height: 10px;
             border-radius: 50%;
             background: ${color};
             margin-right: 8px;
-            box-shadow: ${status === 'active' ? '0 0 6px ' + color : 'none'};
+            ${pulse}
             vertical-align: middle;
         "></span>`;
     }
@@ -32,11 +36,15 @@
         }
 
         const rows = data.users.map(u => {
-            const dot     = statusDot(u.status);
+            const dot     = statusDot(u.status, u.label);
             const project = u.project_name
                 ? `<span style="color:var(--color-accent); font-size:0.85rem;">▶ ${u.project_name}${u.elapsed ? ' — ' + u.elapsed : ''}</span>`
                 : '';
-            const label   = `<span style="color:#888; font-size:0.82rem;">${u.label}</span>`;
+            // Show green "Online" badge for active users not on a timer
+            const statusBadge = u.status === 'active' && !u.project_name
+                ? `<span style="color:#2ecc71; font-size:0.82rem; font-weight:600;">● Online</span>`
+                : `<span style="color:#888; font-size:0.82rem;">${u.label}</span>`;
+            const label = statusBadge;
 
             return `
             <div style="

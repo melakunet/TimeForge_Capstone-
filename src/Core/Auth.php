@@ -124,7 +124,8 @@ function authenticateUser($username, $password) {
             return ['success' => false, 'message' => 'Invalid username or password'];
         }
 
-        $pdo->prepare("UPDATE users SET last_login = NOW() WHERE id = ?")->execute([$user['id']]);
+        // Update last_login AND last_active_at so they appear online immediately after login
+        $pdo->prepare("UPDATE users SET last_login = NOW(), last_active_at = NOW() WHERE id = ?")->execute([$user['id']]);
         logAuditAction($user['id'], 'login_success', $_SERVER['REMOTE_ADDR']);
         startSession($user);
         return ['success' => true, 'message' => 'Login successful', 'user' => $user];
