@@ -11,6 +11,7 @@ require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/flash.php';
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../config/settings.php';
 
 requireRole('admin');
 
@@ -89,7 +90,10 @@ foreach ($entries as &$e) {
 }
 unset($e);
 
-$tax_rate   = (float)($project['tax_rate'] ?? 0);
+$company_id = (int)$_SESSION['company_id'];
+$_co_settings = getCompanySettings($pdo, $company_id);
+
+$tax_rate   = (float)($project['tax_rate'] ?? $_co_settings['invoice_tax_rate'] ?? 0);
 $tax_amount = round($subtotal * ($tax_rate / 100), 2);
 $total      = round($subtotal + $tax_amount, 2);
 
@@ -267,7 +271,7 @@ $flash = getFlash();
                 </div>
                 <div class="form-group">
                     <label for="notes">Notes (optional)</label>
-                    <textarea id="notes" name="notes" rows="3" class="form-control"><?php echo htmlspecialchars($_POST['notes'] ?? ''); ?></textarea>
+                    <textarea id="notes" name="notes" rows="3" class="form-control"><?php echo htmlspecialchars($_POST['notes'] ?? $_co_settings['invoice_footer_note'] ?? ''); ?></textarea>
                 </div>
 
                 <!-- ── Template Picker ─────────────────────────── -->
