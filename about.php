@@ -231,14 +231,14 @@ include __DIR__ . '/includes/header_partial.php';
       <div class="feature-tag tag-client">Client</div>
       <div class="feature-icon">🌐</div>
       <h3>Client Portal</h3>
-      <p>Dedicated client view — their projects, time logs, invoices, and payments only. Fully isolated from other company data.</p>
+      <p>Clients get their own login and see only their projects, time logs, invoices, and payments — nothing from other accounts, nothing overwhelming.</p>
     </div>
 
     <div class="feature-card">
       <div class="feature-tag tag-system">System</div>
       <div class="feature-icon">🏢</div>
       <h3>Multi-Tenancy</h3>
-      <p>Every record is scoped by <code>company_id</code>. Multiple companies can run on the same instance with zero data crossover.</p>
+      <p>Multiple companies can run on the same platform — each with their own users, projects, and billing. No data ever crosses between accounts.</p>
     </div>
 
     <div class="feature-card">
