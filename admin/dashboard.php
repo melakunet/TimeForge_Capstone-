@@ -113,7 +113,7 @@ $total_entries  = (int)$entry_count->fetchColumn();
     <!-- Phase 9: Recent Screenshots mini-panel -->
     <?php
     $recent_shots = $pdo->prepare("
-        SELECT s.file_path, s.activity_score_at_capture, s.captured_at,
+        SELECT s.id, s.file_path, s.activity_score_at_capture, s.captured_at,
                u.full_name, p.project_name
         FROM screenshots s
         LEFT JOIN users    u ON u.id = s.user_id
@@ -138,7 +138,7 @@ $total_entries  = (int)$entry_count->fetchColumn();
                 $border = $shot['activity_score_at_capture'] == 0 ? '2px solid #e74c3c' : '2px solid transparent';
             ?>
             <a href="/TimeForge_Capstone/admin/screenshots.php" style="display:block; border-radius:6px; overflow:hidden; border:<?= $border ?>; text-decoration:none;">
-                <img src="/TimeForge_Capstone/<?= htmlspecialchars($shot['file_path']) ?>" style="width:100%;height:80px;object-fit:cover;display:block;" alt="screenshot">
+                <img src="/TimeForge_Capstone/api/screenshot_img.php?id=<?= (int)$shot['id'] ?>" style="width:100%;height:80px;object-fit:cover;display:block;" alt="screenshot">
                 <div style="font-size:0.7rem; padding:0.3rem 0.4rem; background:var(--color-card); color:var(--color-text-secondary);">
                     <?= htmlspecialchars($shot['full_name'] ?? 'Unknown') ?> &bull; <?= date('M j, g:i a', strtotime($shot['captured_at'])) ?>
                 </div>

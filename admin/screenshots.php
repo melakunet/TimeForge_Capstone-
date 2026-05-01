@@ -164,7 +164,7 @@ $screenshots = $shots_stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php else: ?>
             <div class="ss-grid">
                 <?php foreach ($screenshots as $s):
-                    $img_url  = '/TimeForge_Capstone/' . htmlspecialchars($s['file_path']);
+                    $img_url  = '/TimeForge_Capstone/api/screenshot_img.php?id=' . (int)$s['id'];
                     $is_zero  = ($s['activity_score_at_capture'] == 0);
                     $cap_time = date('M j, Y g:i a', strtotime($s['captured_at']));
                 ?>
