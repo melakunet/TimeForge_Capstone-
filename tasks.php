@@ -347,6 +347,7 @@ function toggleAddForm() {
 // ── Task-start modal ──────────────────────────────────────────────────────────
 let _pendingTaskId    = null;
 let _pendingProjectId = null;
+let _pendingTaskName  = null;
 
 function openTaskStartModal(taskId, projectId, taskTitle, projectName) {
   if (window.timeTracker && window.timeTracker.projectId) {
@@ -355,6 +356,7 @@ function openTaskStartModal(taskId, projectId, taskTitle, projectName) {
   }
   _pendingTaskId    = taskId;
   _pendingProjectId = projectId;
+  _pendingTaskName  = taskTitle;
   document.getElementById('tf-task-modal-project').textContent  = projectName;
   document.getElementById('tf-task-modal-taskname').value       = taskTitle;
   document.getElementById('tf-task-modal-desc').value           = taskTitle;
@@ -366,18 +368,18 @@ function closeTaskStartModal() {
   document.getElementById('tf-task-start-modal').classList.add('hidden');
   _pendingTaskId    = null;
   _pendingProjectId = null;
+  _pendingTaskName  = null;
 }
 
 async function confirmTaskStart() {
   if (!_pendingTaskId || !_pendingProjectId) return;
-  const desc = document.getElementById('tf-task-modal-desc').value.trim() || 'General work';
-
-  // Capture before closing modal clears globals
-  const tid = _pendingTaskId;
-  const pid = _pendingProjectId;
+  const desc     = document.getElementById('tf-task-modal-desc').value.trim() || 'General work';
+  const tid      = _pendingTaskId;
+  const pid      = _pendingProjectId;
+  const taskName = _pendingTaskName;
   closeTaskStartModal();
 
-  // 1. Move task to in_progress via fetch (no page reload)
+  // 1. Move task to in_progress — this MUST succeed before anything else
   const fd = new FormData();
   fd.append('action',     'move');
   fd.append('task_id',    tid);
@@ -385,15 +387,24 @@ async function confirmTaskStart() {
   fd.append('project_id', pid);
 
   try {
-    await fetch('/TimeForge_Capstone/task_action.php', { method: 'POST', body: fd });
-  } catch(e) { console.warn('task move failed', e); }
-
-  // 2. Start the timer with this task linked
-  if (window.timeTracker) {
-    await window.timeTracker.startTimer(pid, desc, null, tid);
+    const res = await fetch('/TimeForge_Capstone/task_action.php', {
+      method: 'POST', body: fd, credentials: 'same-origin'
+    });
+    if (!res.ok) console.warn('task move: HTTP', res.status);
+  } catch(e) {
+    console.warn('task move failed', e);
   }
 
-  // 3. Reload the board so the card moves to In Progress column
+  // 2. Start the timer — do NOT await; if it fails the board still reloads
+  if (window.timeTracker) {
+    window.timeTracker.startTimer(pid, desc, null, tid, taskName).catch(e => {
+      console.warn('startTimer error (ignored):', e);
+    });
+    // Give startTimer 800ms to register the entry before reloading
+    await new Promise(r => setTimeout(r, 800));
+  }
+
+  // 3. Reload so the card moves to In Progress column
   window.location.reload();
 }
 
