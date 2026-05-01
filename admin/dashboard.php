@@ -91,7 +91,7 @@ $total_entries  = (int)$entry_count->fetchColumn();
                 <a href="/TimeForge_Capstone/admin/audit_logs.php" class="btn btn-primary" style="display: inline-block;">View Audit Logs</a>
             </li>
             <li style="margin-bottom: 1rem;">
-                <button class="btn btn-primary" style="display: inline-block; opacity: 0.6; cursor: not-allowed;" title="Coming soon">System Settings (Soon)</button>
+                <a href="/TimeForge_Capstone/admin/system_settings.php" class="btn btn-primary" style="display:inline-block;">⚙️ System Settings</a>
             </li>
             <li style="margin-bottom: 1rem;">
                 <a href="/TimeForge_Capstone/admin/session_audit.php" class="btn btn-primary" style="display: inline-block;">Session Audit Log</a>
