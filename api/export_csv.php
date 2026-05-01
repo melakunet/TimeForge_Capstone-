@@ -21,10 +21,11 @@ if (!$project_id) {
     exit('Missing project_id.');
 }
 
-$user_id = $_SESSION['user_id'];
-$role    = $_SESSION['role'];
+$user_id    = $_SESSION['user_id'];
+$role       = $_SESSION['role'];
+$company_id = (int)$_SESSION['company_id'];
 
-// Admin can export any project; clients only their own
+// Admin can export any project in THEIR company; clients only their own
 if ($role === 'client') {
     $access_stmt = $pdo->prepare("
         SELECT p.id FROM projects p
@@ -37,7 +38,15 @@ if ($role === 'client') {
         http_response_code(403);
         exit('Access denied.');
     }
-} elseif ($role !== 'admin') {
+} elseif ($role === 'admin' || $role === 'freelancer') {
+    // Verify project belongs to this admin's company
+    $access_stmt = $pdo->prepare("SELECT id FROM projects WHERE id = :pid AND company_id = :cid AND deleted_at IS NULL LIMIT 1");
+    $access_stmt->execute([':pid' => $project_id, ':cid' => $company_id]);
+    if (!$access_stmt->fetch()) {
+        http_response_code(403);
+        exit('Access denied.');
+    }
+} else {
     http_response_code(403);
     exit('Access denied.');
 }
@@ -48,10 +57,10 @@ $proj_stmt = $pdo->prepare("
            c.client_name, c.company_name
     FROM projects p
     LEFT JOIN clients c ON c.id = p.client_id
-    WHERE p.id = :id
+    WHERE p.id = :id AND p.company_id = :cid
     LIMIT 1
 ");
-$proj_stmt->execute([':id' => $project_id]);
+$proj_stmt->execute([':id' => $project_id, ':cid' => $company_id]);
 $project = $proj_stmt->fetch();
 
 if (!$project) {

@@ -75,12 +75,23 @@ function logAuditAction($userId, $action, $ipAddress = null) {
     global $pdo;
     $ipAddress = $ipAddress ?? $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
     $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+    // Resolve company_id: prefer session, fall back to DB lookup
+    $companyId = $_SESSION['company_id'] ?? null;
+    if (!$companyId && $userId) {
+        try {
+            $cs = $pdo->prepare("SELECT company_id FROM users WHERE id = ? LIMIT 1");
+            $cs->execute([$userId]);
+            $companyId = $cs->fetchColumn() ?: null;
+        } catch (PDOException $e) { $companyId = null; }
+    }
+
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO audit_logs (user_id, action, ip_address, user_agent, created_at)
-            VALUES (?, ?, ?, ?, NOW())
+            INSERT INTO audit_logs (user_id, company_id, action, ip_address, user_agent, created_at)
+            VALUES (?, ?, ?, ?, ?, NOW())
         ");
-        $stmt->execute([$userId, $action, $ipAddress, $userAgent]);
+        $stmt->execute([$userId, $companyId, $action, $ipAddress, $userAgent]);
         return true;
     } catch (PDOException $e) {
         return false;
