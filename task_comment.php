@@ -86,32 +86,3 @@ $ins->execute([
 setFlash('success', 'Comment posted.');
 header("Location: {$back_url}");
 exit;
-
-if (!$task) {
-    setFlash('error', 'Task not found.');
-    header("Location: tasks.php?project_id={$project_id}");
-    exit;
-}
-
-// Freelancer can only comment on tasks assigned to them or unassigned
-if ($role === 'freelancer' && $task['assigned_to'] && (int)$task['assigned_to'] !== $user_id) {
-    setFlash('error', 'You can only comment on tasks assigned to you.');
-    header("Location: tasks.php?project_id={$project_id}");
-    exit;
-}
-
-$ins = $pdo->prepare("
-    INSERT INTO task_comments (task_id, company_id, user_id, type, body)
-    VALUES (:tid, :cid, :uid, :type, :body)
-");
-$ins->execute([
-    ':tid'  => $task_id,
-    ':cid'  => $company_id,
-    ':uid'  => $user_id,
-    ':type' => $type,
-    ':body' => $body,
-]);
-
-setFlash('success', 'Comment posted.');
-header("Location: task_detail.php?id={$task_id}&project_id={$project_id}");
-exit;

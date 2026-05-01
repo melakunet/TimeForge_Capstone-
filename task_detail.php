@@ -80,15 +80,16 @@ $back_url = $role === 'client'
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Task: <?= htmlspecialchars($task['title']) ?> — TimeForge</title>
-  <?php include __DIR__ . '/includes/header_partial.php'; ?>
   <style>
-    .td-wrap  { max-width:860px; margin:0 auto; padding:2rem 1rem 5rem; }
-    .td-back  { color:var(--color-accent); font-size:.88rem; text-decoration:none; display:inline-block; margin-bottom:1rem; }
+    /* force dark theme regardless of body class */
+    .td-wrap  * { box-sizing: border-box; }
+    .td-wrap  { max-width:860px; margin:0 auto; padding:2rem 1rem 5rem; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; color:#e0e0e0; }
+    .td-back  { color:#6366f1; font-size:.88rem; text-decoration:none; display:inline-block; margin-bottom:1rem; }
     .td-back:hover { text-decoration:underline; }
-    .td-header { background:var(--color-card); border-radius:12px; padding:1.5rem 1.75rem; margin-bottom:1.25rem; border-left:4px solid var(--color-accent); }
-    .td-header h1 { margin:0 0 .4rem; font-size:1.35rem; }
-    .td-meta  { display:flex; flex-wrap:wrap; gap:.6rem 1.4rem; font-size:.84rem; color:var(--color-text-secondary); margin-top:.55rem; }
-    .td-meta span strong { color:var(--color-text); }
+    .td-header { background:#1f1f3a; border-radius:12px; padding:1.5rem 1.75rem; margin-bottom:1.25rem; border-left:4px solid #6366f1; color:#e0e0e0; }
+    .td-header h1 { margin:0 0 .4rem; font-size:1.35rem; color:#f1f5f9; }
+    .td-meta  { display:flex; flex-wrap:wrap; gap:.6rem 1.4rem; font-size:.84rem; color:#94a3b8; margin-top:.55rem; }
+    .td-meta span strong { color:#e2e8f0; }
     .priority-badge { display:inline-block; padding:.2rem .55rem; border-radius:4px; font-size:.72rem; font-weight:700; text-transform:uppercase; }
     .priority-badge.high   { background:#dc2626; color:#fff; }
     .priority-badge.medium { background:#d97706; color:#fff; }
@@ -104,48 +105,60 @@ $back_url = $role === 'client'
     .sum-solutions{ background:rgba(16,185,129,.15); color:#34d399; border:1px solid rgba(16,185,129,.3); }
     .sum-feedback { background:rgba(251,191,36,.15); color:#fcd34d; border:1px solid rgba(251,191,36,.3); }
     .td-thread { display:flex; flex-direction:column; gap:.8rem; margin-bottom:1.75rem; }
-    .td-comment { border-radius:10px; padding:.9rem 1.2rem; }
-    .bubble-admin      { background:rgba(99,102,241,.1);  border-left:3px solid #6366f1; }
-    .bubble-freelancer { background:rgba(30,41,59,1);     border-left:3px solid #334155; }
-    .bubble-client     { background:rgba(251,191,36,.07); border-left:3px solid #f59e0b; }
+    .td-comment { border-radius:10px; padding:.9rem 1.2rem; color:#e2e8f0; }
+    .bubble-admin      { background:rgba(99,102,241,.18); border-left:3px solid #6366f1; }
+    .bubble-freelancer { background:#1e293b; border-left:3px solid #475569; color:#e2e8f0; }
+    .bubble-client     { background:rgba(251,191,36,.1); border-left:3px solid #f59e0b; }
     .td-comment.type-problem  { border-left-color:#ef4444 !important; }
     .td-comment.type-solution { border-left-color:#10b981 !important; }
     .td-comment.type-feedback { border-left-color:#f59e0b !important; }
     .td-c-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.35rem; }
-    .td-c-who  { font-weight:600; font-size:.87rem; display:flex; align-items:center; gap:.4rem; }
+    .td-c-who  { font-weight:600; font-size:.87rem; display:flex; align-items:center; gap:.4rem; color:#e2e8f0; }
     .role-pill  { font-size:.68rem; font-weight:700; padding:.1rem .45rem; border-radius:99px; text-transform:uppercase; }
     .pill-admin      { background:#6366f1; color:#fff; }
     .pill-freelancer { background:#334155; color:#94a3b8; }
     .pill-client     { background:#b45309; color:#fff; }
-    .you-tag { font-size:.7rem; color:#6366f1; }
-    .td-c-time { font-size:.73rem; color:#475569; }
+    .you-tag { font-size:.7rem; color:#818cf8; }
+    .td-c-time { font-size:.73rem; color:#64748b; }
     .td-type-tag { display:inline-block; padding:.13rem .48rem; border-radius:4px; font-size:.7rem; font-weight:700; text-transform:uppercase; margin-bottom:.3rem; }
     .tag-note     { background:rgba(99,102,241,.2); color:#a5b4fc; }
     .tag-problem  { background:rgba(239,68,68,.2);  color:#f87171; }
     .tag-solution { background:rgba(16,185,129,.2); color:#34d399; }
     .tag-feedback { background:rgba(251,191,36,.2); color:#fcd34d; }
-    .td-c-body { font-size:.9rem; line-height:1.65; white-space:pre-wrap; word-break:break-word; }
-    .td-post  { background:var(--color-card); border-radius:12px; padding:1.5rem 1.75rem; }
-    .td-post h3 { margin:0 0 .9rem; font-size:1rem; }
+    .td-c-body { font-size:.9rem; line-height:1.65; white-space:pre-wrap; word-break:break-word; color:#e2e8f0; }
+    .td-post  { background:#1f1f3a; border-radius:12px; padding:1.5rem 1.75rem; }
+    .td-post h3 { margin:0 0 .9rem; font-size:1rem; color:#f1f5f9; }
     .type-selector { display:flex; gap:.55rem; margin-bottom:.9rem; flex-wrap:wrap; }
     .type-selector input[type=radio] { display:none; }
-    .type-btn { display:inline-block; padding:.38rem .85rem; border-radius:20px; border:1px solid #334155; font-size:.8rem; font-weight:600; cursor:pointer; transition:.15s; }
+    .type-btn { display:inline-block; padding:.38rem .85rem; border-radius:20px; border:1px solid #334155; font-size:.8rem; font-weight:600; cursor:pointer; transition:.15s; color:#94a3b8; background:transparent; }
     .type-selector input:checked + .type-btn.note-btn     { background:rgba(99,102,241,.25); border-color:#6366f1; color:#a5b4fc; }
     .type-selector input:checked + .type-btn.problem-btn  { background:rgba(239,68,68,.25);  border-color:#ef4444; color:#f87171; }
     .type-selector input:checked + .type-btn.solution-btn { background:rgba(16,185,129,.25); border-color:#10b981; color:#34d399; }
     .type-selector input:checked + .type-btn.feedback-btn { background:rgba(251,191,36,.25); border-color:#f59e0b; color:#fcd34d; }
-    .td-post textarea { width:100%; min-height:100px; background:var(--color-bg); border:1px solid #334155; color:var(--color-text); border-radius:8px; padding:.7rem 1rem; font-size:.9rem; resize:vertical; box-sizing:border-box; line-height:1.55; font-family:inherit; }
-    .td-post textarea:focus { outline:none; border-color:var(--color-accent); }
+    .td-post textarea { width:100%; min-height:100px; background:#0f172a; border:1px solid #334155; color:#e2e8f0; border-radius:8px; padding:.7rem 1rem; font-size:.9rem; resize:vertical; box-sizing:border-box; line-height:1.55; font-family:inherit; }
+    .td-post textarea:focus { outline:none; border-color:#6366f1; }
+    .td-post textarea::placeholder { color:#475569; }
     .td-post-footer { display:flex; justify-content:space-between; align-items:center; margin-top:.65rem; flex-wrap:wrap; gap:.5rem; }
-    .td-hint { font-size:.77rem; color:#475569; }
-    .empty-thread { text-align:center; padding:2rem 1rem; color:#475569; font-size:.88rem; background:var(--color-card); border-radius:10px; margin-bottom:1.5rem; }
+    .td-hint { font-size:.77rem; color:#64748b; }
+    .empty-thread { text-align:center; padding:2rem 1rem; color:#64748b; font-size:.88rem; background:#1f1f3a; border-radius:10px; margin-bottom:1.5rem; }
     .date-divider { text-align:center; font-size:.72rem; color:#475569; margin:.4rem 0; display:flex; align-items:center; gap:.5rem; }
     .date-divider::before,.date-divider::after { content:''; flex:1; height:1px; background:#1e293b; }
+    /* post button */
+    .td-post .btn-primary { background:#6366f1; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:.9rem; font-weight:600; }
+    .td-post .btn-primary:hover { background:#4f46e5; }
   </style>
 </head>
-<body>
+<body style="background:#0f172a; color:#e0e0e0; min-height:100vh;">
 
-<?php include __DIR__ . '/includes/flash.php'; ?>
+<?php include __DIR__ . '/includes/header_partial.php'; ?>
+
+<?php
+$flash = getFlash();
+if ($flash): ?>
+  <div class="flash flash-<?= $flash['type'] ?>" style="max-width:860px;margin:1rem auto;padding:.75rem 1.25rem;border-radius:8px;background:<?= $flash['type']==='error'?'rgba(239,68,68,.15)':'rgba(16,185,129,.15)' ?>;color:<?= $flash['type']==='error'?'#f87171':'#34d399' ?>;border:1px solid <?= $flash['type']==='error'?'rgba(239,68,68,.3)':'rgba(16,185,129,.3)' ?>;">
+    <?= htmlspecialchars($flash['message']) ?>
+  </div>
+<?php endif; ?>
 
 <div class="td-wrap">
   <a href="<?= $back_url ?>" class="td-back">← Back<?= $role === 'client' ? ' to project' : ' to task board' ?></a>
