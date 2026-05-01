@@ -40,11 +40,18 @@
             const project = u.project_name
                 ? `<span style="color:var(--color-accent); font-size:0.85rem;">▶ ${u.project_name}${u.elapsed ? ' — ' + u.elapsed : ''}</span>`
                 : '';
-            // Show green "Online" badge for active users not on a timer
-            const statusBadge = u.status === 'active' && !u.project_name
-                ? `<span style="color:#2ecc71; font-size:0.82rem; font-weight:600;">● Online</span>`
-                : `<span style="color:#888; font-size:0.82rem;">${u.label}</span>`;
-            const label = statusBadge;
+
+            // Build status label with exact timestamp tooltip for offline/idle users
+            let statusBadge;
+            if (u.status === 'active') {
+                statusBadge = u.project_name
+                    ? `<span style="color:#2ecc71; font-size:0.82rem; font-weight:600;">● Active</span>`
+                    : `<span style="color:#2ecc71; font-size:0.82rem; font-weight:600;">● Online</span>`;
+            } else {
+                const tooltip = u.last_seen_exact ? ` title="Exact: ${u.last_seen_exact}"` : '';
+                const color   = u.status === 'idle' ? '#f59e0b' : '#64748b';
+                statusBadge = `<span style="color:${color}; font-size:0.82rem; cursor:default;"${tooltip}>${u.label}</span>`;
+            }
 
             return `
             <div style="
@@ -61,7 +68,10 @@
                 </div>
                 <div style="text-align:right;">
                     ${project}
-                    <br>${label}
+                    ${project ? '<br>' : ''}${statusBadge}
+                    ${u.last_seen_exact && u.status !== 'active'
+                        ? `<div style="font-size:.7rem; color:#475569; margin-top:.1rem;">${u.last_seen_exact}</div>`
+                        : ''}
                 </div>
             </div>`;
         }).join('');
