@@ -83,16 +83,6 @@ $page_title = 'About TimeForge';
     }
     .tech-pill .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-    /* ── Dark cards — force readable text regardless of body theme ── */
-    .feature-card, .feature-card p, .feature-card h3, .feature-card ul, .feature-card li { color: #e2e8f0; }
-    .feature-card p, .feature-card li { color: #94a3b8; }
-    .feature-card h3 { color: #f1f5f9; }
-    .cred-card, .cred-card h3 { color: #e2e8f0; }
-    .dark-role-card { color: #e2e8f0 !important; }
-    .dark-role-card p, .dark-role-card li { color: #94a3b8; }
-    .dark-role-card h3 { color: inherit; }
-    .dark-role-card li span[style] { flex-shrink: 0; }
-
     /* ── Who Benefits ──────────────────────────── */
     .benefits-section { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 4rem; }
     .benefits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 1.5rem; }
@@ -160,6 +150,9 @@ include __DIR__ . '/includes/header_partial.php';
         <li><span class="ck" style="color:#a78bfa;">✓</span> Communicate with freelancers & clients per task — no email chains</li>
         <li><span class="ck" style="color:#a78bfa;">✓</span> Full financial reports with CSV export</li>
       </ul>
+      <div style="margin-top:1.5rem;">
+        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#7c3aed22; color:#a78bfa; border:1px solid #7c3aed55; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">Login as Admin →</a>
+      </div>
     </div>
 
     <!-- Freelancer -->
@@ -176,6 +169,9 @@ include __DIR__ . '/includes/header_partial.php';
         <li><span class="ck" style="color:#38bdf8;">✓</span> Flag a blocker 🐛 or suggest a fix 💡 directly on the task</li>
         <li><span class="ck" style="color:#38bdf8;">✓</span> Submit past work as manual entries — admin reviews & approves</li>
       </ul>
+      <div style="margin-top:1.5rem;">
+        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#0284c722; color:#38bdf8; border:1px solid #0284c755; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">Login as Freelancer →</a>
+      </div>
     </div>
 
     <!-- Client -->
@@ -192,6 +188,9 @@ include __DIR__ . '/includes/header_partial.php';
         <li><span class="ck" style="color:#34d399;">✓</span> View full payment history — nothing is hidden</li>
         <li><span class="ck" style="color:#34d399;">✓</span> Only see your own data — clean, focused, no clutter</li>
       </ul>
+      <div style="margin-top:1.5rem;">
+        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#05966922; color:#34d399; border:1px solid #05966955; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">Login as Client →</a>
+      </div>
     </div>
 
   </div>
@@ -406,94 +405,6 @@ include __DIR__ . '/includes/header_partial.php';
 
   </div>
   <p style="text-align:center; padding: 0 1.5rem 2rem; color:#475569; font-size:.82rem;">⚠️ Demo account — please don't change passwords.</p>
-</section>
-
-<!-- ── Who It's For ───────────────────────────────────────────── -->
-<section>
-  <div class="section-title">
-    <h2>� Who It's For</h2>
-    <p>Three distinct login roles — each with a tailored interface and access level.</p>
-  </div>
-
-  <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:2rem;">
-
-    <!-- Admin -->
-    <div class="dark-role-card" style="background:#1e293b; border:1px solid #7c3aed44; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
-      <div style="position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div>
-      <div style="font-size:2.5rem; margin-bottom:.75rem;">🛡️</div>
-      <h3 style="font-size:1.15rem; font-weight:800; color:#a78bfa; margin:0 0 .4rem;">Admin</h3>
-      <p style="color:#94a3b8; font-size:.85rem; margin:0 0 1.25rem; line-height:1.6;">
-        Full platform control — manage the team, projects, billing, and monitoring from one dashboard.
-      </p>
-      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.55rem;">
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Create &amp; manage projects, set budgets and deadlines</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Approve or reject freelancer time entries</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Build Kanban task boards per project</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Post notes, solutions &amp; replies in per-task discussion threads</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Generate PDF invoices, send by email, track payments</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> View live presence panel (Online / Active / Idle / Offline)</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Browse screenshot gallery and activity scores</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Financial reports with CSV export</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Security &amp; login audit logs</li>
-      </ul>
-      <div style="margin-top:1.5rem;">
-        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#7c3aed22; color:#a78bfa; border:1px solid #7c3aed55; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">
-          Login as Admin →
-        </a>
-      </div>
-    </div>
-
-    <!-- Freelancer -->
-    <div class="dark-role-card" style="background:#1e293b; border:1px solid #0284c744; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
-      <div style="position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#0284c7,#38bdf8);"></div>
-      <div style="font-size:2.5rem; margin-bottom:.75rem;">💼</div>
-      <h3 style="font-size:1.15rem; font-weight:800; color:#38bdf8; margin:0 0 .4rem;">Freelancer</h3>
-      <p style="color:#94a3b8; font-size:.85rem; margin:0 0 1.25rem; line-height:1.6;">
-        Focus on the work — start a timer, pick a task, and let TimeForge handle the rest.
-      </p>
-      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.55rem;">
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Start/stop live timer — persists across page navigation</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Pick a task before starting (auto-links time to task)</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Submit manual time entries for past work</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> View assigned tasks — move Open → In Progress → Done</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Post notes, flag problems 🐛, and suggest solutions 💡 on tasks</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Idle popup: decide what to do with inactive time</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Activity score tracked per session (mouse + keyboard)</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> View all projects and their time history</li>
-      </ul>
-      <div style="margin-top:1.5rem;">
-        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#0284c722; color:#38bdf8; border:1px solid #0284c755; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">
-          Login as Freelancer →
-        </a>
-      </div>
-    </div>
-
-    <!-- Client -->
-    <div class="dark-role-card" style="background:#1e293b; border:1px solid #05966944; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
-      <div style="position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#059669,#34d399);"></div>
-      <div style="font-size:2.5rem; margin-bottom:.75rem;">🤝</div>
-      <h3 style="font-size:1.15rem; font-weight:800; color:#34d399; margin:0 0 .4rem;">Client</h3>
-      <p style="color:#94a3b8; font-size:.85rem; margin:0 0 1.25rem; line-height:1.6;">
-        Stay informed without the noise — see only your projects, your bills, your status.
-      </p>
-      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.55rem;">
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Dedicated portal login — sees only their own data</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> View active projects with progress &amp; time logged</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> See task breakdown per project (status + progress bars)</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Open any task and post ⭐ feedback or flag concerns directly</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Read replies from the admin and assigned worker in real time</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Access invoices — view, download PDF</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> View payment history per invoice</li>
-        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Project time reports showing who worked and when</li>
-      </ul>
-      <div style="margin-top:1.5rem;">
-        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#05966922; color:#34d399; border:1px solid #05966955; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">
-          Login as Client →
-        </a>
-      </div>
-    </div>
-
-  </div>
 </section>
 
 <!-- ── Tech Stack ─────────────────────────────────────────────── -->
