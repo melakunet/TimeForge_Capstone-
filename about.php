@@ -114,7 +114,7 @@ include __DIR__ . '/includes/header_partial.php';
   <div class="hero-badges">
     <span class="badge">🏫 <strong>triOS College</strong> — Mobile & Web App Development</span>
     <span class="badge">👩‍💻 <strong>Etefworkie Melaku</strong></span>
-    <span class="badge">📅 <strong>2024 – 2025</strong></span>
+    <span class="badge">📅 <strong>2024 – 2026</strong></span>
     <span class="badge">🛠️ PHP 8.1 · MariaDB · Vanilla JS</span>
   </div>
 
@@ -446,14 +446,6 @@ include __DIR__ . '/includes/header_partial.php';
     <div class="tech-pill"><span class="dot" style="background:#333;"></span>Composer (packages)</div>
   </div>
 </section>
-
-<!-- ── Footer ─────────────────────────────────────────────────── -->
-<footer class="about-footer">
-  <p>Built by <strong>Etefworkie Melaku</strong> — triOS College, Mobile and Web App Development Program</p>
-  <p>Web Capstone Project · 2024–2025 ·
-     <a href="https://github.com/melakunet/TimeForge_Capstone-" target="_blank" rel="noopener">GitHub</a>
-  </p>
-</footer>
 
 <?php include __DIR__ . '/includes/footer_partial.php'; ?>
 <script src="/TimeForge_Capstone/js/theme.js"></script>
