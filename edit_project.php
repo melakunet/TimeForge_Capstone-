@@ -116,16 +116,91 @@ $flash = getFlash();
                     </select>
                 </div>
 
-                <!-- Phase 9: Screenshots toggle -->
+                <!-- Phase 9: Screenshots toggle + interval -->
                 <div class="form-group">
                     <label>Activity Screenshots:</label>
                     <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-weight:normal;">
-                        <input type="checkbox" name="screenshots_enabled" value="1"
-                            <?php echo !empty($project['screenshots_enabled']) ? 'checked' : ''; ?>>
+                        <input type="checkbox" name="screenshots_enabled" value="1" id="ss_enabled"
+                            <?php echo !empty($project['screenshots_enabled']) ? 'checked' : ''; ?>
+                            onchange="toggleSsInterval()">
                         Enable automatic screenshots while timer runs
                     </label>
-                    <small style="color:var(--color-text-secondary);">When ON, the timer widget captures a page snapshot every 5–15 minutes and saves it for admin review.</small>
+
+                    <!-- Interval configurator (shown when screenshots are ON) -->
+                    <div id="ss_interval_block" style="margin-top:.85rem; padding:1rem; background:var(--color-bg); border:1px solid #334155; border-radius:8px; <?php echo empty($project['screenshots_enabled']) ? 'display:none;' : ''; ?>">
+                        <div style="font-size:.82rem; font-weight:600; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.75rem;">Screenshot Interval</div>
+
+                        <div style="display:flex; gap:1.25rem; flex-wrap:wrap; align-items:flex-end;">
+                            <div>
+                                <label style="font-size:.8rem; color:var(--color-text-secondary);">Min (minutes)</label>
+                                <input type="number" name="screenshot_min_interval" id="ss_min"
+                                    min="1" max="120" step="1"
+                                    value="<?= (int)($project['screenshot_min_interval'] ?? 5) ?>"
+                                    oninput="updateSsPreview()"
+                                    style="width:100px; background:var(--color-card); border:1px solid #334155; color:var(--color-text); border-radius:6px; padding:.45rem .6rem; margin-top:.25rem;">
+                            </div>
+                            <div>
+                                <label style="font-size:.8rem; color:var(--color-text-secondary);">Max (minutes)</label>
+                                <input type="number" name="screenshot_max_interval" id="ss_max"
+                                    min="1" max="120" step="1"
+                                    value="<?= (int)($project['screenshot_max_interval'] ?? 15) ?>"
+                                    oninput="updateSsPreview()"
+                                    style="width:100px; background:var(--color-card); border:1px solid #334155; color:var(--color-text); border-radius:6px; padding:.45rem .6rem; margin-top:.25rem;">
+                            </div>
+                            <div id="ss_preview" style="font-size:.85rem; color:#22c55e; font-weight:600; padding-bottom:.5rem;"></div>
+                        </div>
+
+                        <!-- Quick presets -->
+                        <div style="margin-top:.85rem; display:flex; flex-wrap:wrap; gap:.45rem;">
+                            <span style="font-size:.75rem; color:#64748b; align-self:center;">Quick presets:</span>
+                            <?php
+                            $presets = [
+                                ['label' => 'Every 5 min',    'min' => 5,  'max' => 5],
+                                ['label' => 'Every 10 min',   'min' => 10, 'max' => 10],
+                                ['label' => 'Every 15 min',   'min' => 15, 'max' => 15],
+                                ['label' => 'Every 30 min',   'min' => 30, 'max' => 30],
+                                ['label' => 'Random 5–10',    'min' => 5,  'max' => 10],
+                                ['label' => 'Random 5–15',    'min' => 5,  'max' => 15],
+                                ['label' => 'Random 10–30',   'min' => 10, 'max' => 30],
+                                ['label' => 'Random 15–60',   'min' => 15, 'max' => 60],
+                            ];
+                            foreach ($presets as $p):
+                            ?>
+                            <button type="button"
+                                onclick="setPreset(<?= $p['min'] ?>, <?= $p['max'] ?>)"
+                                style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:5px; padding:.2rem .6rem; font-size:.75rem; cursor:pointer; transition:border-color .15s;"
+                                onmouseover="this.style.borderColor='#3b82f6';this.style.color='#e2e8f0'"
+                                onmouseout="this.style.borderColor='#334155';this.style.color='#94a3b8'">
+                                <?= $p['label'] ?>
+                            </button>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
+                <script>
+                function toggleSsInterval() {
+                    const on  = document.getElementById('ss_enabled').checked;
+                    document.getElementById('ss_interval_block').style.display = on ? 'block' : 'none';
+                    if (on) updateSsPreview();
+                }
+                function updateSsPreview() {
+                    let mn = parseInt(document.getElementById('ss_min').value) || 5;
+                    let mx = parseInt(document.getElementById('ss_max').value) || 15;
+                    if (mn < 1)  { mn = 1;  document.getElementById('ss_min').value = mn; }
+                    if (mx < mn) { mx = mn; document.getElementById('ss_max').value = mx; }
+                    const txt = (mn === mx)
+                        ? `📸 Fixed: every ${mn} minute${mn !== 1 ? 's' : ''}`
+                        : `📸 Random: every ${mn}–${mx} minutes`;
+                    document.getElementById('ss_preview').textContent = txt;
+                }
+                function setPreset(mn, mx) {
+                    document.getElementById('ss_min').value = mn;
+                    document.getElementById('ss_max').value = mx;
+                    updateSsPreview();
+                }
+                // Run on load
+                updateSsPreview();
+                </script>
 
                 <div class="form-group buttons">
                     <input type="submit" value="Save Changes" class="btn btn-primary">

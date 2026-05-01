@@ -42,9 +42,11 @@ class TimeTracker {
         this.STALE_GAP_MS      = 1800000; // 30 minutes — stale session threshold
 
         // Phase 9: Screenshot
-        this.screenshotTimeout  = null;   // single random-delay timeout
-        this.screenshotCount    = 0;      // shown in widget badge
-        this.screenshotsEnabled = false;  // set from server on timer start
+        this.screenshotTimeout    = null;   // single random-delay timeout
+        this.screenshotCount      = 0;      // shown in widget badge
+        this.screenshotsEnabled   = false;  // set from server on timer start
+        this.screenshotMinMs      = 5  * 60000; // default 5 min (overridden by server)
+        this.screenshotMaxMs      = 15 * 60000; // default 15 min (overridden by server)
 
         this.elements = {
             widget:          null,
@@ -84,7 +86,7 @@ class TimeTracker {
             <div class="tf-timer-body">
                 <div id="tf-timer-display">00:00:00</div>
                 <div id="tf-timer-idle-badge" class="tf-idle-badge tf-hidden">&#9888; Idle time excluded</div>
-                <div id="tf-screenshot-badge" class="tf-screenshot-badge tf-hidden">&#128247; <span id="tf-screenshot-count">0</span></div>
+                <div id="tf-screenshot-badge" class="tf-screenshot-badge tf-hidden" title="Screenshots active">&#128247; <span id="tf-screenshot-count">0</span> <span id="tf-screenshot-interval" style="font-size:.7em; opacity:.75;"></span></div>
                 <div class="tf-timer-controls">
                     <button id="tf-timer-stop" class="tf-btn-stop">Stop Timer</button>
                 </div>
@@ -367,7 +369,17 @@ class TimeTracker {
                 if (!response.success) throw new Error(response.message);
                 this.entryId             = response.entry_id || null;
                 this.screenshotsEnabled  = response.screenshots_enabled === true || response.screenshots_enabled === 1;
-                console.log('Timer started, entry_id:', this.entryId, '| screenshots_enabled:', this.screenshotsEnabled, '| raw:', response.screenshots_enabled);
+                // Phase 9b: use server-configured interval (in minutes → ms)
+                if (response.screenshot_min_interval) {
+                    this.screenshotMinMs = Math.max(1, parseInt(response.screenshot_min_interval)) * 60000;
+                }
+                if (response.screenshot_max_interval) {
+                    this.screenshotMaxMs = Math.max(this.screenshotMinMs, parseInt(response.screenshot_max_interval) * 60000);
+                }
+                const intervalDesc = this.screenshotMinMs === this.screenshotMaxMs
+                    ? `fixed ${this.screenshotMinMs / 60000}min`
+                    : `random ${this.screenshotMinMs / 60000}–${this.screenshotMaxMs / 60000}min`;
+                console.log('Timer started, entry_id:', this.entryId, '| screenshots:', this.screenshotsEnabled, '| interval:', intervalDesc);
             } catch (err) {
                 console.error('Failed to start timer:', err);
                 alert('Could not start timer. Please check your connection.');
@@ -392,6 +404,12 @@ class TimeTracker {
             this.screenshotCount = 0;
             this.scheduleNextScreenshot();
             this.elements.screenshotBadge.classList.remove('tf-hidden');
+            // Show interval label in widget badge
+            const mn = this.screenshotMinMs / 60000;
+            const mx = this.screenshotMaxMs / 60000;
+            const lbl = (mn === mx) ? `every ${mn}min` : `every ${mn}–${mx}min`;
+            const intervalEl = document.getElementById('tf-screenshot-interval');
+            if (intervalEl) intervalEl.textContent = lbl;
         }
     }
 
@@ -498,10 +516,17 @@ class TimeTracker {
 
     // ── Phase 9: Screenshot Capture ───────────────────────────────────────────
 
-    // Schedule next capture at a random delay between 5 and 15 minutes
+    // Schedule next capture using the project-configured min/max interval
     scheduleNextScreenshot() {
         if (this.screenshotTimeout) clearTimeout(this.screenshotTimeout);
-        const delay = Math.floor(Math.random() * (15*60000 - 5*60000 + 1)) + 5*60000;
+        const minMs = this.screenshotMinMs || 5  * 60000;
+        const maxMs = this.screenshotMaxMs || 15 * 60000;
+        // If min === max it's a fixed interval; otherwise pick a random value in range
+        const delay = (minMs === maxMs)
+            ? minMs
+            : Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
+        const delayMin = Math.round(delay / 60000 * 10) / 10;
+        console.log(`Phase 9: next screenshot in ${delayMin} min`);
         this.screenshotTimeout = setTimeout(() => this.captureScreenshot(), delay);
     }
 

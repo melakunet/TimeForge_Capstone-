@@ -52,27 +52,31 @@ try {
 
             updateUserPresence($pdo, $user_id, $project_id);
 
-            // Phase 9: fetch screenshots_enabled for this project
-            $screenshots_enabled = true; // default ON
+            // Phase 9: fetch screenshots_enabled + interval for this project
+            $screenshots_enabled     = true; // default ON
+            $screenshot_min_interval = 5;    // minutes
+            $screenshot_max_interval = 15;   // minutes
             try {
-                $proj_ss = $pdo->prepare("SELECT screenshots_enabled FROM projects WHERE id = :pid LIMIT 1");
+                $proj_ss = $pdo->prepare("SELECT screenshots_enabled, screenshot_min_interval, screenshot_max_interval FROM projects WHERE id = :pid LIMIT 1");
                 $proj_ss->execute([':pid' => $project_id]);
                 $ss_row = $proj_ss->fetch(PDO::FETCH_ASSOC);
                 if ($ss_row !== false) {
-                    $screenshots_enabled = (bool)$ss_row['screenshots_enabled'];
+                    $screenshots_enabled     = (bool)$ss_row['screenshots_enabled'];
+                    $screenshot_min_interval = max(1, (int)$ss_row['screenshot_min_interval']);
+                    $screenshot_max_interval = max($screenshot_min_interval, (int)$ss_row['screenshot_max_interval']);
                 }
             } catch (PDOException $e) {
-                // Column may not exist yet — default to ON
-                error_log('Phase 9 screenshots_enabled fetch error: ' . $e->getMessage());
-                $screenshots_enabled = true;
+                error_log('Phase 9 screenshot settings fetch error: ' . $e->getMessage());
             }
 
-            // Return entry_id + screenshots_enabled so JS knows whether to capture
+            // Return entry_id + screenshot settings so JS knows whether and when to capture
             echo json_encode([
-                'success'             => true,
-                'message'             => 'Timer Started',
-                'entry_id'            => (int)$new_entry_id,
-                'screenshots_enabled' => $screenshots_enabled,
+                'success'                  => true,
+                'message'                  => 'Timer Started',
+                'entry_id'                 => (int)$new_entry_id,
+                'screenshots_enabled'      => $screenshots_enabled,
+                'screenshot_min_interval'  => $screenshot_min_interval,
+                'screenshot_max_interval'  => $screenshot_max_interval,
             ]);
             break;
 
