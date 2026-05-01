@@ -157,6 +157,13 @@ try {
             echo json_encode(['success' => true, 'message' => 'Idle recorded']);
             break;
 
+        // ── PING — lightweight presence update (no timer running) ─────────────
+        case 'ping':
+            $pdo->prepare("UPDATE users SET last_active_at = NOW() WHERE id = :uid")
+                ->execute([':uid' => $user_id]);
+            echo json_encode(['success' => true]);
+            break;
+
         default:
             echo json_encode(['success' => false, 'message' => 'Invalid Action']);
             break;
