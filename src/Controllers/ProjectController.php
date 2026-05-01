@@ -70,7 +70,9 @@ if ($action === 'edit') {
     $budget       = filter_input(INPUT_POST, 'budget',      FILTER_VALIDATE_FLOAT);
     $deadline     = filter_input(INPUT_POST, 'deadline');
     $status       = filter_input(INPUT_POST, 'status');
-    $screenshots_enabled = isset($_POST['screenshots_enabled']) ? 1 : 0; // Phase 9
+    $screenshots_enabled      = isset($_POST['screenshots_enabled']) ? 1 : 0; // Phase 9
+    $screenshot_min_interval  = max(1, min(120, (int)($_POST['screenshot_min_interval'] ?? 5)));
+    $screenshot_max_interval  = max($screenshot_min_interval, min(120, (int)($_POST['screenshot_max_interval'] ?? 15)));
     $allowed      = ['active', 'completed', 'archived'];
 
     if (!$project_id || $project_name === null || $project_name === '' ||
@@ -101,18 +103,22 @@ if ($action === 'edit') {
         UPDATE projects
         SET project_name = :project_name, description = :description, client_id = :client_id,
             hourly_rate = :hourly_rate, budget = :budget, deadline = :deadline, status = :status,
-            screenshots_enabled = :screenshots_enabled
+            screenshots_enabled = :screenshots_enabled,
+            screenshot_min_interval = :ss_min,
+            screenshot_max_interval = :ss_max
         WHERE id = :project_id
     ");
-    $stmt->bindValue(':project_id',          $project_id,         PDO::PARAM_INT);
+    $stmt->bindValue(':project_id',          $project_id,               PDO::PARAM_INT);
     $stmt->bindValue(':project_name',        $project_name);
     $stmt->bindValue(':description',         $description);
-    $stmt->bindValue(':client_id',           $client_id,          PDO::PARAM_INT);
+    $stmt->bindValue(':client_id',           $client_id,                PDO::PARAM_INT);
     $stmt->bindValue(':hourly_rate',         $hourly_rate);
     $stmt->bindValue(':budget',              $budget);
     $stmt->bindValue(':deadline',            $deadline);
     $stmt->bindValue(':status',              $status);
-    $stmt->bindValue(':screenshots_enabled', $screenshots_enabled, PDO::PARAM_INT);
+    $stmt->bindValue(':screenshots_enabled', $screenshots_enabled,       PDO::PARAM_INT);
+    $stmt->bindValue(':ss_min',              $screenshot_min_interval,  PDO::PARAM_INT);
+    $stmt->bindValue(':ss_max',              $screenshot_max_interval,  PDO::PARAM_INT);
     $stmt->execute();
 
     logAuditAction((int)($_SESSION['user_id'] ?? 0), 'project_updated');
