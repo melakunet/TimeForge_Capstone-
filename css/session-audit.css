@@ -123,10 +123,12 @@
 
 /* Column colour classes */
 .col-tracked  { color: var(--color-accent); font-weight: 600; }
-.col-idle     { color: #f39c12; }
-.col-discarded{ color: #e74c3c; }
+.col-idle     { color: var(--color-text-secondary); }
+.col-discarded{ color: var(--color-text-secondary); }
 .col-net      { color: #27ae60; }
 .col-score    { text-align: center; }
+.col-idle .val-idle           { color: #f39c12; font-weight: 600; }
+.col-discarded .val-discarded { color: #e74c3c; font-weight: 600; }
 
 .audit-id   { color: var(--color-text-secondary); font-size: 0.8rem; }
 .audit-date { white-space: nowrap; font-size: 0.82rem; color: var(--color-text-secondary); }

@@ -64,8 +64,11 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= $page_title ?> — TimeForge</title>
-  <?php include __DIR__ . '/includes/header_partial.php'; ?>
+  <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
+  <link rel="stylesheet" href="/TimeForge_Capstone/css/time_tracker.css">
+  <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
   <style>
     .task-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1.5rem; }
     @media(max-width:768px){ .task-board { grid-template-columns: 1fr; } }
