@@ -78,7 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php include __DIR__ . '/includes/header_partial.php'; ?>
 </head>
 <body>
-<?php include __DIR__ . '/includes/header_partial.php'; ?>
 <div class="container" style="max-width:700px; padding:2rem 1rem;">
   <?php include __DIR__ . '/includes/flash.php'; ?>
   <a href="tasks.php?project_id=<?= $project_id ?>" style="color:var(--color-accent); font-size:.9rem;">← Back to task board</a>
