@@ -170,6 +170,7 @@ $earnings         = round($fl_stats['earned'] ?? 0, 2);
         <p>Web Capstone Project by Etefworkie Melaku — triOS College, Mobile and Web App Development</p>
     </footer>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="/TimeForge_Capstone/js/time_tracker.js"></script>
     <script src="/TimeForge_Capstone/js/theme.js"></script>
     <script src="/TimeForge_Capstone/js/animations.js"></script>
