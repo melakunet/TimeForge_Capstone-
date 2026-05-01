@@ -299,7 +299,7 @@ include __DIR__ . '/includes/header_partial.php';
       <div class="feature-tag tag-client">Client</div>
       <div class="feature-icon">🌐</div>
       <h3>Client Portal</h3>
-      <p>Clients get their own login and see only their projects, time logs, invoices, and payments — nothing from other accounts, nothing overwhelming.</p>
+      <p>Clients get a dedicated login to track their projects, review time logs, give feedback on tasks, and manage invoices — all in one clean view, without seeing anything that isn't theirs.</p>
     </div>
 
     <div class="feature-card">
