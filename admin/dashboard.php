@@ -70,10 +70,14 @@ $total_entries  = (int)$entry_count->fetchColumn();
         <?php include __DIR__ . '/dashboard_quick_start.php'; ?>
     </div>
 
-    <!-- Phase 10: Live Freelancer Presence — React component -->
-    <div class="card" style="margin-bottom: 2rem;">
-        <div id="react-live-feed">
-            <p style="color: var(--color-text-secondary);">Loading presence…</p>
+    <!-- Phase 10: Live Freelancer Presence — vanilla JS panel (reliable, no React dependency) -->
+    <div class="card" style="margin-bottom: 2rem;" id="presence-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h2 style="color:var(--color-accent); margin:0;">🟢 Live Freelancer Presence</h2>
+            <span id="presence-updated" style="font-size:0.78rem; color:var(--color-text-secondary);">Loading…</span>
+        </div>
+        <div id="presence-panel">
+            <p style="color:var(--color-text-secondary);">Fetching presence data…</p>
         </div>
     </div>
 
@@ -109,10 +113,11 @@ $total_entries  = (int)$entry_count->fetchColumn();
     <!-- Phase 9: Recent Screenshots mini-panel -->
     <?php
     $recent_shots = $pdo->prepare("
-        SELECT s.file_path, s.activity_score_at_capture, s.captured_at, u.full_name, p.project_name
+        SELECT s.file_path, s.activity_score_at_capture, s.captured_at,
+               u.full_name, p.project_name
         FROM screenshots s
-        INNER JOIN users    u ON u.id = s.user_id
-        INNER JOIN projects p ON p.id = s.project_id
+        LEFT JOIN users    u ON u.id = s.user_id
+        LEFT JOIN projects p ON p.id = s.project_id
         WHERE s.company_id = :cid
         ORDER BY s.captured_at DESC
         LIMIT 6
@@ -120,12 +125,14 @@ $total_entries  = (int)$entry_count->fetchColumn();
     $recent_shots->execute([':cid' => $company_id]);
     $recent_shots = $recent_shots->fetchAll(PDO::FETCH_ASSOC);
     ?>
-    <?php if (!empty($recent_shots)): ?>
     <div class="card" style="margin-top:2rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
             <h2 style="color:var(--color-accent); margin:0;">📷 Recent Screenshots</h2>
             <a href="/TimeForge_Capstone/admin/screenshots.php" style="font-size:0.85rem;">View All →</a>
         </div>
+        <?php if (empty($recent_shots)): ?>
+            <p style="color:var(--color-text-secondary);">No screenshots yet. Screenshots appear here once a worker starts a timer on a project with screenshots enabled.</p>
+        <?php else: ?>
         <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem;">
             <?php foreach ($recent_shots as $shot):
                 $border = $shot['activity_score_at_capture'] == 0 ? '2px solid #e74c3c' : '2px solid transparent';
@@ -133,13 +140,13 @@ $total_entries  = (int)$entry_count->fetchColumn();
             <a href="/TimeForge_Capstone/admin/screenshots.php" style="display:block; border-radius:6px; overflow:hidden; border:<?= $border ?>; text-decoration:none;">
                 <img src="/TimeForge_Capstone/<?= htmlspecialchars($shot['file_path']) ?>" style="width:100%;height:80px;object-fit:cover;display:block;" alt="screenshot">
                 <div style="font-size:0.7rem; padding:0.3rem 0.4rem; background:var(--color-card); color:var(--color-text-secondary);">
-                    <?= htmlspecialchars($shot['full_name']) ?> &bull; <?= date('g:i a', strtotime($shot['captured_at'])) ?>
+                    <?= htmlspecialchars($shot['full_name'] ?? 'Unknown') ?> &bull; <?= date('M j, g:i a', strtotime($shot['captured_at'])) ?>
                 </div>
             </a>
             <?php endforeach; ?>
         </div>
+        <?php endif; ?>
     </div>
-    <?php endif; ?>
 
 </div><!-- /.container -->
 
@@ -153,7 +160,5 @@ $total_entries  = (int)$entry_count->fetchColumn();
     <script src="/TimeForge_Capstone/js/animations.js"></script>
     <script src="/TimeForge_Capstone/js/time_tracker.js"></script>
     <script src="/TimeForge_Capstone/js/presence.js"></script>
-    <!-- Phase 10: React bundle -->
-    <script type="module" src="/TimeForge_Capstone/public/assets/react/app.js"></script>
 </body>
 </html>

@@ -87,6 +87,7 @@ foreach ($rows as $r) {
         'status'       => $status,        // active | idle | offline
         'label'        => $label,
         'project_name' => $r['project_name'] ?? null,
+        'timer_start'  => $r['timer_start'] ?? null,   // Phase 9 fix: needed by LiveFeed for live counter
         'elapsed'      => $elapsed,
         'last_active'  => $since,
     ];
