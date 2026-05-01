@@ -90,6 +90,78 @@ $earnings         = round($fl_stats['earned'] ?? 0, 2);
 
     <!-- NEW: Quick Start Widget -->
     <?php include __DIR__ . '/quick_start.php'; ?>
+
+    <!-- ── My Tasks ─────────────────────────────────────────────── -->
+    <?php
+    $my_tasks_stmt = $pdo->prepare("
+        SELECT t.id, t.title, t.status, t.priority, t.due_date,
+               p.project_name, p.id AS project_id
+        FROM tasks t
+        INNER JOIN projects p ON p.id = t.project_id
+        WHERE t.assigned_to = :uid AND t.company_id = :cid AND t.status != 'done'
+        ORDER BY FIELD(t.status,'in_progress','open'), FIELD(t.priority,'high','medium','low'), t.due_date ASC
+        LIMIT 15
+    ");
+    $my_tasks_stmt->execute([':uid' => $user_id, ':cid' => $company_id]);
+    $my_tasks = $my_tasks_stmt->fetchAll(PDO::FETCH_ASSOC);
+    ?>
+    <div class="card" style="margin-top:2rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+            <h2 style="margin:0; color:var(--color-accent);">📋 My Tasks</h2>
+            <?php if (count($my_tasks) > 0): ?>
+                <span style="font-size:.8rem; background:#334155; color:#94a3b8; border-radius:99px; padding:.2rem .7rem;"><?= count($my_tasks) ?> active</span>
+            <?php endif; ?>
+        </div>
+        <?php if ($my_tasks): ?>
+        <table style="width:100%; border-collapse:collapse; font-size:.85rem;">
+            <thead>
+                <tr style="color:#64748b; border-bottom:1px solid #334155; text-align:left;">
+                    <th style="padding:.4rem .6rem; font-weight:600;">Task</th>
+                    <th style="padding:.4rem .6rem; font-weight:600;">Project</th>
+                    <th style="padding:.4rem .6rem; font-weight:600;">Priority</th>
+                    <th style="padding:.4rem .6rem; font-weight:600;">Status</th>
+                    <th style="padding:.4rem .6rem; font-weight:600;">Due</th>
+                    <th style="padding:.4rem .6rem; font-weight:600;"></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($my_tasks as $mt):
+                $is_ov = $mt['due_date'] && strtotime($mt['due_date']) < strtotime('today');
+                $pri_col = ['high'=>'#ef4444','medium'=>'#f59e0b','low'=>'#22c55e'][$mt['priority']] ?? '#64748b';
+                $sts_map = ['open'=>['⬜','#94a3b8'],'in_progress'=>['🔄','#f59e0b']];
+                [$sico,$scol] = $sts_map[$mt['status']] ?? ['?','#64748b'];
+            ?>
+            <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:.5rem .6rem; font-weight:500;"><?= htmlspecialchars($mt['title']) ?></td>
+                <td style="padding:.5rem .6rem; color:#94a3b8;"><?= htmlspecialchars($mt['project_name']) ?></td>
+                <td style="padding:.5rem .6rem; color:<?= $pri_col ?>; font-size:.78rem; font-weight:700; text-transform:uppercase;"><?= $mt['priority'] ?></td>
+                <td style="padding:.5rem .6rem; color:<?= $scol ?>;"><?= $sico ?> <?= ucwords(str_replace('_',' ',$mt['status'])) ?></td>
+                <td style="padding:.5rem .6rem; color:<?= $is_ov ? '#ef4444' : '#94a3b8' ?>; font-size:.8rem;">
+                    <?= $mt['due_date'] ? date('M j', strtotime($mt['due_date'])) . ($is_ov ? ' ⚠' : '') : '—' ?>
+                </td>
+                <td style="padding:.5rem .6rem;">
+                    <form method="POST" action="/TimeForge_Capstone/task_action.php" style="display:inline;">
+                        <input type="hidden" name="action" value="move">
+                        <input type="hidden" name="task_id" value="<?= $mt['id'] ?>">
+                        <input type="hidden" name="project_id" value="<?= $mt['project_id'] ?>">
+                        <?php if ($mt['status'] === 'open'): ?>
+                            <input type="hidden" name="status" value="in_progress">
+                            <button type="submit" style="background:#f59e0b22; color:#f59e0b; border:1px solid #f59e0b44; border-radius:4px; padding:.2rem .6rem; font-size:.75rem; cursor:pointer; font-weight:600;">▶ Start</button>
+                        <?php else: ?>
+                            <input type="hidden" name="status" value="done">
+                            <button type="submit" style="background:#22c55e22; color:#22c55e; border:1px solid #22c55e44; border-radius:4px; padding:.2rem .6rem; font-size:.75rem; cursor:pointer; font-weight:600;">✔ Done</button>
+                        <?php endif; ?>
+                    </form>
+                    <a href="/TimeForge_Capstone/tasks.php?project_id=<?= $mt['project_id'] ?>" style="color:#3b82f6; font-size:.78rem; margin-left:.5rem;">Board</a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php else: ?>
+            <p style="color:#475569; text-align:center; padding:1.5rem 0;">🎉 No open tasks assigned to you!</p>
+        <?php endif; ?>
+    </div>
 </div>
 
     <footer>

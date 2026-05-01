@@ -209,16 +209,55 @@ $flash = getFlash();
                 <div class="card-body">
                     <!-- Timer Integration Script -->
                     <script>
-                        function startProjectTimer() {
-                            const projectId = <?php echo json_encode($project['id']); ?>;
+                        async function startProjectTimer() {
+                            const projectId   = <?php echo json_encode($project['id']); ?>;
                             const projectName = <?php echo json_encode($project['project_name']); ?>;
-                            
-                            // Check if global timer exists
-                            if (window.timeTracker) {
-                                window.timeTracker.startTimer(projectId, projectName);
-                            } else {
+
+                            if (!window.timeTracker) {
                                 alert('Timer module not loaded. Please refresh the page.');
+                                return;
                             }
+
+                            // Phase 11: fetch tasks for this project
+                            let taskId = null;
+                            try {
+                                const res = await fetch(`/TimeForge_Capstone/api/get_tasks.php?project_id=${projectId}`);
+                                const tasks = await res.json();
+                                if (tasks.length > 0) {
+                                    // Build simple prompt with select
+                                    const opts = tasks.map(t => `<option value="${t.id}">[${t.status.replace('_',' ')}] ${t.title}</option>`).join('');
+                                    const wrapper = document.createElement('div');
+                                    wrapper.innerHTML = `
+                                        <div id="_tf_task_picker" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:flex;align-items:center;justify-content:center;">
+                                          <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:1.5rem;width:min(420px,92vw);">
+                                            <h3 style="margin:0 0 1rem;color:#3b82f6;">Select a Task (optional)</h3>
+                                            <select id="_tf_task_sel" style="width:100%;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:.55rem .75rem;font-size:.9rem;margin-bottom:1rem;">
+                                              <option value="">— No specific task —</option>
+                                              ${opts}
+                                            </select>
+                                            <div style="display:flex;gap:.75rem;justify-content:flex-end;">
+                                              <button id="_tf_task_cancel" style="background:#334155;color:#e2e8f0;border:none;border-radius:6px;padding:.5rem 1rem;cursor:pointer;">Cancel</button>
+                                              <button id="_tf_task_ok" style="background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:.5rem 1.2rem;cursor:pointer;font-weight:600;">Start Timer</button>
+                                            </div>
+                                          </div>
+                                        </div>`;
+                                    document.body.appendChild(wrapper);
+                                    taskId = await new Promise(resolve => {
+                                        document.getElementById('_tf_task_ok').onclick = () => {
+                                            const v = document.getElementById('_tf_task_sel').value;
+                                            wrapper.remove();
+                                            resolve(v ? parseInt(v) : null);
+                                        };
+                                        document.getElementById('_tf_task_cancel').onclick = () => {
+                                            wrapper.remove();
+                                            resolve(false); // false = user cancelled
+                                        };
+                                    });
+                                    if (taskId === false) return; // cancelled
+                                }
+                            } catch(e) { /* silently skip task picker on network error */ }
+
+                            window.timeTracker.startTimer(projectId, projectName, null, taskId);
                         }
                     </script>
                     
@@ -506,6 +545,119 @@ $flash = getFlash();
                 </div>
             </form>
         </div>
+    </div>
+
+    <!-- ── Tasks Panel ───────────────────────────────────────────── -->
+    <div class="card" style="margin-top:2rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:.75rem;">
+            <h2 style="margin:0; font-size:1.1rem;">📋 Tasks</h2>
+            <a href="/TimeForge_Capstone/tasks.php?project_id=<?= $project_id ?>" class="btn btn-secondary" style="font-size:.85rem;">
+                View Full Task Board →
+            </a>
+        </div>
+        <?php
+        // Quick task summary for project_details
+        $cid_pd  = (int)($_SESSION['company_id'] ?? 0);
+        $uid_pd  = (int)($_SESSION['user_id'] ?? 0);
+        $role_pd = $_SESSION['role'] ?? '';
+        $task_extra = ($role_pd === 'freelancer') ? "AND (t.assigned_to = {$uid_pd} OR t.assigned_to IS NULL)" : '';
+        $tsum = $pdo->prepare("
+            SELECT t.id, t.title, t.status, t.priority, t.due_date, t.estimated_hours,
+                   u.full_name AS assignee_name,
+                   COALESCE(SUM(CASE WHEN te.end_time IS NOT NULL THEN te.total_seconds ELSE 0 END),0) AS logged_sec
+            FROM tasks t
+            LEFT JOIN users u ON u.id = t.assigned_to
+            LEFT JOIN time_entries te ON te.task_id = t.id
+            WHERE t.project_id = :pid AND t.company_id = :cid {$task_extra}
+            GROUP BY t.id
+            ORDER BY FIELD(t.status,'in_progress','open','done'), FIELD(t.priority,'high','medium','low'), t.due_date ASC
+            LIMIT 10
+        ");
+        $tsum->execute([':pid' => $project_id, ':cid' => $cid_pd]);
+        $pd_tasks = $tsum->fetchAll(PDO::FETCH_ASSOC);
+
+        // Count totals
+        $tcnt = $pdo->prepare("SELECT status, COUNT(*) AS cnt FROM tasks WHERE project_id=:pid AND company_id=:cid GROUP BY status");
+        $tcnt->execute([':pid' => $project_id, ':cid' => $cid_pd]);
+        $tcounts = ['open'=>0,'in_progress'=>0,'done'=>0];
+        foreach ($tcnt->fetchAll(PDO::FETCH_ASSOC) as $r) $tcounts[$r['status']] = (int)$r['cnt'];
+        $total_t = array_sum($tcounts);
+        $pct_t   = $total_t > 0 ? round(($tcounts['done'] / $total_t) * 100) : 0;
+        ?>
+        <?php if ($total_t > 0): ?>
+        <div style="display:flex; gap:1.5rem; margin-bottom:1rem; flex-wrap:wrap; align-items:center;">
+            <div style="display:flex; gap:1rem;">
+                <span style="font-size:.82rem; background:#94a3b822; color:#94a3b8; border-radius:99px; padding:.2rem .7rem; border:1px solid #94a3b833;">⬜ <?= $tcounts['open'] ?> Open</span>
+                <span style="font-size:.82rem; background:#f59e0b22; color:#f59e0b; border-radius:99px; padding:.2rem .7rem; border:1px solid #f59e0b33;">🔄 <?= $tcounts['in_progress'] ?> In Progress</span>
+                <span style="font-size:.82rem; background:#22c55e22; color:#22c55e; border-radius:99px; padding:.2rem .7rem; border:1px solid #22c55e33;">✅ <?= $tcounts['done'] ?> Done</span>
+            </div>
+            <div style="flex:1; min-width:120px;">
+                <div style="background:#1e293b; border-radius:4px; height:7px; overflow:hidden;">
+                    <div style="width:<?= $pct_t ?>%; height:100%; background:linear-gradient(90deg,#3b82f6,#22c55e); border-radius:4px;"></div>
+                </div>
+                <div style="font-size:.72rem; color:#64748b; margin-top:.2rem;"><?= $pct_t ?>% complete</div>
+            </div>
+        </div>
+        <table style="width:100%; border-collapse:collapse; font-size:.85rem;">
+            <thead>
+                <tr style="color:#64748b; border-bottom:1px solid #334155; text-align:left;">
+                    <th style="padding:.45rem .6rem; font-weight:600;">Task</th>
+                    <th style="padding:.45rem .6rem; font-weight:600;">Assignee</th>
+                    <th style="padding:.45rem .6rem; font-weight:600;">Priority</th>
+                    <th style="padding:.45rem .6rem; font-weight:600;">Status</th>
+                    <th style="padding:.45rem .6rem; font-weight:600;">Progress</th>
+                    <th style="padding:.45rem .6rem; font-weight:600;">Due</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($pd_tasks as $pt):
+                $lg_h = round($pt['logged_sec'] / 3600, 1);
+                $et_h = (float)($pt['estimated_hours'] ?? 0);
+                $pp   = ($et_h > 0) ? min(100, round(($lg_h / $et_h) * 100)) : null;
+                $is_ov = $pt['due_date'] && $pt['status'] !== 'done' && strtotime($pt['due_date']) < strtotime('today');
+                $status_map = ['open'=>['⬜','#94a3b8'],'in_progress'=>['🔄','#f59e0b'],'done'=>['✅','#22c55e']];
+                [$sico, $scol] = $status_map[$pt['status']] ?? ['?','#64748b'];
+                $pri_map = ['high'=>['🔴','#ef4444'],'medium'=>['🟡','#f59e0b'],'low'=>['🟢','#22c55e']];
+                [$pico, $pcol] = $pri_map[$pt['priority']] ?? ['⚪','#64748b'];
+            ?>
+            <tr style="border-bottom:1px solid #1e293b; transition:background .15s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background=''">
+                <td style="padding:.55rem .6rem; font-weight:500;"><?= htmlspecialchars($pt['title']) ?></td>
+                <td style="padding:.55rem .6rem; color:#94a3b8;"><?= $pt['assignee_name'] ? htmlspecialchars($pt['assignee_name']) : '<span style="color:#475569;">—</span>' ?></td>
+                <td style="padding:.55rem .6rem; color:<?= $pcol ?>;"><?= $pico ?> <?= ucfirst($pt['priority']) ?></td>
+                <td style="padding:.55rem .6rem; color:<?= $scol ?>;"><?= $sico ?> <?= ucwords(str_replace('_',' ',$pt['status'])) ?></td>
+                <td style="padding:.55rem .6rem; min-width:100px;">
+                    <?php if ($pp !== null): ?>
+                        <div style="background:#1e293b; border-radius:3px; height:6px; overflow:hidden; margin-bottom:.2rem;">
+                            <div style="width:<?= $pp ?>%; height:100%; background:<?= $pp >= 100 ? '#22c55e' : '#3b82f6' ?>; border-radius:3px;"></div>
+                        </div>
+                        <span style="font-size:.7rem; color:#64748b;"><?= $lg_h ?>h / <?= $et_h ?>h</span>
+                    <?php elseif ($lg_h > 0): ?>
+                        <span style="font-size:.7rem; color:#64748b;"><?= $lg_h ?>h logged</span>
+                    <?php else: ?>
+                        <span style="color:#475569;">—</span>
+                    <?php endif; ?>
+                </td>
+                <td style="padding:.55rem .6rem; color:<?= $is_ov ? '#ef4444' : '#94a3b8' ?>; font-size:.8rem;">
+                    <?= $pt['due_date'] ? date('M j', strtotime($pt['due_date'])) . ($is_ov ? ' ⚠' : '') : '—' ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php if ($total_t > 10): ?>
+            <p style="text-align:center; margin:.75rem 0 0; font-size:.8rem; color:#64748b;">
+                Showing 10 of <?= $total_t ?> tasks —
+                <a href="/TimeForge_Capstone/tasks.php?project_id=<?= $project_id ?>" style="color:var(--color-accent);">View all on task board</a>
+            </p>
+        <?php endif; ?>
+        <?php else: ?>
+            <p style="color:#475569; text-align:center; padding:1.5rem 0;">
+                No tasks yet.
+                <?php if ($role_pd === 'admin'): ?>
+                    <a href="/TimeForge_Capstone/tasks.php?project_id=<?= $project_id ?>" style="color:var(--color-accent);">Create the first task →</a>
+                <?php endif; ?>
+            </p>
+        <?php endif; ?>
     </div>
 
     <!-- Modal Scripts -->

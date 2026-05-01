@@ -19,6 +19,7 @@ class TimeTracker {
 
         this.startTime   = null;
         this.projectId   = null;
+        this.taskId      = null;   // Phase 11: optional task association
         this.entryId     = null;   // Phase 6: server-assigned DB row id
         this.description = null;
 
@@ -332,6 +333,7 @@ class TimeTracker {
 
     _doRestore(state) {
         this.projectId   = state.projectId;
+        this.taskId      = state.taskId || null;
         this.description = state.description;
         this.entryId     = state.entryId || null;
         this.startTime   = state.startTime;
@@ -349,10 +351,11 @@ class TimeTracker {
 
     // ── Start / Stop ──────────────────────────────────────────────────────────
 
-    async startTimer(projectId, description, explicitStartTime = null) {
+    async startTimer(projectId, description, explicitStartTime = null, taskId = null) {
         if (!projectId) return;
 
         this.projectId   = projectId;
+        this.taskId      = taskId || null;
         this.description = description;
         this.startTime   = explicitStartTime || Date.now();
         this.mouseEvents = 0;
@@ -440,6 +443,7 @@ class TimeTracker {
         const body = new URLSearchParams({
             action,
             project_id:             this.projectId   || '',
+            task_id:                this.taskId       || '',
             description:            this.description || '',
             entry_id:               this.entryId     || '',
             mouse_events:           this.mouseEvents,
@@ -484,6 +488,7 @@ class TimeTracker {
         localStorage.setItem('tf_timer_state', JSON.stringify({
             running:       true,
             projectId:     this.projectId,
+            taskId:        this.taskId,
             description:   this.description,
             startTime:     this.startTime,
             entryId:       this.entryId,
@@ -546,6 +551,26 @@ class TimeTracker {
 
         // Schedule the next one regardless of success/failure
         if (this.startTime) this.scheduleNextScreenshot();
+    }
+
+    /**
+     * testScreenshot() — DEV HELPER
+     * Call from the browser console: window.timeTracker.testScreenshot()
+     * Fires an immediate capture without waiting for the 5-15 min scheduler.
+     */
+    async testScreenshot() {
+        if (!this.startTime || !this.entryId) {
+            console.warn('Phase 9 TEST: Timer is not running — start a timer first.');
+            return;
+        }
+        console.log('Phase 9 TEST: Forcing immediate screenshot…');
+        // Cancel any pending scheduled shot so it doesn't double-fire
+        if (this.screenshotTimeout) {
+            clearTimeout(this.screenshotTimeout);
+            this.screenshotTimeout = null;
+        }
+        await this.captureScreenshot();
+        console.log('Phase 9 TEST: Done. Check admin/screenshots.php to verify.');
     }
 
     // ── Display ───────────────────────────────────────────────────────────────
