@@ -182,8 +182,8 @@ function fmtSeconds(int $s): string {
                     <td><?= htmlspecialchars($e['project_name']) ?></td>
                     <td class="audit-date"><?= $date ?></td>
                     <td class="col-tracked"><?= fmtSeconds($total) ?></td>
-                    <td class="col-idle"><?= $idle > 0 ? fmtSeconds($idle) : '<span class="text-muted">—</span>' ?></td>
-                    <td class="col-discarded"><?= $discarded > 0 ? fmtSeconds($discarded) : '<span class="text-muted">—</span>' ?></td>
+                    <td class="col-idle"><?= $idle > 0 ? '<span class="val-idle">' . fmtSeconds($idle) . '</span>' : '<span class="text-muted">—</span>' ?></td>
+                    <td class="col-discarded"><?= $discarded > 0 ? '<span class="val-discarded">' . fmtSeconds($discarded) . '</span>' : '<span class="text-muted">—</span>' ?></td>
                     <td class="col-net">
                         <strong><?= fmtSeconds($net) ?></strong>
                         <?php if ($discarded > 0): ?>
