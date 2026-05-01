@@ -75,15 +75,6 @@ $page_title = 'About TimeForge';
     .cred-val { font-family: 'Courier New', monospace; font-size: .88rem; color: #e2e8f0; background: #0f172a; border-radius: 4px; padding: .2rem .5rem; cursor: pointer; border: 1px solid #334155; }
     .cred-val:hover { border-color: #3b82f6; color: #60a5fa; }
 
-    /* ── Phase Timeline ────────────────────────── */
-    .timeline { position: relative; padding-left: 2rem; }
-    .timeline::before { content: ''; position: absolute; left: .65rem; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, #3b82f6, #a78bfa, #34d399); border-radius: 1px; }
-    .phase { position: relative; padding: .5rem 0 1.75rem 1.5rem; }
-    .phase::before { content: ''; position: absolute; left: -1.35rem; top: .55rem; width: 12px; height: 12px; border-radius: 50%; background: var(--dot, #3b82f6); border: 2px solid #0f172a; box-shadow: 0 0 8px var(--dot, #3b82f6); }
-    .phase-num { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: #64748b; margin-bottom: .2rem; }
-    .phase h3   { font-size: 1rem; font-weight: 700; margin: 0 0 .35rem; }
-    .phase p    { font-size: .83rem; color: #94a3b8; margin: 0; line-height: 1.6; }
-
     /* ── Tech Stack ────────────────────────────── */
     .tech-grid { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
     .tech-pill {
@@ -323,68 +314,87 @@ include __DIR__ . '/includes/header_partial.php';
   <p style="text-align:center; padding: 0 1.5rem 2rem; color:#475569; font-size:.82rem;">⚠️ Demo account — please don't change passwords.</p>
 </section>
 
-<!-- ── Phase Timeline ─────────────────────────────────────────── -->
+<!-- ── Who It's For ───────────────────────────────────────────── -->
 <section>
   <div class="section-title">
-    <h2>🗺️ Development Timeline</h2>
-    <p>11 development phases, each adding a production-grade layer to the platform.</p>
+    <h2>� Who It's For</h2>
+    <p>Three distinct login roles — each with a tailored interface and access level.</p>
   </div>
-  <div class="timeline">
-    <div class="phase" style="--dot:#3b82f6;">
-      <div class="phase-num">Phase 1</div>
-      <h3>Foundation — Auth, DB, Routing</h3>
-      <p>Session-based auth, role system (admin / freelancer / client), company scoping, initial schema.</p>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:2rem;">
+
+    <!-- Admin -->
+    <div style="background:#1e293b; border:1px solid #7c3aed44; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
+      <div style="position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div>
+      <div style="font-size:2.5rem; margin-bottom:.75rem;">🛡️</div>
+      <h3 style="font-size:1.15rem; font-weight:800; color:#a78bfa; margin:0 0 .4rem;">Admin</h3>
+      <p style="color:#94a3b8; font-size:.85rem; margin:0 0 1.25rem; line-height:1.6;">
+        Full platform control — manage the team, projects, billing, and monitoring from one dashboard.
+      </p>
+      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.55rem;">
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Create &amp; manage projects, set budgets and deadlines</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Approve or reject freelancer time entries</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Build Kanban task boards per project</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Generate PDF invoices, send by email, track payments</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> View live presence panel (Online / Active / Idle / Offline)</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Browse screenshot gallery and activity scores</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Financial reports with CSV export</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Security &amp; login audit logs</li>
+      </ul>
+      <div style="margin-top:1.5rem;">
+        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#7c3aed22; color:#a78bfa; border:1px solid #7c3aed55; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">
+          Login as Admin →
+        </a>
+      </div>
     </div>
-    <div class="phase" style="--dot:#6366f1;">
-      <div class="phase-num">Phase 2</div>
-      <h3>Project & Client Management</h3>
-      <p>CRUD for projects and clients, budget & hourly rate fields, soft-delete with restore.</p>
+
+    <!-- Freelancer -->
+    <div style="background:#1e293b; border:1px solid #0284c744; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
+      <div style="position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#0284c7,#38bdf8);"></div>
+      <div style="font-size:2.5rem; margin-bottom:.75rem;">💼</div>
+      <h3 style="font-size:1.15rem; font-weight:800; color:#38bdf8; margin:0 0 .4rem;">Freelancer</h3>
+      <p style="color:#94a3b8; font-size:.85rem; margin:0 0 1.25rem; line-height:1.6;">
+        Focus on the work — start a timer, pick a task, and let TimeForge handle the rest.
+      </p>
+      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.55rem;">
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Start/stop live timer — persists across page navigation</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Pick a task before starting (auto-links time to task)</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Submit manual time entries for past work</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> View assigned tasks — move Open → In Progress → Done</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Idle popup: decide what to do with inactive time</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Activity score tracked per session (mouse + keyboard)</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> View all projects and their time history</li>
+      </ul>
+      <div style="margin-top:1.5rem;">
+        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#0284c722; color:#38bdf8; border:1px solid #0284c755; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">
+          Login as Freelancer →
+        </a>
+      </div>
     </div>
-    <div class="phase" style="--dot:#8b5cf6;">
-      <div class="phase-num">Phase 3</div>
-      <h3>Time Entry Core</h3>
-      <p>Manual time entry, admin approval/reject workflow, basic project time summary.</p>
+
+    <!-- Client -->
+    <div style="background:#1e293b; border:1px solid #05966944; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
+      <div style="position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#059669,#34d399);"></div>
+      <div style="font-size:2.5rem; margin-bottom:.75rem;">🤝</div>
+      <h3 style="font-size:1.15rem; font-weight:800; color:#34d399; margin:0 0 .4rem;">Client</h3>
+      <p style="color:#94a3b8; font-size:.85rem; margin:0 0 1.25rem; line-height:1.6;">
+        Stay informed without the noise — see only your projects, your bills, your status.
+      </p>
+      <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.55rem;">
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Dedicated portal login — sees only their own data</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> View active projects with progress &amp; time logged</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> See task breakdown per project (status + progress bars)</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Access invoices — view, download PDF</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> View payment history per invoice</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Project time reports showing who worked and when</li>
+      </ul>
+      <div style="margin-top:1.5rem;">
+        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#05966922; color:#34d399; border:1px solid #05966955; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">
+          Login as Client →
+        </a>
+      </div>
     </div>
-    <div class="phase" style="--dot:#a78bfa;">
-      <div class="phase-num">Phase 4</div>
-      <h3>Live Timer Widget</h3>
-      <p>JavaScript timer with heartbeat API, persistent state across navigation, start/stop flow.</p>
-    </div>
-    <div class="phase" style="--dot:#c084fc;">
-      <div class="phase-num">Phase 5</div>
-      <h3>Client Portal</h3>
-      <p>Dedicated client dashboard — their projects only, time logs, invoice access.</p>
-    </div>
-    <div class="phase" style="--dot:#e879f9;">
-      <div class="phase-num">Phase 6</div>
-      <h3>Activity Tracking</h3>
-      <p>Idle detection modal, stale session guard, mouse + keyboard activity score heartbeat.</p>
-    </div>
-    <div class="phase" style="--dot:#f0abfc;">
-      <div class="phase-num">Phase 7</div>
-      <h3>Invoicing + PDF Export</h3>
-      <p>dompdf-based invoice generation, 3 templates, email send via PHPMailer, payment tracking.</p>
-    </div>
-    <div class="phase" style="--dot:#34d399;">
-      <div class="phase-num">Phase 8</div>
-      <h3>Reports + CSV Export</h3>
-      <p>Financial reports by project/worker, date range filters, one-click CSV export.</p>
-    </div>
-    <div class="phase" style="--dot:#22c55e;">
-      <div class="phase-num">Phase 9</div>
-      <h3>Screenshot Monitoring</h3>
-      <p>html2canvas DOM capture every 5–15 min, secure image proxy, screenshot gallery with filters.</p>
-    </div>
-    <div class="phase" style="--dot:#f59e0b;">
-      <div class="phase-num">Phase 10</div>
-      <h3>Presence Panel + Audit Logs</h3>
-      <p>Live Online/Active/Idle/Offline panel polling every 10s. Full login/security audit log with filtering.</p>
-    </div>
-    <div class="phase" style="--dot:#ef4444;">
-      <div class="phase-num">Phase 11 ✨ NEW</div>
-      <h3>Task Management</h3>
-      <p>Kanban board per project, task priority + estimates + due dates, timer task picker, freelancer "My Tasks" panel.</p>
-    </div>
+
   </div>
 </section>
 
