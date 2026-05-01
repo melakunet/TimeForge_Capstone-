@@ -52,11 +52,11 @@ $page_title = 'About TimeForge';
     .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
     .feature-card {
       background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.5rem;
-      transition: transform .2s, border-color .2s, box-shadow .2s;
+      transition: transform .2s, border-color .2s, box-shadow .2s; color: #e2e8f0;
     }
     .feature-card:hover { transform: translateY(-4px); border-color: #3b82f6; box-shadow: 0 8px 30px #3b82f620; }
     .feature-icon { font-size: 2rem; margin-bottom: .75rem; }
-    .feature-card h3 { font-size: 1rem; font-weight: 700; margin: 0 0 .5rem; }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; margin: 0 0 .5rem; color: #f1f5f9; }
     .feature-card p  { font-size: .85rem; color: #94a3b8; margin: 0; line-height: 1.6; }
     .feature-tag { display: inline-block; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; border-radius: 4px; padding: .15rem .45rem; margin-bottom: .6rem; }
     .tag-admin     { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
@@ -67,8 +67,8 @@ $page_title = 'About TimeForge';
 
     /* ── Demo Credentials ──────────────────────── */
     .cred-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-    .cred-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.5rem; }
-    .cred-card h3 { margin: 0 0 1rem; font-size: 1rem; display: flex; align-items: center; gap: .5rem; }
+    .cred-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.5rem; color: #e2e8f0; }
+    .cred-card h3 { margin: 0 0 1rem; font-size: 1rem; display: flex; align-items: center; gap: .5rem; color: #f1f5f9; }
     .cred-row { display: flex; justify-content: space-between; align-items: center; padding: .4rem 0; border-bottom: 1px solid #1e293b; }
     .cred-row:last-child { border-bottom: none; }
     .cred-label { font-size: .75rem; color: #64748b; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
@@ -80,8 +80,19 @@ $page_title = 'About TimeForge';
     .tech-pill {
       display: flex; align-items: center; gap: .5rem; background: #1e293b;
       border: 1px solid #334155; border-radius: 8px; padding: .6rem 1rem; font-size: .88rem; font-weight: 600;
+      color: #e2e8f0;
     }
     .tech-pill .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Dark cards — force readable text regardless of body theme ── */
+    .feature-card, .feature-card p, .feature-card h3, .feature-card ul, .feature-card li { color: #e2e8f0; }
+    .feature-card p, .feature-card li { color: #94a3b8; }
+    .feature-card h3 { color: #f1f5f9; }
+    .cred-card, .cred-card h3 { color: #e2e8f0; }
+    .dark-role-card { color: #e2e8f0 !important; }
+    .dark-role-card p, .dark-role-card li { color: #94a3b8; }
+    .dark-role-card h3 { color: inherit; }
+    .dark-role-card li span[style] { flex-shrink: 0; }
 
     /* ── Footer ────────────────────────────────── */
     .about-footer { text-align: center; padding: 3rem 1.5rem; color: #475569; font-size: .85rem; border-top: 1px solid #1e293b; }
@@ -269,10 +280,10 @@ include __DIR__ . '/includes/header_partial.php';
 </section>
 
 <!-- ── Demo Credentials ───────────────────────────────────────── -->
-<section style="background:#1e293b; border-radius:16px; margin-bottom:3rem;">
+<section style="background:#1e293b; border-radius:16px; margin-bottom:3rem; color:#e2e8f0;">
   <div class="section-title" style="padding-top:3rem;">
-    <h2>🔑 Demo Login Credentials</h2>
-    <p>Click any value to copy it. All accounts belong to the same demo company.</p>
+    <h2 style="color:#f1f5f9;">🔑 Demo Login Credentials</h2>
+    <p style="color:#94a3b8;">Click any value to copy it. All accounts belong to the same demo company.</p>
   </div>
   <div class="cred-grid" style="padding: 0 1.5rem 3rem;">
 
@@ -338,7 +349,7 @@ include __DIR__ . '/includes/header_partial.php';
   <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:2rem;">
 
     <!-- Admin -->
-    <div style="background:#1e293b; border:1px solid #7c3aed44; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
+    <div class="dark-role-card" style="background:#1e293b; border:1px solid #7c3aed44; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
       <div style="position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div>
       <div style="font-size:2.5rem; margin-bottom:.75rem;">🛡️</div>
       <h3 style="font-size:1.15rem; font-weight:800; color:#a78bfa; margin:0 0 .4rem;">Admin</h3>
@@ -364,7 +375,7 @@ include __DIR__ . '/includes/header_partial.php';
     </div>
 
     <!-- Freelancer -->
-    <div style="background:#1e293b; border:1px solid #0284c744; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
+    <div class="dark-role-card" style="background:#1e293b; border:1px solid #0284c744; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
       <div style="position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#0284c7,#38bdf8);"></div>
       <div style="font-size:2.5rem; margin-bottom:.75rem;">💼</div>
       <h3 style="font-size:1.15rem; font-weight:800; color:#38bdf8; margin:0 0 .4rem;">Freelancer</h3>
@@ -389,7 +400,7 @@ include __DIR__ . '/includes/header_partial.php';
     </div>
 
     <!-- Client -->
-    <div style="background:#1e293b; border:1px solid #05966944; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
+    <div class="dark-role-card" style="background:#1e293b; border:1px solid #05966944; border-radius:14px; padding:2rem; position:relative; overflow:hidden;">
       <div style="position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,#059669,#34d399);"></div>
       <div style="font-size:2.5rem; margin-bottom:.75rem;">🤝</div>
       <h3 style="font-size:1.15rem; font-weight:800; color:#34d399; margin:0 0 .4rem;">Client</h3>
