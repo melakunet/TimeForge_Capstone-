@@ -253,25 +253,114 @@ $flash = getFlash();
     <script src="js/hero.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="js/time_tracker.js"></script>
+    <style>
+      #tf-proj-modal { position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:9999; }
+      #tf-proj-modal.hidden { display:none; }
+      .tf-proj-modal-box { background:var(--color-card);border-radius:12px;padding:1.75rem 2rem;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.5); }
+      .tf-proj-modal-box h3 { margin:0 0 .25rem;color:var(--color-accent);font-size:1.1rem; }
+      .tf-proj-modal-box p  { margin:0 0 1.1rem;color:var(--color-text-secondary);font-size:.85rem; }
+      .tf-proj-modal-box label { display:block;font-size:.78rem;color:var(--color-text-secondary);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.04em; }
+      .tf-proj-modal-box select,
+      .tf-proj-modal-box input  { width:100%;background:var(--color-bg);border:1px solid #334155;color:var(--color-text);border-radius:6px;padding:.55rem .75rem;font-size:.9rem;margin-bottom:1rem;box-sizing:border-box; }
+      .tf-proj-modal-actions { display:flex;gap:.75rem;justify-content:flex-end; }
+      .tf-proj-modal-actions button { padding:.55rem 1.2rem;border-radius:6px;border:none;cursor:pointer;font-weight:600;font-size:.88rem; }
+      .btn-pm-start  { background:#3b82f6;color:#fff; }
+      .btn-pm-start:hover { background:#2563eb; }
+      .btn-pm-cancel { background:#334155;color:#94a3b8; }
+      .btn-pm-cancel:hover { background:#475569;color:#fff; }
+      #tf-proj-task-row { display:none; }
+    </style>
+
+    <!-- Project-timer start modal (with optional task picker) -->
+    <div id="tf-proj-modal" class="hidden">
+      <div class="tf-proj-modal-box">
+        <h3>▶ Start Timer</h3>
+        <p>Project: <strong id="tf-pm-project-name"></strong></p>
+        <div id="tf-proj-task-row">
+          <label>Task <span style="font-weight:400;text-transform:none;">(optional — leave "No task" to track project-level time)</span></label>
+          <select id="tf-pm-task-select">
+            <option value="">— No task —</option>
+          </select>
+        </div>
+        <label>Description</label>
+        <input type="text" id="tf-pm-desc" placeholder="What are you working on?" maxlength="200">
+        <div class="tf-proj-modal-actions">
+          <button class="btn-pm-cancel" onclick="closeProjModal()">Cancel</button>
+          <button class="btn-pm-start"  onclick="confirmProjStart()">▶ Start Timer</button>
+        </div>
+      </div>
+    </div>
+
     <script>
-        window.startProjectTimer = function(id, name) {
-            if (!window.timeTracker) {
-                console.error('TimeTracker not initialized');
-                alert('TimeTracker is loading...');
-                return;
-            }
-            
-            // Simple check if timer is running
-            if (window.timeTracker.projectId) {
+        let _pmProjectId   = null;
+        let _pmProjectName = null;
+        let _pmTasks       = [];
+
+        window.startProjectTimer = async function(id, name) {
+            if (window.timeTracker && window.timeTracker.projectId) {
                 alert('A timer is already running. Please stop it first.');
                 return;
             }
+            _pmProjectId   = id;
+            _pmProjectName = name;
+            document.getElementById('tf-pm-project-name').textContent = name;
+            document.getElementById('tf-pm-desc').value = 'General work';
 
-            const description = prompt(`Start timer for "${name}"?\n\nEnter task description (optional):`, "General work");
-            if (description !== null) {
-                window.timeTracker.startTimer(id, description);
+            // Fetch open tasks for this project
+            const sel = document.getElementById('tf-pm-task-select');
+            sel.innerHTML = '<option value="">— No task —</option>';
+            _pmTasks = [];
+            try {
+                const r = await fetch(`/TimeForge_Capstone/api/project_tasks.php?project_id=${id}`);
+                const data = await r.json();
+                if (data.tasks && data.tasks.length > 0) {
+                    _pmTasks = data.tasks;
+                    data.tasks.forEach(t => {
+                        const o = document.createElement('option');
+                        o.value       = t.id;
+                        o.textContent = `${t.title} [${t.priority}]`;
+                        sel.appendChild(o);
+                    });
+                    document.getElementById('tf-proj-task-row').style.display = 'block';
+                } else {
+                    document.getElementById('tf-proj-task-row').style.display = 'none';
+                }
+            } catch(e) {
+                document.getElementById('tf-proj-task-row').style.display = 'none';
             }
+
+            // Pre-fill description from task if one is selected
+            sel.onchange = () => {
+                const chosen = _pmTasks.find(t => t.id == sel.value);
+                if (chosen) document.getElementById('tf-pm-desc').value = chosen.title;
+                else        document.getElementById('tf-pm-desc').value = 'General work';
+            };
+
+            document.getElementById('tf-proj-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('tf-pm-desc').select(), 80);
         };
+
+        function closeProjModal() {
+            document.getElementById('tf-proj-modal').classList.add('hidden');
+            _pmProjectId = null; _pmProjectName = null;
+        }
+
+        async function confirmProjStart() {
+            if (!_pmProjectId) return;
+            const pid  = _pmProjectId;
+            const desc = document.getElementById('tf-pm-desc').value.trim() || 'General work';
+            const sel  = document.getElementById('tf-pm-task-select');
+            const tid  = sel.value ? parseInt(sel.value) : null;
+            const tname = tid ? (_pmTasks.find(t => t.id == tid)?.title || null) : null;
+            closeProjModal();
+            if (window.timeTracker) {
+                await window.timeTracker.startTimer(pid, desc, null, tid, tname);
+            }
+        }
+
+        document.getElementById('tf-proj-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeProjModal();
+        });
     </script>
 </body>
 </html>
