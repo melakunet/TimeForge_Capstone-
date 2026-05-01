@@ -351,6 +351,22 @@ class TimeTracker {
 
         if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
         this.heartbeatInterval = setInterval(() => this.sendHeartbeat('pulse'), this.HEARTBEAT_MS);
+
+        // Phase 9: re-enable screenshot scheduling after page navigation
+        if (state.screenshotsEnabled) {
+            this.screenshotsEnabled = true;
+            this.screenshotMinMs    = state.screenshotMinMs || this.screenshotMinMs;
+            this.screenshotMaxMs    = state.screenshotMaxMs || this.screenshotMaxMs;
+            this.screenshotCount    = state.screenshotCount || 0;
+            this.scheduleNextScreenshot();
+            this.elements.screenshotBadge.classList.remove('tf-hidden');
+            document.getElementById('tf-screenshot-count').textContent = this.screenshotCount;
+            const mn = this.screenshotMinMs / 60000;
+            const mx = this.screenshotMaxMs / 60000;
+            const lbl = (mn === mx) ? `every ${mn}min` : `every ${mn}–${mx}min`;
+            const intervalEl = document.getElementById('tf-screenshot-interval');
+            if (intervalEl) intervalEl.textContent = lbl;
+        }
     }
 
     // ── Start / Stop ──────────────────────────────────────────────────────────
@@ -508,14 +524,19 @@ class TimeTracker {
 
     saveState() {
         localStorage.setItem('tf_timer_state', JSON.stringify({
-            running:       true,
-            projectId:     this.projectId,
-            taskId:        this.taskId,
-            taskName:      this.taskName,
-            description:   this.description,
-            startTime:     this.startTime,
-            entryId:       this.entryId,
-            lastHeartbeat: this.lastHeartbeat
+            running:            true,
+            projectId:          this.projectId,
+            taskId:             this.taskId,
+            taskName:           this.taskName,
+            description:        this.description,
+            startTime:          this.startTime,
+            entryId:            this.entryId,
+            lastHeartbeat:      this.lastHeartbeat,
+            // Phase 9: persist screenshot settings so they survive page navigation
+            screenshotsEnabled: this.screenshotsEnabled,
+            screenshotMinMs:    this.screenshotMinMs,
+            screenshotMaxMs:    this.screenshotMaxMs,
+            screenshotCount:    this.screenshotCount
         }));
     }
 
