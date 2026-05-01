@@ -62,20 +62,24 @@ foreach ($rows as $r) {
         $last    = new DateTime($lastTimestamp);
         $diffSec = ($now->getTimestamp() - $last->getTimestamp());
 
-        if ($diffSec <= 180) {
+        // A running timer is absolute proof of activity — always show active
+        if ($r['entry_id']) {
             $status = 'active';
-            $label  = $r['timer_start'] ? 'Active now' : 'Online';
+            $label  = 'Active now';
+        } elseif ($diffSec <= 180) {
+            $status = 'active';
+            $label  = 'Online now';
         } elseif ($diffSec <= 600) {
             $status = 'idle';
-            $m      = floor($diffSec / 60);
-            $label  = "Idle {$m} min ago";
+            // Show exact clock time, not a relative duration
+            $label  = 'Last seen at ' . $last->format('H:i');
         } else {
             $status = 'offline';
-            $diff   = $now->diff($last);
-            if ($diff->days > 0)        $label = "Last seen {$diff->days}d ago";
-            elseif ($diff->h > 0)       $label = "Last seen {$diff->h}h {$diff->i}m ago";
-            elseif ($diff->i > 0)       $label = "Last seen {$diff->i}m ago";
-            else                        $label = "Last seen just now";
+            // Show exact clock time: today → "11:03", older → "Apr 30, 11:03"
+            $isToday = ($last->format('Y-m-d') === $now->format('Y-m-d'));
+            $label   = $isToday
+                ? 'Last seen at ' . $last->format('H:i')
+                : 'Last seen ' . $last->format('M j, H:i');
         }
         $since = $lastTimestamp;
     }

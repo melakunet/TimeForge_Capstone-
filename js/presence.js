@@ -41,16 +41,22 @@
                 ? `<span style="color:var(--color-accent); font-size:0.85rem;">▶ ${u.project_name}${u.elapsed ? ' — ' + u.elapsed : ''}</span>`
                 : '';
 
-            // Build status label with exact timestamp tooltip for offline/idle users
+            // Build status label
             let statusBadge;
             if (u.status === 'active') {
-                statusBadge = u.project_name
-                    ? `<span style="color:#2ecc71; font-size:0.82rem; font-weight:600;">● Active</span>`
-                    : `<span style="color:#2ecc71; font-size:0.82rem; font-weight:600;">● Online</span>`;
+                const activeColor = '#2ecc71';
+                if (u.project_name) {
+                    // Show what time the timer started
+                    const startLabel = u.timer_start
+                        ? ` since ${new Date(u.timer_start).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`
+                        : '';
+                    statusBadge = `<span style="color:${activeColor}; font-size:0.82rem; font-weight:600;">● Active now${startLabel}</span>`;
+                } else {
+                    statusBadge = `<span style="color:${activeColor}; font-size:0.82rem; font-weight:600;">● Online now</span>`;
+                }
             } else {
-                const tooltip = u.last_seen_exact ? ` title="Exact: ${u.last_seen_exact}"` : '';
-                const color   = u.status === 'idle' ? '#f59e0b' : '#64748b';
-                statusBadge = `<span style="color:${color}; font-size:0.82rem; cursor:default;"${tooltip}>${u.label}</span>`;
+                const color = u.status === 'idle' ? '#f59e0b' : '#64748b';
+                statusBadge = `<span style="color:${color}; font-size:0.82rem;">${u.label}</span>`;
             }
 
             return `
@@ -69,9 +75,6 @@
                 <div style="text-align:right;">
                     ${project}
                     ${project ? '<br>' : ''}${statusBadge}
-                    ${u.last_seen_exact && u.status !== 'active'
-                        ? `<div style="font-size:.7rem; color:#475569; margin-top:.1rem;">${u.last_seen_exact}</div>`
-                        : ''}
                 </div>
             </div>`;
         }).join('');
