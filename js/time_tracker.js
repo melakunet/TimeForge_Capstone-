@@ -401,9 +401,10 @@ class TimeTracker {
                 console.log('Timer started, entry_id:', this.entryId, '| screenshots:', this.screenshotsEnabled, '| interval:', intervalDesc);
             } catch (err) {
                 console.error('Failed to start timer:', err);
-                alert('Could not start timer. Please check your connection.');
+                // Don't alert — let the caller (e.g. confirmTaskStart) decide what to do.
+                // Re-throw so the caller's .catch() can handle it gracefully.
                 this.stopLocalTimer();
-                return;
+                throw err;
             }
         }
 
