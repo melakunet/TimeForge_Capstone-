@@ -121,7 +121,7 @@ include __DIR__ . '/includes/header_partial.php';
 <section>
   <div class="section-title">
     <h2>✨ Features</h2>
-    <p>14 production-grade features across 11 development phases — all working on this live demo.</p>
+    <p>15 production-grade features across 12 development phases — all working on this live demo.</p>
   </div>
   <div class="feature-grid">
 
@@ -238,6 +238,20 @@ include __DIR__ . '/includes/header_partial.php';
     </div>
 
     <div class="feature-card">
+      <div class="feature-tag tag-new">NEW — Phase 12</div>
+      <div class="feature-icon">💬</div>
+      <h3>Task Discussion Thread</h3>
+      <p>Every task has a private 3-way chat thread between the <strong>Admin</strong>, the assigned <strong>Freelancer</strong>, and the <strong>Client</strong>. Four message types keep communication structured:</p>
+      <ul style="margin:.6rem 0 0 1rem; padding:0; font-size:.82rem; color:#94a3b8; line-height:1.9; list-style:none;">
+        <li>💬 <strong style="color:#a5b4fc;">Note</strong> — general update (all roles)</li>
+        <li>🐛 <strong style="color:#f87171;">Problem Found</strong> — flag a blocker (admin + freelancer)</li>
+        <li>💡 <strong style="color:#34d399;">Solution / Suggestion</strong> — propose a fix (admin + freelancer)</li>
+        <li>⭐ <strong style="color:#fcd34d;">Feedback / Objection</strong> — client review or concern (client only)</li>
+      </ul>
+      <p style="margin-top:.6rem; font-size:.82rem; color:#64748b;">Task cards show a 🐛 badge when an unresolved problem exists. Thread is readable by all three parties but write access is role-scoped.</p>
+    </div>
+
+    <div class="feature-card">
       <div class="feature-tag tag-system">Everyone</div>
       <div class="feature-icon">🌙</div>
       <h3>Dark / Light Theme</h3>
@@ -306,7 +320,7 @@ include __DIR__ . '/includes/header_partial.php';
       </div>
       <div class="cred-row">
         <span class="cred-label">Access</span>
-        <span style="font-size:.8rem; color:#34d399;">Client portal — projects & invoices</span>
+        <span style="font-size:.8rem; color:#34d399;">Client portal — projects, tasks, feedback &amp; invoices</span>
       </div>
     </div>
 
@@ -335,6 +349,7 @@ include __DIR__ . '/includes/header_partial.php';
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Create &amp; manage projects, set budgets and deadlines</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Approve or reject freelancer time entries</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Build Kanban task boards per project</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Post notes, solutions &amp; replies in per-task discussion threads</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Generate PDF invoices, send by email, track payments</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> View live presence panel (Online / Active / Idle / Offline)</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#a78bfa; flex-shrink:0;">✓</span> Browse screenshot gallery and activity scores</li>
@@ -361,6 +376,7 @@ include __DIR__ . '/includes/header_partial.php';
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Pick a task before starting (auto-links time to task)</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Submit manual time entries for past work</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> View assigned tasks — move Open → In Progress → Done</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Post notes, flag problems 🐛, and suggest solutions 💡 on tasks</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Idle popup: decide what to do with inactive time</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> Activity score tracked per session (mouse + keyboard)</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#38bdf8; flex-shrink:0;">✓</span> View all projects and their time history</li>
@@ -384,6 +400,8 @@ include __DIR__ . '/includes/header_partial.php';
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Dedicated portal login — sees only their own data</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> View active projects with progress &amp; time logged</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> See task breakdown per project (status + progress bars)</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Open any task and post ⭐ feedback or flag concerns directly</li>
+        <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Read replies from the admin and assigned worker in real time</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Access invoices — view, download PDF</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> View payment history per invoice</li>
         <li style="font-size:.85rem; display:flex; gap:.6rem; align-items:flex-start;"><span style="color:#34d399; flex-shrink:0;">✓</span> Project time reports showing who worked and when</li>

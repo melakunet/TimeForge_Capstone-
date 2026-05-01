@@ -35,6 +35,7 @@ Three roles: **Admin**, **Freelancer**, **Client** — each with a dedicated int
 | 14 | Multi-tenancy — all data scoped by `company_id` | System |
 | 15 | **Task management** — Kanban board, priority, estimates, due dates | All |
 | 16 | Dark / Light theme toggle | Everyone |
+| 17 | **Task Discussion Threads** — 3-way chat per task (admin + freelancer + client) | All |
 
 ---
 
@@ -105,6 +106,20 @@ open http://localhost/TimeForge_Capstone/
 | 9b | Configurable screenshot intervals — min/max per project, presets |
 | 10 | Presence panel + audit logs — live status, login history |
 | 11 | Task management — Kanban board, timer task picker, My Tasks |
+| 12 | **Task Discussion Threads** — per-task 3-way chat between admin, freelancer, and client |
+
+### Task Discussion (Phase 12)
+
+Each task has a private threaded discussion visible to all three parties — admin, the assigned freelancer, and the project's client. Four structured message types:
+
+| Type | Icon | Who can post | Purpose |
+|---|---|---|---|
+| Note | 💬 | Admin, Freelancer, Client | General update or question |
+| Problem Found | 🐛 | Admin, Freelancer | Flag a blocker or bug |
+| Solution / Suggestion | 💡 | Admin, Freelancer | Propose a fix or approach |
+| Feedback / Objection | ⭐ | Client only | Client review, concern, or approval |
+
+Task cards on the Kanban board show a **🐛 red badge** when an open problem comment exists. The client accesses task threads from their project report page (`client/project_report.php`). All write access is role-scoped and validated server-side.
 
 ---
 
