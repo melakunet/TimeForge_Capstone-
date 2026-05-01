@@ -153,6 +153,8 @@ $earnings         = round($fl_stats['earned'] ?? 0, 2);
                         <?php endif; ?>
                     </form>
                     <a href="/TimeForge_Capstone/tasks.php?project_id=<?= $mt['project_id'] ?>" style="color:#3b82f6; font-size:.78rem; margin-left:.5rem;">Board</a>
+                    <a href="/TimeForge_Capstone/task_detail.php?id=<?= $mt['id'] ?>&project_id=<?= $mt['project_id'] ?>"
+                       style="color:#a5b4fc; font-size:.78rem; margin-left:.5rem;" title="Notes &amp; Problem Reports">💬 Notes</a>
                 </td>
             </tr>
             <?php endforeach; ?>

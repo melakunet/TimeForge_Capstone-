@@ -269,6 +269,28 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
               <button class="btn-xs btn-del-task" type="submit">🗑</button>
             </form>
           <?php endif; ?>
+          <?php if ($role !== 'client'): ?>
+            <?php
+              // Show comment count badge
+              $cc = $pdo->prepare("SELECT COUNT(*) FROM task_comments WHERE task_id = :tid AND company_id = :cid");
+              $cc->execute([':tid' => $t['id'], ':cid' => $company_id]);
+              $comment_count = (int)$cc->fetchColumn();
+              $has_problem   = false;
+              if ($comment_count > 0) {
+                  $pb = $pdo->prepare("SELECT 1 FROM task_comments WHERE task_id = :tid AND company_id = :cid AND type = 'problem' LIMIT 1");
+                  $pb->execute([':tid' => $t['id'], ':cid' => $company_id]);
+                  $has_problem = (bool)$pb->fetch();
+              }
+            ?>
+            <a href="task_detail.php?id=<?= $t['id'] ?>&project_id=<?= $project_id ?>"
+               class="btn-xs"
+               style="background:<?= $has_problem ? 'rgba(239,68,68,.2)' : 'rgba(99,102,241,.15)' ?>;
+                      color:<?= $has_problem ? '#f87171' : '#a5b4fc' ?>;
+                      border:1px solid <?= $has_problem ? 'rgba(239,68,68,.4)' : 'rgba(99,102,241,.3)' ?>;"
+               title="<?= $has_problem ? '🐛 Problem reported — click to view' : 'Comments &amp; Notes' ?>">
+              <?= $has_problem ? '🐛' : '💬' ?><?= $comment_count > 0 ? " {$comment_count}" : '' ?>
+            </a>
+          <?php endif; ?>
         </div>
       </div>
       <?php endforeach; ?>
