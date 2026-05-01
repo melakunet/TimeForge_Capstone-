@@ -5,7 +5,7 @@
  */
 
 (function () {
-    const POLL_INTERVAL = 30000; // 30 seconds
+    const POLL_INTERVAL = 10000; // 10 seconds
     const panel   = document.getElementById('presence-panel');
     const updated = document.getElementById('presence-updated');
 
