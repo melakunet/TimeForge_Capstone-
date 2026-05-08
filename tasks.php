@@ -127,6 +127,32 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
     </div>
   </div>
 
+  <!-- ── Filter bar ─────────────────────────────────────────────────────── -->
+  <div id="kanban-filters" style="display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; margin-bottom:1.25rem; padding:.75rem 1rem; background:var(--color-card); border:1px solid var(--color-border,#334155); border-radius:8px;">
+    <input type="search" id="filter-text" placeholder="🔍 Search tasks…"
+           style="flex:1; min-width:160px; background:var(--color-bg,#0f172a); border:1px solid #334155; color:var(--color-text); border-radius:6px; padding:.4rem .75rem; font-size:.9rem;">
+
+    <select id="filter-priority" style="background:var(--color-bg,#0f172a); border:1px solid #334155; color:var(--color-text); border-radius:6px; padding:.4rem .6rem; font-size:.85rem;">
+      <option value="">All priorities</option>
+      <option value="high">🔴 High</option>
+      <option value="medium">🟡 Medium</option>
+      <option value="low">🟢 Low</option>
+    </select>
+
+    <select id="filter-assignee" style="background:var(--color-bg,#0f172a); border:1px solid #334155; color:var(--color-text); border-radius:6px; padding:.4rem .6rem; font-size:.85rem;">
+      <option value="">All assignees</option>
+      <?php
+        $assignees = array_unique(array_filter(array_column($all_tasks, 'assignee_name')));
+        sort($assignees);
+        foreach ($assignees as $a): ?>
+        <option value="<?= htmlspecialchars($a) ?>"><?= htmlspecialchars($a) ?></option>
+      <?php endforeach; ?>
+    </select>
+
+    <button onclick="clearKanbanFilters()" class="btn btn-secondary btn-sm">✕ Clear</button>
+    <span id="filter-count" style="font-size:.8rem; color:var(--color-text-secondary,#94a3b8);"></span>
+  </div>
+
   <!-- Quick add form (admin only) -->
   <?php if ($role === 'admin'): ?>
   <div id="add-task-form" style="display:none;" class="card" style="margin-bottom:1.5rem;">
@@ -202,7 +228,8 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
         $is_overdue  = $t['due_date'] && $t['status'] !== 'done' && strtotime($t['due_date']) < strtotime('today');
         $due_class   = $is_overdue ? 'overdue' : '';
       ?>
-      <div class="task-card priority-<?= $t['priority'] ?>">
+      <div class="task-card priority-<?= $t['priority'] ?>"
+           data-assignee="<?= htmlspecialchars($t['assignee_name'] ?? '') ?>">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div class="task-title"><?= htmlspecialchars($t['title']) ?></div>
           <span class="priority-badge <?= $t['priority'] ?>"><?= $t['priority'] ?></span>
@@ -361,6 +388,49 @@ function storeTimerIntent(taskId, projectId, taskTitle) {
     taskId, projectId, taskTitle
   }));
 }
+
+// ── Kanban filter ─────────────────────────────────────────────────────────────
+function applyKanbanFilters() {
+  const text     = document.getElementById('filter-text').value.toLowerCase().trim();
+  const priority = document.getElementById('filter-priority').value;
+  const assignee = document.getElementById('filter-assignee').value;
+
+  const cards = document.querySelectorAll('.task-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const cardText     = card.textContent.toLowerCase();
+    const cardPri      = card.classList.contains('priority-high')   ? 'high'
+                       : card.classList.contains('priority-medium') ? 'medium' : 'low';
+    const cardAssignee = card.dataset.assignee || '';
+
+    const matchText     = !text     || cardText.includes(text);
+    const matchPriority = !priority || cardPri === priority;
+    const matchAssignee = !assignee || cardAssignee === assignee;
+
+    const show = matchText && matchPriority && matchAssignee;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  const countEl = document.getElementById('filter-count');
+  if (countEl) {
+    const total = cards.length;
+    countEl.textContent = (text || priority || assignee) ? `Showing ${visible} of ${total}` : '';
+  }
+}
+
+function clearKanbanFilters() {
+  document.getElementById('filter-text').value = '';
+  document.getElementById('filter-priority').value = '';
+  document.getElementById('filter-assignee').value = '';
+  applyKanbanFilters();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('filter-text')    ?.addEventListener('input',  applyKanbanFilters);
+  document.getElementById('filter-priority')?.addEventListener('change', applyKanbanFilters);
+  document.getElementById('filter-assignee')?.addEventListener('change', applyKanbanFilters);
+});
 
 // ── Auto-start timer if we just moved a task to In Progress ──────────────────
 document.addEventListener('DOMContentLoaded', async () => {

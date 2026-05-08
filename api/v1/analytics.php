@@ -10,7 +10,14 @@ require_once __DIR__ . '/../../db.php';
 require_once __DIR__ . '/../../includes/auth.php';
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+// Restrict CORS to same origin — the React SPA is served from the same host
+$allowed_origin = rtrim(
+    (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
+    . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'),
+'/');
+header('Access-Control-Allow-Origin: ' . $allowed_origin);
+header('Access-Control-Allow-Credentials: true');
+header('Vary: Origin');
 
 if (!isLoggedIn() || !hasRole('admin')) {
     http_response_code(403);

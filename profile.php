@@ -15,6 +15,35 @@ $user_id = $_SESSION['user_id'];
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verifyCsrfToken();
+
+    // ── Password change ──────────────────────────────────────────────────────
+    if (isset($_POST['action']) && $_POST['action'] === 'change_password') {
+        $current_pw  = $_POST['current_password'] ?? '';
+        $new_pw      = $_POST['new_password']      ?? '';
+        $confirm_pw  = $_POST['confirm_password']  ?? '';
+
+        $row = $pdo->prepare("SELECT password FROM users WHERE id = :id");
+        $row->execute([':id' => $user_id]);
+        $hash = $row->fetchColumn();
+
+        $pw_errors = [];
+        if (!password_verify($current_pw, $hash))          $pw_errors[] = 'Current password is incorrect.';
+        if (strlen($new_pw) < 8)                           $pw_errors[] = 'New password must be at least 8 characters.';
+        if (!preg_match('/[A-Z]/', $new_pw))               $pw_errors[] = 'New password must contain an uppercase letter.';
+        if (!preg_match('/[a-z]/', $new_pw))               $pw_errors[] = 'New password must contain a lowercase letter.';
+        if (!preg_match('/[0-9]/', $new_pw))               $pw_errors[] = 'New password must contain a number.';
+        if ($new_pw !== $confirm_pw)                       $pw_errors[] = 'Passwords do not match.';
+
+        if ($pw_errors) {
+            setFlash('error', implode(' ', $pw_errors));
+        } else {
+            $upd = $pdo->prepare("UPDATE users SET password = :pw WHERE id = :id");
+            $upd->execute([':pw' => password_hash($new_pw, PASSWORD_DEFAULT), ':id' => $user_id]);
+            setFlash('success', 'Password changed successfully.');
+        }
+        header('Location: /TimeForge_Capstone/profile.php');
+        exit;
+    }
     $full_name        = trim(filter_input(INPUT_POST, 'full_name'));
     $company_name     = trim(filter_input(INPUT_POST, 'company_name'));
     $business_tagline = trim(filter_input(INPUT_POST, 'business_tagline'));
@@ -246,6 +275,42 @@ $flash = getFlash();
         &nbsp;&bull;&nbsp;
         <a href="/TimeForge_Capstone/index.php">Back to Dashboard</a>
     </p>
+
+    <!-- ── Change Password ─────────────────────────────────────────────────── -->
+    <div class="card" style="padding: 2rem; margin-top: 2rem;">
+        <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:1.25rem;">Change Password</h2>
+        <form method="POST" id="pw-form" novalidate>
+            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
+            <input type="hidden" name="action" value="change_password">
+
+            <div style="margin-bottom:1.1rem;">
+                <label style="display:block; font-weight:600; margin-bottom:.4rem;">Current Password</label>
+                <input type="password" name="current_password" required class="form-input" style="width:100%;">
+            </div>
+
+            <div style="margin-bottom:1.1rem;">
+                <label style="display:block; font-weight:600; margin-bottom:.4rem;">New Password</label>
+                <input type="password" name="new_password" id="new_pw" required class="form-input" style="width:100%;" oninput="checkStrength(this.value)">
+                <div id="strength-bar" style="height:4px; border-radius:2px; margin-top:.4rem; background:#e5e7eb; overflow:hidden;">
+                    <div id="strength-fill" style="height:100%; width:0; transition:width .3s, background .3s;"></div>
+                </div>
+                <ul id="pw-rules" style="font-size:.78rem; margin:.5rem 0 0 1rem; color:var(--color-text-secondary); list-style:disc;">
+                    <li id="rule-len">At least 8 characters</li>
+                    <li id="rule-upper">One uppercase letter</li>
+                    <li id="rule-lower">One lowercase letter</li>
+                    <li id="rule-digit">One number</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:600; margin-bottom:.4rem;">Confirm New Password</label>
+                <input type="password" name="confirm_password" id="confirm_pw" required class="form-input" style="width:100%;" oninput="checkMatch()">
+                <small id="match-msg" style="font-size:.78rem;"></small>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="pw-submit" style="width:100%;" disabled>Update Password</button>
+        </form>
+    </div>
 </div>
 
 <?php include __DIR__ . '/includes/footer_partial.php'; ?>
@@ -261,6 +326,38 @@ function previewLogo(input) {
         if (img) { img.src = e.target.result; }
     };
     reader.readAsDataURL(input.files[0]);
+}
+
+// ── Password strength ─────────────────────────────────────────────────────────
+let pwValid = false;
+function checkStrength(val) {
+    const rules = {
+        'rule-len':   val.length >= 8,
+        'rule-upper': /[A-Z]/.test(val),
+        'rule-lower': /[a-z]/.test(val),
+        'rule-digit': /[0-9]/.test(val),
+    };
+    let score = Object.values(rules).filter(Boolean).length;
+    Object.entries(rules).forEach(([id, ok]) => {
+        const el = document.getElementById(id);
+        if (el) el.style.color = ok ? '#16a34a' : '';
+    });
+    const fill  = document.getElementById('strength-fill');
+    const colors = ['#dc2626','#f97316','#eab308','#16a34a'];
+    if (fill) { fill.style.width = (score * 25) + '%'; fill.style.background = colors[score - 1] || '#e5e7eb'; }
+    pwValid = (score === 4);
+    updateSubmit();
+}
+function checkMatch() {
+    const msg   = document.getElementById('match-msg');
+    const match = document.getElementById('new_pw').value === document.getElementById('confirm_pw').value;
+    if (msg) { msg.textContent = document.getElementById('confirm_pw').value ? (match ? '✓ Passwords match' : '✗ Passwords do not match') : ''; msg.style.color = match ? '#16a34a' : '#dc2626'; }
+    updateSubmit();
+}
+function updateSubmit() {
+    const match = document.getElementById('new_pw').value === document.getElementById('confirm_pw').value;
+    const btn   = document.getElementById('pw-submit');
+    if (btn) btn.disabled = !(pwValid && match && document.getElementById('confirm_pw').value);
 }
 </script>
 </body>

@@ -28,6 +28,7 @@ $current_user = getCurrentUser();
           <a href="/TimeForge_Capstone/invoices/history.php">Invoices</a>
         <?php elseif (hasRole('freelancer')): ?>
           <a href="/TimeForge_Capstone/freelancer/dashboard.php">Freelancer Portal</a>
+          <a href="/TimeForge_Capstone/invoices/history.php">Invoices</a>
         <?php endif; ?>
       <?php endif; ?>
 

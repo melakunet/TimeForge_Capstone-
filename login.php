@@ -103,7 +103,7 @@ if (isset($_SESSION['register_success'])) {
 
             <button type="submit" class="btn-auth-primary">Signin to TimeForge</button>
             
-            <a href="#" class="forgot-password">Forgot password?</a>
+            <a href="forgot_password.php" class="forgot-password">Forgot password?</a>
         </form>
     </div>
 </div>

@@ -59,6 +59,30 @@ try {
             ORDER BY inv.created_at DESC
         ");
         $list_stmt->execute([':user_id' => $user_id]);
+    } elseif ($role === 'freelancer') {
+        // Freelancer sees invoices for projects they created or are assigned to
+        $list_stmt = $pdo->prepare("
+            SELECT
+                inv.id,
+                inv.invoice_number,
+                inv.issue_date,
+                inv.due_date,
+                inv.total_amount,
+                inv.partial_amount,
+                inv.status,
+                inv.created_at,
+                p.project_name,
+                c.client_name,
+                c.company_name
+            FROM invoices inv
+            INNER JOIN projects p ON p.id = inv.project_id
+            INNER JOIN clients  c ON c.id = inv.client_id
+            WHERE p.created_by = :user_id
+               OR p.company_id = :company_id
+            GROUP BY inv.id
+            ORDER BY inv.created_at DESC
+        ");
+        $list_stmt->execute([':user_id' => $user_id, ':company_id' => $_SESSION['company_id']]);
     } else {
         setFlash('error', 'Access denied.');
         header('Location: /TimeForge_Capstone/index.php');
