@@ -1496,3 +1496,128 @@ body.dark-mode .text-success { color: #4ade80; }
         justify-content: center;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVENESS — ≤ 768px
+   Covers: nav, header, project details table, admin pages, cards, forms
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* ── Navigation ─────────────────────────────────────────────────────────── */
+  header {
+    flex-wrap: wrap;
+    gap: .5rem;
+    padding: .6rem 1rem;
+  }
+  header nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    width: 100%;
+    font-size: .82rem;
+  }
+  header nav a,
+  header nav .btn,
+  header nav button {
+    padding: .3rem .65rem;
+    font-size: .8rem;
+  }
+  .nav-text {
+    width: 100%;
+    font-size: .78rem;
+  }
+
+  /* ── Page container ─────────────────────────────────────────────────────── */
+  .container { padding: 0 .75rem; }
+  main.container { padding: .75rem; }
+
+  /* ── Page header + breadcrumb ───────────────────────────────────────────── */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+  }
+  .header-actions { width: 100%; display: flex; flex-wrap: wrap; gap: .4rem; }
+  .header-actions .btn { flex: 1 1 auto; text-align: center; }
+
+  /* ── Cards ──────────────────────────────────────────────────────────────── */
+  .card { padding: 1rem; }
+  .card-header { flex-wrap: wrap; gap: .4rem; }
+
+  /* ── Grid layout (sidebar moves below) ─────────────────────────────────── */
+  .grid-layout {
+    grid-template-columns: 1fr !important;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .sidebar-column { order: 2; }
+  .main-column    { order: 1; }
+
+  /* ── Time entry / project tables (horizontal scroll) ───────────────────── */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .project-table,
+  .table {
+    min-width: 540px;
+  }
+
+  /* Stack approval action buttons */
+  .approval-actions { display: flex; flex-wrap: wrap; gap: .25rem; }
+
+  /* ── Pagination bar ─────────────────────────────────────────────────────── */
+  .pagination-bar {
+    flex-direction: column !important;
+    gap: .5rem;
+    align-items: center !important;
+  }
+
+  /* ── Admin user table ───────────────────────────────────────────────────── */
+  .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .admin-table-wrap table { min-width: 600px; }
+
+  /* ── Invite user form grid → single column ──────────────────────────────── */
+  .invite-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Kanban filter bar ──────────────────────────────────────────────────── */
+  #kanban-filters {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  #kanban-filters input,
+  #kanban-filters select {
+    width: 100% !important;
+  }
+
+  /* ── Auth / login cards ─────────────────────────────────────────────────── */
+  .auth-card { margin: 1rem; padding: 1.5rem; }
+
+  /* ── Form inputs full-width ─────────────────────────────────────────────── */
+  .form-input,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    width: 100% !important;
+  }
+
+  /* ── Flash messages ─────────────────────────────────────────────────────── */
+  .flash { font-size: .85rem; padding: .65rem .85rem; }
+
+  /* ── Kanban board already handles single-col via its own inline media query */
+}
+
+/* Extra small — phones < 480 px */
+@media (max-width: 480px) {
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.15rem; }
+  .btn { font-size: .8rem; padding: .35rem .7rem; }
+  .status-badge { font-size: .68rem; padding: .15rem .45rem; }
+  header .logo span { display: none; } /* hide wordmark, keep logo icon */
+}

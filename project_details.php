@@ -62,40 +62,54 @@ if ($role === 'client') {
     }
 }
 
-// Fetch Time Entries
+// ── Pagination params ─────────────────────────────────────────────────────────
+$per_page = 25;
+$page     = max(1, (int)filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT));
+
+// Total count for pagination controls
+$countStmt = $pdo->prepare("SELECT COUNT(*) FROM time_entries WHERE project_id = :pid");
+$countStmt->execute([':pid' => $project_id]);
+$total_entries = (int)$countStmt->fetchColumn();
+$total_pages   = max(1, (int)ceil($total_entries / $per_page));
+$page          = min($page, $total_pages);
+$offset        = ($page - 1) * $per_page;
+
+// Calculate Totals via SQL aggregate (all entries — not paginated)
+$totalsStmt = $pdo->prepare("
+    SELECT
+        SUM(CASE WHEN status NOT IN ('rejected','pending') AND end_time IS NOT NULL
+                 THEN TIMESTAMPDIFF(SECOND, start_time, end_time) ELSE 0 END)
+      + SUM(CASE WHEN status = 'running'
+                 THEN TIMESTAMPDIFF(SECOND, start_time, NOW()) ELSE 0 END)
+        AS total_seconds
+    FROM time_entries
+    WHERE project_id = :pid
+");
+$totalsStmt->execute([':pid' => $project_id]);
+$total_seconds = (int)$totalsStmt->fetchColumn();
+$total_hours   = $total_seconds / 3600;
+$total_cost    = $total_hours * ($project['hourly_rate'] ?? 0);
+$budget        = $project['budget'] ?? 0;
+$budget_remaining = $budget - $total_cost;
+
+// Fetch paginated time entries (for display)
 $timeQuery = "
-    SELECT 
-        te.*, 
+    SELECT
+        te.*,
         u.full_name as user_name,
         TIME_FORMAT(TIMEDIFF(IFNULL(te.end_time, NOW()), te.start_time), '%H:%i') as duration
     FROM time_entries te
     LEFT JOIN users u ON te.user_id = u.id
     WHERE te.project_id = :project_id
     ORDER BY te.start_time DESC
+    LIMIT :limit OFFSET :offset
 ";
 $tStmt = $pdo->prepare($timeQuery);
 $tStmt->bindValue(':project_id', $project_id, PDO::PARAM_INT);
+$tStmt->bindValue(':limit',  $per_page, PDO::PARAM_INT);
+$tStmt->bindValue(':offset', $offset,   PDO::PARAM_INT);
 $tStmt->execute();
 $time_entries = $tStmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Calculate Totals (ONLY Approved or Completed entries)
-$total_seconds = 0;
-foreach ($time_entries as $entry) {
-    // Skip rejected or pending entries for cost calculation
-    if ($entry['status'] === 'rejected' || $entry['status'] === 'pending') {
-        continue;
-    }
-
-    if ($entry['end_time']) {
-        $total_seconds += strtotime($entry['end_time']) - strtotime($entry['start_time']);
-    } elseif ($entry['status'] == 'running') {
-        $total_seconds += time() - strtotime($entry['start_time']);
-    }
-}
-$total_hours = $total_seconds / 3600;
-$total_cost = $total_hours * ($project['hourly_rate'] ?? 0);
-$budget = $project['budget'] ?? 0;
-$budget_remaining = $budget - $total_cost;
 
 // Count approved billable entries — used to gate the invoice pre-flight modal
 $approved_stmt = $pdo->prepare("
@@ -362,6 +376,32 @@ $flash = getFlash();
                             </tbody>
                         </table>
                     </div>
+
+                    <?php if ($total_pages > 1): ?>
+                    <div class="pagination-bar" style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;font-size:.875rem;">
+                        <span style="color:var(--color-text-secondary);">
+                            Showing <?= number_format(($page - 1) * $per_page + 1) ?>–<?= number_format(min($page * $per_page, $total_entries)) ?> of <?= number_format($total_entries) ?> entries
+                        </span>
+                        <div style="display:flex;gap:.4rem;">
+                            <?php if ($page > 1): ?>
+                                <a href="?id=<?= $project_id ?>&page=<?= $page - 1 ?>" class="btn btn-secondary" style="padding:.3rem .75rem;">&laquo; Prev</a>
+                            <?php endif; ?>
+                            <?php
+                                $range_start = max(1, $page - 2);
+                                $range_end   = min($total_pages, $page + 2);
+                                for ($p = $range_start; $p <= $range_end; $p++):
+                            ?>
+                                <a href="?id=<?= $project_id ?>&page=<?= $p ?>"
+                                   class="btn <?= $p === $page ? 'btn-primary' : 'btn-secondary' ?>"
+                                   style="padding:.3rem .65rem;"><?= $p ?></a>
+                            <?php endfor; ?>
+                            <?php if ($page < $total_pages): ?>
+                                <a href="?id=<?= $project_id ?>&page=<?= $page + 1 ?>" class="btn btn-secondary" style="padding:.3rem .75rem;">Next &raquo;</a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
                 </div>
             </div>
 
@@ -443,6 +483,26 @@ $flash = getFlash();
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+                        <?php if ($total_pages > 1): ?>
+                        <div class="pagination-bar" style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;font-size:.875rem;">
+                            <span style="color:var(--color-text-secondary);">
+                                Page <?= $page ?> of <?= $total_pages ?> &bull; <?= number_format($total_entries) ?> total entries
+                            </span>
+                            <div style="display:flex;gap:.4rem;">
+                                <?php if ($page > 1): ?>
+                                    <a href="?id=<?= $project_id ?>&page=<?= $page - 1 ?>" class="btn btn-secondary" style="padding:.3rem .75rem;">&laquo; Prev</a>
+                                <?php endif; ?>
+                                <?php for ($p = max(1,$page-2); $p <= min($total_pages,$page+2); $p++): ?>
+                                    <a href="?id=<?= $project_id ?>&page=<?= $p ?>"
+                                       class="btn <?= $p === $page ? 'btn-primary' : 'btn-secondary' ?>"
+                                       style="padding:.3rem .65rem;"><?= $p ?></a>
+                                <?php endfor; ?>
+                                <?php if ($page < $total_pages): ?>
+                                    <a href="?id=<?= $project_id ?>&page=<?= $page + 1 ?>" class="btn btn-secondary" style="padding:.3rem .75rem;">Next &raquo;</a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
             </div>

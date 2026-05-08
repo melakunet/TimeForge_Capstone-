@@ -9,6 +9,7 @@ require_once __DIR__ . '/../../config/session.php';
 require_once __DIR__ . '/../../includes/auth.php';
 require_once __DIR__ . '/../../includes/flash.php';
 require_once __DIR__ . '/../../db.php';
+require_once __DIR__ . '/../../includes/notify.php';
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 
@@ -91,6 +92,19 @@ if ($action === 'approve') {
 
             if ($stmt->rowCount() > 0) {
                 setFlash('success', 'Time entry marked as ' . $new_status . '.');
+
+                // ── Notify the entry owner ────────────────────────────────
+                $ownerRow = $pdo->prepare("SELECT user_id FROM time_entries WHERE id = :id");
+                $ownerRow->execute([':id' => $entry_id]);
+                $owner_id = (int)$ownerRow->fetchColumn();
+                if ($owner_id) {
+                    $notif_type = ($new_status === 'approved') ? 'time_approved' : 'time_rejected';
+                    $notif_msg  = ($new_status === 'approved')
+                        ? 'Your time entry was approved.'
+                        : 'Your time entry was rejected.';
+                    $notif_link = $project_id ? '/TimeForge_Capstone/project_details.php?id=' . $project_id : null;
+                    notify($pdo, $owner_id, $notif_type, $notif_msg, $notif_link);
+                }
             } else {
                 setFlash('error', 'Time entry not found or no change made.');
             }

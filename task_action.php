@@ -7,6 +7,7 @@ require_once __DIR__ . '/config/session.php';
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/flash.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/includes/notify.php';
 
 requireLogin();
 verifyCsrfToken();
@@ -64,6 +65,13 @@ switch ($action) {
             ':due'     => $due_date,
             ':creator' => $user_id,
         ]);
+        // Notify assignee if different from creator
+        if ($assigned_to && $assigned_to !== $user_id) {
+            notify($pdo, $assigned_to, 'task_assigned',
+                "You were assigned a new task: {$title}",
+                "/TimeForge_Capstone/tasks.php?project_id={$project_id}"
+            );
+        }
         setFlash('success', 'Task created successfully.');
         header("Location: $redirect");
         exit;

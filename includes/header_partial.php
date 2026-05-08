@@ -1,7 +1,11 @@
 <?php
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/auth.php';
-$current_user = getCurrentUser();
+require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/notify.php';
+$current_user  = getCurrentUser();
+// Guard: only query if logged in AND $pdo is available
+$_notif_count  = (isLoggedIn() && isset($pdo)) ? unreadNotificationCount($pdo, (int)$_SESSION['user_id']) : 0;
 ?>
 <header>
   <div class="logo">
@@ -33,6 +37,9 @@ $current_user = getCurrentUser();
       <?php endif; ?>
 
       <span class="nav-text">Welcome, <?php echo htmlspecialchars($current_user['full_name'] ?? 'User'); ?></span>
+      <a href="/TimeForge_Capstone/notifications.php" class="btn btn-secondary btn-compact" title="Notifications" style="position:relative;">
+        🔔<?php if ($_notif_count > 0): ?><span style="position:absolute;top:2px;right:2px;background:#dc2626;color:#fff;font-size:.6rem;border-radius:999px;padding:0 .35rem;line-height:1.4;"><?= $_notif_count ?></span><?php endif; ?>
+      </a>
       <a href="/TimeForge_Capstone/about.php" class="btn btn-secondary btn-compact">About</a>
       <a href="/TimeForge_Capstone/profile.php" class="btn btn-secondary btn-compact">My Profile</a>
       <button id="themeToggle" class="theme-toggle">Dark mode</button>
