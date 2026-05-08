@@ -54,7 +54,7 @@ if (!$invoice) {
     exit;
 }
 
-$redirect = " . APP_BASE . "/invoices/view.php?id={$invoice_id}";
+$redirect = APP_BASE . "/invoices/view.php?id={$invoice_id}";
 
 // ------------------------------------------------------------------
 // Client feedback action — clients allowed

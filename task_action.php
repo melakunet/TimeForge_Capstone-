@@ -69,7 +69,7 @@ switch ($action) {
         if ($assigned_to && $assigned_to !== $user_id) {
             notify($pdo, $assigned_to, 'task_assigned',
                 "You were assigned a new task: {$title}",
-                " . APP_BASE . "/tasks.php?project_id={$project_id}"
+                APP_BASE . "/tasks.php?project_id={$project_id}"
             );
         }
         setFlash('success', 'Task created successfully.');

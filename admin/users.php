@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo->prepare("INSERT INTO users (username,email,password,role,full_name,is_active,company_id,created_at,updated_at) VALUES (?,?,?,?,?,1,?,NOW(),NOW())")
                         ->execute([$inv_username, $inv_email, hashPassword($temp_pass), $inv_role, $inv_name, $company_id]);
 
-                    $reset_link = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . ' . APP_BASE . '/forgot_password.php';
+                    $reset_link = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . APP_BASE . '/forgot_password.php';
                     $html = "<div style='font-family:sans-serif;max-width:520px;margin:auto;'><h2 style='color:#3b82f6;'>Welcome to TimeForge</h2><p>Hi <strong>" . htmlspecialchars($inv_name) . "</strong>,</p><p>You have been invited to join <strong>" . htmlspecialchars($company_name) . "</strong> as a <strong>" . ucfirst($inv_role) . "</strong>.</p><p>Username: <strong>" . htmlspecialchars($inv_username) . "</strong><br>Temporary password: <strong>" . htmlspecialchars($temp_pass) . "</strong></p><p><a href='" . htmlspecialchars($reset_link) . "' style='background:#3b82f6;color:#fff;padding:.75rem 2rem;border-radius:6px;text-decoration:none;font-weight:700;'>Set Your Own Password</a></p><p style='color:#94a3b8;font-size:.8rem;'>Please change your password on first login.</p></div>";
                     sendEmail($inv_email, $inv_name, 'You have been invited to TimeForge', $html);
                     setFlash('success', "Invitation sent to {$inv_email}.");

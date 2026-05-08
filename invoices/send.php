@@ -80,7 +80,7 @@ if (!$invoice) {
     exit;
 }
 
-$back = ' . APP_BASE . '/invoices/view.php?id=' . $invoice_id;
+$back = APP_BASE . '/invoices/view.php?id=' . $invoice_id;
 
 // Approved billable time entries for PDF line items
 $entries_stmt = $pdo->prepare("

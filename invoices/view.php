@@ -171,8 +171,8 @@ $creator_email   = $invoice['creator_email']   ?? '';
 $creator_logo    = $invoice['creator_logo']    ?? '';
 // Resolve logo: use company logo if uploaded and file exists, else fall back to TimeForge app logo
 $logo_src = (!empty($creator_logo) && file_exists(__DIR__ . '/../' . $creator_logo))
-    ? ' . APP_BASE . '/' . $creator_logo
-    : ' . APP_BASE . '/icons/logo.png';
+    ? APP_BASE . '/' . $creator_logo
+    : APP_BASE . '/icons/logo.png';
 $logo_is_custom = (!empty($creator_logo) && file_exists(__DIR__ . '/../' . $creator_logo));
 
 // Client company — shown in the BILL TO section
@@ -380,7 +380,7 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
 
         <!-- ── Inline action forms (shown one at a time via JS) ── -->
         <?php
-        $act_url = ' . APP_BASE . '/invoices/payment_action.php';
+        $act_url = APP_BASE . '/invoices/payment_action.php';
         $hid     = '<input type="hidden" name="invoice_id" value="' . $invoice_id . '">';
 
         $method_options = ['', 'Bank Transfer', 'PayPal', 'Stripe', 'Cheque', 'Cash', 'Credit Card', 'Other'];

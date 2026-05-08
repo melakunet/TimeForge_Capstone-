@@ -71,7 +71,7 @@ $count_solutions = count(array_filter($comments, fn($c) => $c['type'] === 'solut
 $count_feedback  = count(array_filter($comments, fn($c) => $c['type'] === 'feedback'));
 
 $back_url = $role === 'client'
-    ? " . APP_BASE . "/client/project_report.php?id={$project_id}"
+    ? APP_BASE . "/client/project_report.php?id={$project_id}"
     : "tasks.php?project_id={$project_id}";
 ?>
 <!DOCTYPE html>

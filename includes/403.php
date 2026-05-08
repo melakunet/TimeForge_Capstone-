@@ -15,13 +15,13 @@ http_response_code(403);
 $role      = $_SESSION['role'] ?? null;
 $full_name = $_SESSION['full_name'] ?? 'User';
 
-$home_url = ' . APP_BASE . '/index.php';
+$home_url = APP_BASE . '/index.php';
 if ($role === 'client') {
-    $home_url = ' . APP_BASE . '/client/dashboard.php';
+    $home_url = APP_BASE . '/client/dashboard.php';
 } elseif ($role === 'freelancer') {
-    $home_url = ' . APP_BASE . '/freelancer/dashboard.php';
+    $home_url = APP_BASE . '/freelancer/dashboard.php';
 } elseif ($role === 'admin') {
-    $home_url = ' . APP_BASE . '/admin/dashboard.php';
+    $home_url = APP_BASE . '/admin/dashboard.php';
 }
 ?>
 <!DOCTYPE html>
