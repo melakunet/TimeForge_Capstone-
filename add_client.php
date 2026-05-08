@@ -59,6 +59,7 @@ $current_user = getCurrentUser();
             <?php endif; ?>
 
             <form action="add_client_process.php" method="post" id="add_client_form">
+                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                 <div class="form-group">
                     <label for="client_name">Client Name: <span class="required">*</span></label>
                     <input type="text" 

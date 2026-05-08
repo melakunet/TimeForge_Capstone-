@@ -21,6 +21,7 @@ if ($action === 'add') {
         setFlash('danger', 'You do not have permission to add projects.');
         header('Location: /TimeForge_Capstone/index.php'); exit;
     }
+    verifyCsrfToken();
 
     $project_name = filter_input(INPUT_POST, 'project_name');
     $description  = filter_input(INPUT_POST, 'description');
@@ -61,6 +62,7 @@ if ($action === 'edit') {
     if (!in_array($_SESSION['role'] ?? null, ['admin', 'freelancer'], true)) {
         include __DIR__ . '/../../includes/403.php'; exit;
     }
+    verifyCsrfToken();
 
     $project_id   = filter_input(INPUT_POST, 'project_id',  FILTER_VALIDATE_INT);
     $project_name = filter_input(INPUT_POST, 'project_name');
@@ -180,6 +182,7 @@ if ($action === 'restore') {
         setFlash('error', 'Invalid request method.');
         header('Location: /TimeForge_Capstone/index.php'); exit;
     }
+    verifyCsrfToken();
 
     $project_id = filter_input(INPUT_POST, 'project_id', FILTER_VALIDATE_INT);
     if (!$project_id) {

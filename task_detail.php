@@ -240,6 +240,7 @@ if ($flash): ?>
             else echo '✏️ Add a Comment'; ?>
     </h3>
     <form method="POST" action="/TimeForge_Capstone/task_comment.php">
+      <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
       <input type="hidden" name="task_id"    value="<?= $task_id ?>">
       <input type="hidden" name="project_id" value="<?= $project_id ?>">
       <div class="type-selector">

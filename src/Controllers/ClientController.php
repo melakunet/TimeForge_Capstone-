@@ -21,6 +21,7 @@ if ($action === 'add') {
         header('Location: /TimeForge_Capstone/index.php'); exit;
     }
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /TimeForge_Capstone/add_client.php'); exit; }
+    verifyCsrfToken();
 
     $client_name  = trim($_POST['client_name']  ?? '');
     $company_name = trim($_POST['company_name'] ?? '');
@@ -79,6 +80,7 @@ if ($action === 'edit') {
         header('Location: /TimeForge_Capstone/clients.php'); exit;
     }
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /TimeForge_Capstone/clients.php'); exit; }
+    verifyCsrfToken();
 
     $client_id    = $_POST['client_id'] ?? null;
     $client_name  = trim($_POST['client_name']  ?? '');

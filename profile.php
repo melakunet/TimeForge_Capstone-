@@ -14,6 +14,7 @@ $user_id = $_SESSION['user_id'];
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrfToken();
     $full_name        = trim(filter_input(INPUT_POST, 'full_name'));
     $company_name     = trim(filter_input(INPUT_POST, 'company_name'));
     $business_tagline = trim(filter_input(INPUT_POST, 'business_tagline'));
@@ -161,6 +162,7 @@ $flash = getFlash();
 
     <div class="card" style="padding: 2rem;">
         <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
 
             <div style="margin-bottom: 1.25rem;">
                 <label style="display:block; font-weight:600; margin-bottom:0.4rem;">Full Name <span style="color:#dc2626;">*</span></label>

@@ -191,6 +191,17 @@ $flash = getFlash();
                 </div>
             </div>
 
+            <?php if ($budget_remaining < 0): ?>
+            <div class="budget-overage-alert" style="background:#7f1d1d; border:1px solid #ef4444; color:#fecaca; border-radius:8px; padding:1rem 1.25rem; margin-top:1rem; display:flex; align-items:center; gap:.75rem;">
+                <span style="font-size:1.4rem;">⚠</span>
+                <div>
+                    <strong>Budget Exceeded</strong> —
+                    $<?= number_format(abs($budget_remaining), 2) ?> over budget
+                    <span style="opacity:.8;">(Total cost $<?= number_format($total_cost, 2) ?> vs. budget $<?= number_format($budget, 2) ?>)</span>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <!-- Time Entries -->
             <div class="card mt-4">
                 <div class="card-header">
@@ -309,11 +320,13 @@ $flash = getFlash();
                                                     <?php if ($role === 'admin'): ?>
                                                         <div class="approval-actions mt-1">
                                                             <form action="approve_time_entry.php" method="POST" class="d-inline">
+                                                                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                                                 <input type="hidden" name="entry_id" value="<?php echo $entry['id']; ?>">
                                                                 <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
                                                                 <button type="submit" name="action" value="approve" class="btn-approve" title="Approve">✓</button>
                                                             </form>
                                                             <form action="approve_time_entry.php" method="POST" class="d-inline">
+                                                                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                                                 <input type="hidden" name="entry_id" value="<?php echo $entry['id']; ?>">
                                                                 <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
                                                                 <button type="submit" name="action" value="reject" class="btn-reject" title="Reject">✕</button>
@@ -332,6 +345,7 @@ $flash = getFlash();
                                                 <?php if (($entry['user_id'] == $user_id && $entry['status'] == 'pending') || $role === 'admin'): ?>
                                                     <a href="edit_time_entry.php?id=<?php echo $entry['id']; ?>" class="btn-icon" title="Edit">✎</a>
                                                     <form action="delete_time_entry.php" method="POST" class="d-inline" onsubmit="return confirm('Delete this time entry?');">
+                                                        <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                                         <input type="hidden" name="entry_id" value="<?php echo $entry['id']; ?>">
                                                         <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
                                                         <button type="submit" class="btn-icon btn-icon-danger" title="Delete">🗑</button>
@@ -403,6 +417,7 @@ $flash = getFlash();
                                                 <div class="action-buttons">
                                                     <?php if ($entry['status'] === 'running'): ?>
                                                         <form action="stop_timer.php" method="POST" class="d-inline">
+                                                            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                                             <input type="hidden" name="entry_id" value="<?php echo $entry['id']; ?>">
                                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Stop the timer?');">
                                                                 ■ Stop Timer
@@ -410,6 +425,7 @@ $flash = getFlash();
                                                         </form>
                                                     <?php else: ?>
                                                         <form action="start_timer.php" method="POST" class="d-inline">
+                                                            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                                             <input type="hidden" name="entry_id" value="<?php echo $entry['id']; ?>">
                                                             <button type="submit" class="btn btn-success btn-sm">
                                                                 ▶ Resume Timer
@@ -466,11 +482,13 @@ $flash = getFlash();
                     <div class="card-body">
                          <?php if ($project['deleted_at']): ?>
                              <form action="restore_project.php" method="POST">
+                                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                 <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
                                 <button type="submit" class="btn btn-success btn-full">Restore Project</button>
                              </form>
                          <?php else: ?>
                             <form action="delete_project.php" method="POST" onsubmit="return confirm('Archive this project?');">
+                                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                                 <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
                                 <button type="submit" class="btn btn-archive btn-full">Archive Project</button>
                             </form>
@@ -516,6 +534,7 @@ $flash = getFlash();
             <span class="close-modal" onclick="closeManualEntryModal()">&times;</span>
             <h2>Log Time Manually</h2>
             <form action="add_time_manual.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                 <input type="hidden" name="project_id" value="<?php echo $project['id']; ?>">
                 
                 <div class="form-group">

@@ -124,6 +124,7 @@ $tpl_preselect    = in_array($_GET['tpl'] ?? '', $allowed_tpls_get) ? $_GET['tpl
 
 // ── Handle form submission ────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrfToken();
     $invoice_number = trim($_POST['invoice_number'] ?? '');
     $issue_date     = trim($_POST['issue_date']     ?? '');
     $due_date       = trim($_POST['due_date']       ?? '');
@@ -242,7 +243,7 @@ $flash = getFlash();
         <div class="card">
             <h2 style="margin-bottom:1.5rem;">Invoice Details</h2>
             <form method="post" action="">
-                <div class="form-group">
+                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">                <div class="form-group">
                     <label for="invoice_number">Invoice Number</label>
                     <input type="text" id="invoice_number" name="invoice_number"
                            value="<?php echo htmlspecialchars($_POST['invoice_number'] ?? $invoice_number_default); ?>"

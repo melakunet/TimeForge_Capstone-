@@ -16,6 +16,7 @@ $company_id = (int)$_SESSION['company_id'];
 
 /* ── Handle Save ──────────────────────────────────────────────────────── */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrfToken();
     // Sanitize & validate each field individually
 
     // Company Profile
@@ -160,7 +161,7 @@ $currencies = ['CAD' => 'CAD — Canadian Dollar', 'USD' => 'USD — US Dollar',
   </nav>
 
   <form method="POST">
-
+    <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
       <!-- ── Company Profile ── -->
       <div class="card settings-section" id="company">
         <h2>🏢 Company Profile</h2>

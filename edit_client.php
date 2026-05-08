@@ -79,6 +79,7 @@ $current_user = getCurrentUser();
             <?php endif; ?>
 
             <form action="edit_client_process.php" method="post" id="edit_client_form">
+                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                 <input type="hidden" name="client_id" value="<?php echo $client['id']; ?>">
 
                 <div class="form-group">

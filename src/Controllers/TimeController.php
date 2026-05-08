@@ -17,6 +17,7 @@ if ($action === 'delete') {
 
     if (!isLoggedIn()) { header('Location: /TimeForge_Capstone/login.php'); exit; }
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /TimeForge_Capstone/index.php'); exit; }
+    verifyCsrfToken();
 
     $entry_id   = filter_input(INPUT_POST, 'entry_id',   FILTER_VALIDATE_INT);
     $project_id = filter_input(INPUT_POST, 'project_id', FILTER_VALIDATE_INT);
@@ -64,6 +65,7 @@ if ($action === 'approve') {
         header('Location: /TimeForge_Capstone/index.php'); exit;
     }
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /TimeForge_Capstone/index.php'); exit; }
+    verifyCsrfToken();
 
     $entry_id   = filter_input(INPUT_POST, 'entry_id',   FILTER_VALIDATE_INT);
     $decision   = $_POST['action_decision'] ?? $_POST['action'] ?? '';

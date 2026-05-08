@@ -59,6 +59,7 @@ $flash = getFlash();
             <?php endif; ?>
 
             <form action="edit_project_process.php" method="post">
+                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                 <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
 
                 <div class="form-group">

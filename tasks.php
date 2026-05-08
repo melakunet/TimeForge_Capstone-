@@ -132,6 +132,7 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
   <div id="add-task-form" style="display:none;" class="card" style="margin-bottom:1.5rem;">
     <h3 style="margin-top:0; color:var(--color-accent);">New Task</h3>
     <form method="POST" action="task_action.php">
+      <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
       <input type="hidden" name="action" value="create">
       <input type="hidden" name="project_id" value="<?= $project_id ?>">
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
@@ -237,6 +238,7 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
             <!-- Start button: form POST moves task to in_progress, JS timer starts after reload -->
             <form method="POST" action="task_action.php" style="display:inline;"
                   onsubmit="storeTimerIntent(<?= $t['id'] ?>, <?= $project_id ?>, <?= json_encode($t['title']) ?>)">
+              <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
               <input type="hidden" name="action"     value="move">
               <input type="hidden" name="task_id"    value="<?= $t['id'] ?>">
               <input type="hidden" name="status"     value="in_progress">
@@ -245,17 +247,20 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
             </form>
           <?php elseif ($col_key === 'in_progress' && $role !== 'client'): ?>
             <form method="POST" action="task_action.php" style="display:inline;">
+              <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
               <input type="hidden" name="action" value="move"><input type="hidden" name="task_id" value="<?= $t['id'] ?>">
               <input type="hidden" name="status" value="done"><input type="hidden" name="project_id" value="<?= $project_id ?>">
               <button class="btn-xs btn-move-done" type="submit">✔ Done</button>
             </form>
             <form method="POST" action="task_action.php" style="display:inline;">
+              <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
               <input type="hidden" name="action" value="move"><input type="hidden" name="task_id" value="<?= $t['id'] ?>">
               <input type="hidden" name="status" value="open"><input type="hidden" name="project_id" value="<?= $project_id ?>">
               <button class="btn-xs btn-move-open" type="submit">↩ Reopen</button>
             </form>
           <?php elseif ($col_key === 'done' && $role !== 'client'): ?>
             <form method="POST" action="task_action.php" style="display:inline;">
+              <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
               <input type="hidden" name="action" value="move"><input type="hidden" name="task_id" value="<?= $t['id'] ?>">
               <input type="hidden" name="status" value="open"><input type="hidden" name="project_id" value="<?= $project_id ?>">
               <button class="btn-xs btn-move-open" type="submit">↩ Reopen</button>
@@ -264,6 +269,7 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
           <?php if ($role === 'admin'): ?>
             <a href="edit_task.php?id=<?= $t['id'] ?>&project_id=<?= $project_id ?>" class="btn-xs btn-edit-task">✏ Edit</a>
             <form method="POST" action="task_action.php" style="display:inline;" onsubmit="return confirm('Delete this task?')">
+              <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
               <input type="hidden" name="action" value="delete"><input type="hidden" name="task_id" value="<?= $t['id'] ?>">
               <input type="hidden" name="project_id" value="<?= $project_id ?>">
               <button class="btn-xs btn-del-task" type="submit">🗑</button>

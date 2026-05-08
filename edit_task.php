@@ -36,6 +36,7 @@ $members = $ms->fetchAll(PDO::FETCH_ASSOC);
 
 // Handle POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrfToken();
     $title       = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $assigned_to = filter_input(INPUT_POST, 'assigned_to', FILTER_VALIDATE_INT) ?: null;
@@ -88,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="card">
     <form method="POST">
+      <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
         <div style="grid-column:1/-1;">
           <label class="form-label">Task Title *</label>

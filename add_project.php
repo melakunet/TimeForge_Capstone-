@@ -41,6 +41,7 @@ $flash = getFlash();
             <?php endif; ?>
             
             <form action="add_project_process.php" method="post" id="add_project_form">
+                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                 <div class="form-group">
                     <label>Project Name:</label>
                     <input type="text" name="project_name" required><br>

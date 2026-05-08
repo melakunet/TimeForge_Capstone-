@@ -12,19 +12,30 @@ function devBypassEnabled() {
     return defined('DEV_AUTH_BYPASS') && DEV_AUTH_BYPASS === true;
 }
 
-function ensureDevSession() {
-    if (devBypassEnabled() && (!isset($_SESSION['user_id']) || empty($_SESSION['user_id']))) {
-        $_SESSION['user_id']   = 0;
-        $_SESSION['username']  = $_SESSION['username']  ?? 'dev_user';
-        $_SESSION['email']     = $_SESSION['email']     ?? 'dev@example.com';
-        $_SESSION['role']      = $_SESSION['role']      ?? 'admin';
-        $_SESSION['full_name'] = $_SESSION['full_name'] ?? 'Developer';
-        $_SESSION['is_active'] = 1;
-        $_SESSION['login_time'] = time();
+// ── Login Rate Limiting ───────────────────────────────────────────────────────
+
+/**
+ * Check whether the given IP has made >= 5 failed login attempts
+ * in the last 15 minutes. Uses the existing audit_logs table — no new table needed.
+ *
+ * Returns TRUE if the IP should be blocked (fail closed = don't block on DB error).
+ */
+function isLoginRateLimited(string $ip): bool {
+    global $pdo;
+    try {
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) FROM audit_logs
+            WHERE ip_address = ?
+              AND action LIKE 'login_failed%'
+              AND created_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)
+        ");
+        $stmt->execute([$ip]);
+        return (int)$stmt->fetchColumn() >= 5;
+    } catch (PDOException $e) {
+        error_log('isLoginRateLimited error: ' . $e->getMessage());
+        return false; // fail open — never block login due to a DB error
     }
 }
-
-// ── Session helpers ───────────────────────────────────────────────────────
 
 function hashPassword($password) {
     return password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
@@ -32,6 +43,18 @@ function hashPassword($password) {
 
 function verifyPassword($password, $hash) {
     return password_verify($password, $hash);
+}
+
+function startSession($user) {
+    session_regenerate_id(true); // prevent session fixation — must be first
+    $_SESSION['user_id']    = $user['id'];
+    $_SESSION['username']   = $user['username'];
+    $_SESSION['email']      = $user['email'];
+    $_SESSION['role']       = $user['role'];
+    $_SESSION['full_name']  = $user['full_name'];
+    $_SESSION['is_active']  = $user['is_active'];
+    $_SESSION['company_id'] = $user['company_id'] ?? null;
+    $_SESSION['login_time'] = time();
 }
 
 function getCurrentUser() {
@@ -50,15 +73,51 @@ function hasRole($role) {
     return isset($_SESSION['role']) && $_SESSION['role'] === $role;
 }
 
-function startSession($user) {
-    $_SESSION['user_id']    = $user['id'];
-    $_SESSION['username']   = $user['username'];
-    $_SESSION['email']      = $user['email'];
-    $_SESSION['role']       = $user['role'];
-    $_SESSION['full_name']  = $user['full_name'];
-    $_SESSION['is_active']  = $user['is_active'];
-    $_SESSION['company_id'] = $user['company_id'] ?? null;
-    $_SESSION['login_time'] = time();
+function ensureDevSession() {
+    if (devBypassEnabled() && (!isset($_SESSION['user_id']) || empty($_SESSION['user_id']))) {
+        $_SESSION['user_id']   = 0;
+        $_SESSION['username']  = $_SESSION['username']  ?? 'dev_user';
+        $_SESSION['email']     = $_SESSION['email']     ?? 'dev@example.com';
+        $_SESSION['role']      = $_SESSION['role']      ?? 'admin';
+        $_SESSION['full_name'] = $_SESSION['full_name'] ?? 'Developer';
+        $_SESSION['is_active'] = 1;
+        $_SESSION['login_time'] = time();
+    }
+}
+
+// ── CSRF Protection ───────────────────────────────────────────────────────────
+
+/**
+ * Generate (or retrieve) a per-session CSRF token.
+ * Token is created once per session and reused — safe for standard form flows.
+ */
+function generateCsrfToken(): string {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+/**
+ * Verify the CSRF token submitted via POST.
+ * Calls http_response_code(403) and exits on failure.
+ * Always call this at the top of every POST handler, before any DB work.
+ */
+function verifyCsrfToken(): void {
+    $token = $_POST['csrf_token'] ?? '';
+    if (empty($token) || !hash_equals($_SESSION['csrf_token'] ?? '', $token)) {
+        http_response_code(403);
+        // Use a generic message — don't hint at internals
+        die('<p style="font-family:sans-serif;padding:2rem;">&#x26a0; Invalid security token. Please <a href="javascript:history.back()">go back</a> and try again.</p>');
+    }
+}
+
+/**
+ * Output a hidden CSRF input — call inside any POST <form>.
+ * Usage: <?= csrf_field() ?>
+ */
+function csrf_field(): string {
+    return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8') . '">';
 }
 
 function destroySession() {
@@ -115,6 +174,13 @@ function authenticateUser($username, $password) {
     }
 
     try {
+        // ── Rate limit check — before any user lookup ─────────────────────────
+        $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        if (isLoginRateLimited($clientIp)) {
+            logAuditAction(0, 'login_rate_limited', $clientIp);
+            return ['success' => false, 'message' => 'Too many failed attempts. Please wait 15 minutes before trying again.'];
+        }
+
         $stmt = $pdo->prepare("
             SELECT id, username, email, password, role, full_name, is_active, last_login, company_id
             FROM users WHERE username = ? OR email = ? LIMIT 1

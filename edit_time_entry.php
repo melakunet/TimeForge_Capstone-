@@ -49,6 +49,7 @@ if (!$can_edit) {
 
 // Processing Updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrfToken();
     $description = trim($_POST['description'] ?? '');
     $start_date = $_POST['start_date'] ?? '';
     $start_time = $_POST['start_time'] ?? '';
@@ -130,6 +131,7 @@ $page_title = 'Edit Time Entry';
                     <?php endif; ?>
 
                     <form method="POST">
+                        <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                         <div class="form-group">
                             <label>Date</label>
                             <input type="date" name="start_date" required value="<?php echo $start_date_val; ?>" class="form-control">

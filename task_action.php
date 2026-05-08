@@ -9,6 +9,7 @@ require_once __DIR__ . '/includes/flash.php';
 require_once __DIR__ . '/db.php';
 
 requireLogin();
+verifyCsrfToken();
 
 $company_id = (int)$_SESSION['company_id'];
 $user_id    = (int)$_SESSION['user_id'];
