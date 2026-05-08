@@ -317,20 +317,26 @@ $total = $pass + $fail;
   <?php if (!empty($real_shots)): ?>
   <h3 style="color:#94a3b8;font-size:.85rem;margin:1.25rem 0 .75rem;">Last <?= count($real_shots) ?> real screenshots in DB:</h3>
   <div style="display:flex;flex-wrap:wrap;gap:1rem;">
-    <?php foreach ($real_shots as $s): ?>
-    <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem;min-width:200px;max-width:220px;">
-      <img src="/TimeForge_Capstone/api/screenshot_img.php?id=<?= $s['id'] ?>"
-           alt="Screenshot <?= $s['id'] ?>"
-           style="width:100%;border-radius:4px;border:1px solid #334155;"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <div style="display:none;color:#f87171;font-size:.75rem;padding:.5rem;">
-        ⚠ Image not accessible (need admin session to view via proxy)
-      </div>
+    <?php foreach ($real_shots as $s):
+      // Embed image directly as base64 data URI — no proxy/session needed
+      $abs_path = __DIR__ . '/' . $s['file_path'];
+      $img_tag  = '';
+      if (file_exists($abs_path) && is_readable($abs_path)) {
+          $b64 = base64_encode(file_get_contents($abs_path));
+          $img_tag = '<img src="data:image/jpeg;base64,' . $b64 . '" '
+                   . 'alt="Screenshot ' . $s['id'] . '" '
+                   . 'style="width:100%;border-radius:4px;border:1px solid #334155;">';
+      } else {
+          $img_tag = '<div style="color:#f87171;font-size:.72rem;padding:.5rem;background:#1e293b;border-radius:4px;">⚠ File missing on disk:<br><code style="font-size:.65rem;">' . htmlspecialchars($s['file_path']) . '</code></div>';
+      }
+    ?>
+    <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:.75rem;min-width:200px;max-width:240px;">
+      <?= $img_tag ?>
       <div style="margin-top:.5rem;font-size:.72rem;color:#94a3b8;line-height:1.6;">
         <div><strong style="color:#e2e8f0;">#<?= $s['id'] ?></strong> — <?= htmlspecialchars($s['full_name']) ?></div>
         <div><?= htmlspecialchars($s['project_name']) ?></div>
         <div><?= date('M j, g:i a', strtotime($s['captured_at'])) ?></div>
-        <div>Activity: <?= $s['activity_score_at_capture'] ?> &bull; <?= $s['file_size_kb'] ?>KB</div>
+        <div>Activity score: <strong style="color:#f59e0b;"><?= $s['activity_score_at_capture'] ?></strong> &bull; <?= $s['file_size_kb'] ?> KB</div>
       </div>
     </div>
     <?php endforeach; ?>
