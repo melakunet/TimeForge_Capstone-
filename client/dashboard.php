@@ -80,9 +80,9 @@ $stage_labels = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> - TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/client-portal.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/client-portal.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
     <?php include_once __DIR__ . '/../includes/header_partial.php'; ?>
@@ -121,10 +121,10 @@ $stage_labels = [
             <div class="stat-sub">Based on approved time entries</div>
         </div>
         <!-- Invoice history quick link -->
-        <div class="stat-card" style="cursor:pointer;" onclick="location.href='/TimeForge_Capstone/invoices/history.php'">
+        <div class="stat-card" style="cursor:pointer;" onclick="location.href=' . APP_BASE . '/invoices/history.php'">
             <div class="stat-label">Invoices</div>
             <div class="stat-value">🧾</div>
-            <div class="stat-sub"><a href="/TimeForge_Capstone/invoices/history.php">View your invoices</a></div>
+            <div class="stat-sub"><a href="<?= APP_BASE ?>/invoices/history.php">View your invoices</a></div>
         </div>
     </div>
 
@@ -133,7 +133,7 @@ $stage_labels = [
         <div class="section-header">
             <h2>Your Projects</h2>
             <?php if (!empty($projects)): ?>
-                <a href="/TimeForge_Capstone/client/projects.php" class="btn btn-secondary btn-sm">
+                <a href="<?= APP_BASE ?>/client/projects.php" class="btn btn-secondary btn-sm">
                     View All &rarr;
                 </a>
             <?php endif; ?>
@@ -200,11 +200,11 @@ $stage_labels = [
                         <span class="status-badge status-<?php echo htmlspecialchars($p['status']); ?>">
                             <?php echo ucfirst(htmlspecialchars($p['status'])); ?>
                         </span>
-                        <a href="/TimeForge_Capstone/project_details.php?id=<?php echo (int)$p['id']; ?>"
+                        <a href="<?= APP_BASE ?>/project_details.php?id=<?php echo (int)$p['id']; ?>"
                            class="btn btn-secondary btn-sm">
                             View Details
                         </a>
-                        <a href="/TimeForge_Capstone/client/project_report.php?id=<?php echo (int)$p['id']; ?>"
+                        <a href="<?= APP_BASE ?>/client/project_report.php?id=<?php echo (int)$p['id']; ?>"
                            class="btn btn-primary btn-sm">
                             View Report
                         </a>
@@ -223,8 +223,8 @@ $stage_labels = [
         <p>Web Capstone Project by Etefworkie Melaku — triOS College, Mobile and Web App Development</p>
     </footer>
 
-    <script src="/TimeForge_Capstone/js/theme.js"></script>
-    <script src="/TimeForge_Capstone/js/animations.js"></script>
-    <script src="/TimeForge_Capstone/js/client-portal.js"></script>
+    <script src="<?= APP_BASE ?>/js/theme.js"></script>
+    <script src="<?= APP_BASE ?>/js/animations.js"></script>
+    <script src="<?= APP_BASE ?>/js/client-portal.js"></script>
 </body>
 </html>

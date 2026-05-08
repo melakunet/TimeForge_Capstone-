@@ -246,7 +246,7 @@ $flash = getFlash();
                             // Phase 11: fetch tasks for this project
                             let taskId = null;
                             try {
-                                const res = await fetch(`/TimeForge_Capstone/api/get_tasks.php?project_id=${projectId}`);
+                                const res = await fetch(`${APP_BASE}/api/get_tasks.php?project_id=${projectId}`);
                                 const tasks = await res.json();
                                 if (tasks.length > 0) {
                                     // Build simple prompt with select
@@ -630,7 +630,7 @@ $flash = getFlash();
     <div class="card" style="margin-top:2rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:.75rem;">
             <h2 style="margin:0; font-size:1.1rem;">📋 Tasks</h2>
-            <a href="/TimeForge_Capstone/tasks.php?project_id=<?= $project_id ?>" class="btn btn-secondary" style="font-size:.85rem;">
+            <a href="<?= APP_BASE ?>/tasks.php?project_id=<?= $project_id ?>" class="btn btn-secondary" style="font-size:.85rem;">
                 View Full Task Board →
             </a>
         </div>
@@ -726,14 +726,14 @@ $flash = getFlash();
         <?php if ($total_t > 10): ?>
             <p style="text-align:center; margin:.75rem 0 0; font-size:.8rem; color:#64748b;">
                 Showing 10 of <?= $total_t ?> tasks —
-                <a href="/TimeForge_Capstone/tasks.php?project_id=<?= $project_id ?>" style="color:var(--color-accent);">View all on task board</a>
+                <a href="<?= APP_BASE ?>/tasks.php?project_id=<?= $project_id ?>" style="color:var(--color-accent);">View all on task board</a>
             </p>
         <?php endif; ?>
         <?php else: ?>
             <p style="color:#475569; text-align:center; padding:1.5rem 0;">
                 No tasks yet.
                 <?php if ($role_pd === 'admin'): ?>
-                    <a href="/TimeForge_Capstone/tasks.php?project_id=<?= $project_id ?>" style="color:var(--color-accent);">Create the first task →</a>
+                    <a href="<?= APP_BASE ?>/tasks.php?project_id=<?= $project_id ?>" style="color:var(--color-accent);">Create the first task →</a>
                 <?php endif; ?>
             </p>
         <?php endif; ?>
@@ -757,7 +757,7 @@ $flash = getFlash();
 </main>
 
 <?php include_once __DIR__ . '/includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/time_tracker.js"></script>
+<script src="<?= APP_BASE ?>/js/time_tracker.js"></script>
 
 <!-- ── Invoice Pre-flight Checklist Modal ────────────────────────────────── -->
 <!-- Shows the admin a summary of key settings before going to generate.php. -->
@@ -788,7 +788,7 @@ $flash = getFlash();
                 <div style="font-size:0.82rem; color:var(--color-text-secondary,#94a3b8); margin-top:2px;">
                     $<?php echo number_format((float)$project['hourly_rate'], 2); ?>/hr
                     <?php if ((float)$project['hourly_rate'] === 0.0): ?>
-                        &nbsp;<span style="color:#f59e0b;">⚠️ Rate is $0 — <a href="/TimeForge_Capstone/edit_project.php?id=<?php echo $project['id']; ?>" style="color:#f59e0b;">edit project</a> to set it.</span>
+                        &nbsp;<span style="color:#f59e0b;">⚠️ Rate is $0 — <a href="<?= APP_BASE ?>/edit_project.php?id=<?php echo $project['id']; ?>" style="color:#f59e0b;">edit project</a> to set it.</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -817,7 +817,7 @@ $flash = getFlash();
                     <strong style="font-size:0.9rem;">Company Logo</strong>
                     <div style="font-size:0.82rem; color:var(--color-text-secondary,#94a3b8); margin-top:2px;">Used in the invoice header on all templates.</div>
                 </div>
-                <img src="/TimeForge_Capstone/icons/logo.png" alt="Logo preview"
+                <img src="<?= APP_BASE ?>/icons/logo.png" alt="Logo preview"
                      style="height:36px; border-radius:4px; border:1px solid var(--color-border,#334155);">
             </div>
         </div>
@@ -853,7 +853,7 @@ $flash = getFlash();
         <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
             <button onclick="closeInvoicePreflight()" class="btn btn-secondary">Cancel</button>
             <a id="preflightContinueBtn"
-               href="/TimeForge_Capstone/invoices/generate.php?project_id=<?php echo $project['id']; ?>&tpl=classic"
+               href="<?= APP_BASE ?>/invoices/generate.php?project_id=<?php echo $project['id']; ?>&tpl=classic"
                class="btn btn-primary">
                 Continue to Generate →
             </a>
@@ -879,7 +879,7 @@ $flash = getFlash();
         </div>
         <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
             <button onclick="closeCsvPreflight()" class="btn btn-secondary">Cancel</button>
-            <a href="/TimeForge_Capstone/api/export_csv.php?project_id=<?php echo $project['id']; ?>"
+            <a href="<?= APP_BASE ?>/api/export_csv.php?project_id=<?php echo $project['id']; ?>"
                class="btn btn-primary">⬇ Download CSV</a>
         </div>
     </div>
@@ -903,7 +903,7 @@ function pfSelectTemplate(key) {
     if (chosen) chosen.style.borderColor = '#3b82f6';
 
     var btn = document.getElementById('preflightContinueBtn');
-    var base = '/TimeForge_Capstone/invoices/generate.php?project_id=<?php echo $project['id']; ?>';
+    var base = ' . APP_BASE . '/invoices/generate.php?project_id=<?php echo $project['id']; ?>';
     btn.href = base + '&tpl=' + key;
 }
 

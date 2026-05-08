@@ -178,9 +178,9 @@ $flash = getFlash();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> — TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/reports.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/reports.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
 <?php include __DIR__ . '/../includes/header_partial.php'; ?>
@@ -188,7 +188,7 @@ $flash = getFlash();
 <div class="container">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
         <h1 class="heading-serif" style="color:var(--color-accent); margin:0;">Financial Reports</h1>
-        <a href="/TimeForge_Capstone/admin/dashboard.php" class="btn btn-secondary">&larr; Dashboard</a>
+        <a href="<?= APP_BASE ?>/admin/dashboard.php" class="btn btn-secondary">&larr; Dashboard</a>
     </div>
 
     <?php if ($flash): ?>
@@ -222,7 +222,7 @@ $flash = getFlash();
             </div>
             <div style="display:flex; gap:0.5rem;">
                 <button type="submit" class="btn btn-primary">Apply Filter</button>
-                <a href="/TimeForge_Capstone/admin/reports.php" class="btn btn-secondary">Reset</a>
+                <a href="<?= APP_BASE ?>/admin/reports.php" class="btn btn-secondary">Reset</a>
             </div>
         </form>
     </div>
@@ -282,7 +282,7 @@ $flash = getFlash();
                 ?>
                 <tr>
                     <td>
-                        <a href="/TimeForge_Capstone/project_details.php?id=<?php echo $p['id']; ?>">
+                        <a href="<?= APP_BASE ?>/project_details.php?id=<?php echo $p['id']; ?>">
                             <?php echo htmlspecialchars($p['project_name']); ?>
                         </a>
                     </td>
@@ -300,7 +300,7 @@ $flash = getFlash();
                         </span>
                     </td>
                     <td style="text-align:center;">
-                        <a href="/TimeForge_Capstone/api/export_csv.php?project_id=<?php echo $p['id']; ?>" class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" title="Export CSV for this project">CSV</a>
+                        <a href="<?= APP_BASE ?>/api/export_csv.php?project_id=<?php echo $p['id']; ?>" class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" title="Export CSV for this project">CSV</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -355,8 +355,8 @@ $flash = getFlash();
 </div>
 
 <?php include __DIR__ . '/../includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/theme.js"></script>
+<script src="<?= APP_BASE ?>/js/theme.js"></script>
 <!-- Phase 10: React bundle -->
-<script type="module" src="/TimeForge_Capstone/public/assets/react/app.js"></script>
+<script type="module" src="<?= APP_BASE ?>/public/assets/react/app.js"></script>
 </body>
 </html>

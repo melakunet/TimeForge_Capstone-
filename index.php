@@ -311,7 +311,7 @@ $flash = getFlash();
             sel.innerHTML = '<option value="">— No task —</option>';
             _pmTasks = [];
             try {
-                const r = await fetch(`/TimeForge_Capstone/api/project_tasks.php?project_id=${id}`);
+                const r = await fetch(`${APP_BASE}/api/project_tasks.php?project_id=${id}`);
                 const data = await r.json();
                 if (data.tasks && data.tasks.length > 0) {
                     _pmTasks = data.tasks;

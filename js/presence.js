@@ -84,7 +84,7 @@
     }
 
     function poll() {
-        fetch('/TimeForge_Capstone/api/presence.php')
+        fetch(APP_BASE + '/api/presence.php')
             .then(r => r.json())
             .then(data => renderPanel(data))
             .catch(() => {

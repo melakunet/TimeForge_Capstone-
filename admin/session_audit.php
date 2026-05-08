@@ -86,9 +86,9 @@ function fmtSeconds(int $s): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title) ?> — TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/session-audit.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/session-audit.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
 <?php include_once __DIR__ . '/../includes/header_partial.php'; ?>
@@ -101,7 +101,7 @@ function fmtSeconds(int $s): string {
             <h1 class="audit-title">Session Audit Log</h1>
             <p class="audit-subtitle">Tracked time vs idle time vs net billable time — per session.</p>
         </div>
-        <a href="/TimeForge_Capstone/admin/dashboard.php" class="btn btn-secondary">← Back to Admin</a>
+        <a href="<?= APP_BASE ?>/admin/dashboard.php" class="btn btn-secondary">← Back to Admin</a>
     </div>
 
     <!-- ── Filter Bar ──────────────────────────────────────────────── -->
@@ -132,7 +132,7 @@ function fmtSeconds(int $s): string {
         </select>
 
         <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="/TimeForge_Capstone/admin/session_audit.php" class="btn btn-secondary">Reset</a>
+        <a href="<?= APP_BASE ?>/admin/session_audit.php" class="btn btn-secondary">Reset</a>
     </form>
 
     <!-- ── Legend ──────────────────────────────────────────────────── -->
@@ -224,6 +224,6 @@ function fmtSeconds(int $s): string {
 </div>
 
 <?php include_once __DIR__ . '/../includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/theme.js"></script>
+<script src="<?= APP_BASE ?>/js/theme.js"></script>
 </body>
 </html>

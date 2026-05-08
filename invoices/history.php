@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/flash.php';
 require_once __DIR__ . '/../db.php';
 
 if (!isLoggedIn()) {
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 
@@ -85,7 +85,7 @@ try {
         $list_stmt->execute([':user_id' => $user_id, ':company_id' => $_SESSION['company_id']]);
     } else {
         setFlash('error', 'Access denied.');
-        header('Location: /TimeForge_Capstone/index.php');
+        header('Location: ' . APP_BASE . '/index.php');
         exit;
     }
     $invoices = $list_stmt->fetchAll();
@@ -123,9 +123,9 @@ $status_colors = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> — TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/invoice.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/invoice.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
 <?php include __DIR__ . '/../includes/header_partial.php'; ?>
@@ -150,7 +150,7 @@ $status_colors = [
         <div class="card" style="text-align:center; padding:3rem;">
             <p style="color:var(--color-text-secondary); margin-bottom:1rem;">No invoices have been generated yet.</p>
             <?php if (hasRole('admin')): ?>
-                <a href="/TimeForge_Capstone/index.php" class="btn btn-primary">Go to Projects</a>
+                <a href="<?= APP_BASE ?>/index.php" class="btn btn-primary">Go to Projects</a>
             <?php endif; ?>
         </div>
     <?php else: ?>
@@ -175,7 +175,7 @@ $status_colors = [
                     ?>
                     <tr style="<?php echo $row_style; ?>">
                         <td>
-                            <a href="/TimeForge_Capstone/invoices/view.php?id=<?php echo $inv['id']; ?>" style="font-weight:600;">
+                            <a href="<?= APP_BASE ?>/invoices/view.php?id=<?php echo $inv['id']; ?>" style="font-weight:600;">
                                 <?php echo htmlspecialchars($inv['invoice_number']); ?>
                             </a>
                         </td>
@@ -206,8 +206,8 @@ $status_colors = [
                             </span>
                         </td>
                         <td style="text-align:center; white-space:nowrap;">
-                            <a href="/TimeForge_Capstone/invoices/view.php?id=<?php echo $inv['id']; ?>" class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;">View</a>
-                            <a href="/TimeForge_Capstone/invoices/download.php?id=<?php echo $inv['id']; ?>" class="btn btn-primary" style="padding:4px 10px; font-size:0.8rem;" target="_blank" rel="noopener">PDF</a>
+                            <a href="<?= APP_BASE ?>/invoices/view.php?id=<?php echo $inv['id']; ?>" class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;">View</a>
+                            <a href="<?= APP_BASE ?>/invoices/download.php?id=<?php echo $inv['id']; ?>" class="btn btn-primary" style="padding:4px 10px; font-size:0.8rem;" target="_blank" rel="noopener">PDF</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -218,6 +218,6 @@ $status_colors = [
 </div>
 
 <?php include __DIR__ . '/../includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/theme.js"></script>
+<script src="<?= APP_BASE ?>/js/theme.js"></script>
 </body>
 </html>

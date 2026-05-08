@@ -16,8 +16,8 @@ $action = $_GET['action'] ?? $_POST['action'] ?? '';
 // ── DELETE TIME ENTRY ─────────────────────────────────────────────────────
 if ($action === 'delete') {
 
-    if (!isLoggedIn()) { header('Location: /TimeForge_Capstone/login.php'); exit; }
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /TimeForge_Capstone/index.php'); exit; }
+    if (!isLoggedIn()) { header('Location: ' . APP_BASE . '/login.php'); exit; }
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_BASE . '/index.php'); exit; }
     verifyCsrfToken();
 
     $entry_id   = filter_input(INPUT_POST, 'entry_id',   FILTER_VALIDATE_INT);
@@ -27,7 +27,7 @@ if ($action === 'delete') {
 
     if (!$entry_id || !$project_id) {
         setFlash('error', 'Invalid request.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
 
     try {
@@ -37,7 +37,7 @@ if ($action === 'delete') {
 
         if (!$entry) {
             setFlash('error', 'Time entry not found.');
-            header('Location: /TimeForge_Capstone/project_details.php?id=' . $project_id); exit;
+            header('Location: ' . APP_BASE . '/project_details.php?id=' . $project_id); exit;
         }
 
         $can_delete = ($role === 'admin') ||
@@ -54,18 +54,18 @@ if ($action === 'delete') {
         setFlash('error', 'Database error.');
     }
 
-    header('Location: /TimeForge_Capstone/project_details.php?id=' . $project_id); exit;
+    header('Location: ' . APP_BASE . '/project_details.php?id=' . $project_id); exit;
 }
 
 // ── APPROVE / REJECT TIME ENTRY ───────────────────────────────────────────
 if ($action === 'approve') {
 
-    if (!isLoggedIn()) { header('Location: /TimeForge_Capstone/login.php'); exit; }
+    if (!isLoggedIn()) { header('Location: ' . APP_BASE . '/login.php'); exit; }
     if (!hasRole('admin')) {
         setFlash('error', 'Unauthorized access.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /TimeForge_Capstone/index.php'); exit; }
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_BASE . '/index.php'); exit; }
     verifyCsrfToken();
 
     $entry_id   = filter_input(INPUT_POST, 'entry_id',   FILTER_VALIDATE_INT);
@@ -77,7 +77,7 @@ if ($action === 'approve') {
         // valid
     } else {
         setFlash('error', 'Invalid request.');
-        header($project_id ? 'Location: /TimeForge_Capstone/project_details.php?id=' . $project_id : 'Location: /TimeForge_Capstone/index.php'); exit;
+        header($project_id ? 'Location: ' . APP_BASE . '/project_details.php?id=' . $project_id : 'Location: ' . APP_BASE . '/index.php'); exit;
     }
 
     if ($entry_id) {
@@ -102,7 +102,7 @@ if ($action === 'approve') {
                     $notif_msg  = ($new_status === 'approved')
                         ? 'Your time entry was approved.'
                         : 'Your time entry was rejected.';
-                    $notif_link = $project_id ? '/TimeForge_Capstone/project_details.php?id=' . $project_id : null;
+                    $notif_link = $project_id ? APP_BASE . '/project_details.php?id=' . $project_id : null;
                     notify($pdo, $owner_id, $notif_type, $notif_msg, $notif_link);
                 }
             } else {
@@ -116,5 +116,5 @@ if ($action === 'approve') {
         setFlash('error', 'Invalid request.');
     }
 
-    header($project_id ? 'Location: /TimeForge_Capstone/project_details.php?id=' . $project_id : 'Location: /TimeForge_Capstone/index.php'); exit;
+    header($project_id ? 'Location: ' . APP_BASE . '/project_details.php?id=' . $project_id : 'Location: ' . APP_BASE . '/index.php'); exit;
 }

@@ -4,7 +4,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/redirect.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 
@@ -14,7 +14,7 @@ $password = filter_input(INPUT_POST, 'password');
 if ($username == null || $password == null) {
     $_SESSION['login_error'] = 'Please enter both username and password';
     $_SESSION['login_username'] = $username;
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 
@@ -25,6 +25,6 @@ if ($result['success']) {
 } else {
     $_SESSION['login_error'] = $result['message'];
     $_SESSION['login_username'] = $username;
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }

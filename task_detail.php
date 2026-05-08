@@ -18,7 +18,7 @@ $task_id    = filter_input(INPUT_GET, 'id',         FILTER_VALIDATE_INT);
 $project_id = filter_input(INPUT_GET, 'project_id', FILTER_VALIDATE_INT);
 
 if (!$task_id || !$project_id) {
-    header($role === 'client' ? 'Location: /TimeForge_Capstone/client/dashboard.php' : 'Location: index.php');
+    header($role === 'client' ? 'Location: ' . APP_BASE . '/client/dashboard.php' : 'Location: ' . APP_BASE . '/index.php');
     exit;
 }
 
@@ -36,7 +36,7 @@ if ($role === 'client') {
     $task = $ts->fetch(PDO::FETCH_ASSOC);
     if (!$task) {
         setFlash('error', 'Task not found or access denied.');
-        header('Location: /TimeForge_Capstone/client/dashboard.php'); exit;
+        header('Location: ' . APP_BASE . '/client/dashboard.php'); exit;
     }
     $company_id = (int)$task['proj_company_id'];
 } else {
@@ -71,7 +71,7 @@ $count_solutions = count(array_filter($comments, fn($c) => $c['type'] === 'solut
 $count_feedback  = count(array_filter($comments, fn($c) => $c['type'] === 'feedback'));
 
 $back_url = $role === 'client'
-    ? "/TimeForge_Capstone/client/project_report.php?id={$project_id}"
+    ? " . APP_BASE . "/client/project_report.php?id={$project_id}"
     : "tasks.php?project_id={$project_id}";
 ?>
 <!DOCTYPE html>
@@ -81,7 +81,7 @@ $back_url = $role === 'client'
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Task: <?= htmlspecialchars($task['title']) ?> — TimeForge</title>
   <?php if ($role === 'client'): ?>
-  <link rel="stylesheet" href="/TimeForge_Capstone/css/client-portal.css">
+  <link rel="stylesheet" href="<?= APP_BASE ?>/css/client-portal.css">
   <?php endif; ?>
   <style>
     /* ── task-detail-page: dark base for admin/freelancer ── */
@@ -239,7 +239,7 @@ if ($flash): ?>
             elseif ($role === 'admin') echo '✏️ Reply or Add Note';
             else echo '✏️ Add a Comment'; ?>
     </h3>
-    <form method="POST" action="/TimeForge_Capstone/task_comment.php">
+    <form method="POST" action="<?= APP_BASE ?>/task_comment.php">
       <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
       <input type="hidden" name="task_id"    value="<?= $task_id ?>">
       <input type="hidden" name="project_id" value="<?= $project_id ?>">

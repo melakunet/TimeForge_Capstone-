@@ -11,8 +11,8 @@ $page_title = 'About TimeForge';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About TimeForge — Capstone Showcase</title>
-  <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-  <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+  <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+  <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
   <style>
     /* ── Reset / Base ──────────────────────────── */
     * { box-sizing: border-box; }
@@ -107,7 +107,7 @@ include __DIR__ . '/includes/header_partial.php';
 
 <!-- ── Hero ──────────────────────────────────────────────────── -->
 <div class="hero">
-  <img src="/TimeForge_Capstone/icons/logo.png" class="hero-logo" alt="TimeForge Logo" onerror="this.style.display='none'">
+  <img src="<?= APP_BASE ?>/icons/logo.png" class="hero-logo" alt="TimeForge Logo" onerror="this.style.display='none'">
   <h1>TimeForge</h1>
   <p>A full-stack time tracking & project management platform built as a Web Capstone at triOS College. Designed for agencies, freelancers, and clients.</p>
 
@@ -120,9 +120,9 @@ include __DIR__ . '/includes/header_partial.php';
 
   <div class="hero-cta">
     <?php if (!isset($_SESSION['user_id'])): ?>
-      <a href="/TimeForge_Capstone/login.php" class="btn-hero-primary">🔑 Login to Demo</a>
+      <a href="<?= APP_BASE ?>/login.php" class="btn-hero-primary">🔑 Login to Demo</a>
     <?php else: ?>
-      <a href="/TimeForge_Capstone/index.php" class="btn-hero-primary">📋 Go to Dashboard</a>
+      <a href="<?= APP_BASE ?>/index.php" class="btn-hero-primary">📋 Go to Dashboard</a>
     <?php endif; ?>
     <a href="https://github.com/melakunet/TimeForge_Capstone-" target="_blank" rel="noopener" class="btn-hero-secondary">⭐ GitHub Repo</a>
   </div>
@@ -151,7 +151,7 @@ include __DIR__ . '/includes/header_partial.php';
         <li><span class="ck" style="color:#a78bfa;">✓</span> Full financial reports with CSV export</li>
       </ul>
       <div style="margin-top:1.5rem;">
-        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#7c3aed22; color:#a78bfa; border:1px solid #7c3aed55; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">Login as Admin →</a>
+        <a href="<?= APP_BASE ?>/login.php" style="display:inline-block; background:#7c3aed22; color:#a78bfa; border:1px solid #7c3aed55; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">Login as Admin →</a>
       </div>
     </div>
 
@@ -170,7 +170,7 @@ include __DIR__ . '/includes/header_partial.php';
         <li><span class="ck" style="color:#38bdf8;">✓</span> Submit past work as manual entries — admin reviews & approves</li>
       </ul>
       <div style="margin-top:1.5rem;">
-        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#0284c722; color:#38bdf8; border:1px solid #0284c755; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">Login as Freelancer →</a>
+        <a href="<?= APP_BASE ?>/login.php" style="display:inline-block; background:#0284c722; color:#38bdf8; border:1px solid #0284c755; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">Login as Freelancer →</a>
       </div>
     </div>
 
@@ -189,7 +189,7 @@ include __DIR__ . '/includes/header_partial.php';
         <li><span class="ck" style="color:#34d399;">✓</span> Only see your own data — clean, focused, no clutter</li>
       </ul>
       <div style="margin-top:1.5rem;">
-        <a href="/TimeForge_Capstone/login.php" style="display:inline-block; background:#05966922; color:#34d399; border:1px solid #05966955; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">Login as Client →</a>
+        <a href="<?= APP_BASE ?>/login.php" style="display:inline-block; background:#05966922; color:#34d399; border:1px solid #05966955; border-radius:7px; padding:.5rem 1.1rem; font-size:.85rem; font-weight:700; text-decoration:none;">Login as Client →</a>
       </div>
     </div>
 
@@ -428,7 +428,7 @@ include __DIR__ . '/includes/header_partial.php';
 </section>
 
 <?php include __DIR__ . '/includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/theme.js"></script>
+<script src="<?= APP_BASE ?>/js/theme.js"></script>
 <script>
 function copyText(el) {
     navigator.clipboard.writeText(el.textContent.trim()).then(() => {

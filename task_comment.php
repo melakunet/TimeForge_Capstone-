@@ -47,7 +47,7 @@ if ($role === 'client') {
     $chk->execute([':tid' => $task_id, ':uid' => $user_id]);
     if (!$chk->fetch()) {
         setFlash('error', 'Access denied.');
-        header('Location: /TimeForge_Capstone/client/dashboard.php');
+        header('Location: ' . APP_BASE . '/client/dashboard.php');
         exit;
     }
     // Use the task's company_id for insertion

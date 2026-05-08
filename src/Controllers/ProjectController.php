@@ -16,10 +16,10 @@ $action = $_GET['action'] ?? $_POST['action'] ?? 'add';
 // ── ADD PROJECT ───────────────────────────────────────────────────────────
 if ($action === 'add') {
 
-    if (!isLoggedIn()) { header('Location: /TimeForge_Capstone/login.php'); exit; }
+    if (!isLoggedIn()) { header('Location: ' . APP_BASE . '/login.php'); exit; }
     if (!hasRole('admin') && !hasRole('freelancer')) {
         setFlash('danger', 'You do not have permission to add projects.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
     verifyCsrfToken();
 
@@ -33,7 +33,7 @@ if ($action === 'add') {
 
     if ($project_name === null || $client_id === false || $hourly_rate === false || $status === null) {
         setFlash('danger', 'Invalid data. Check all required fields.');
-        header('Location: /TimeForge_Capstone/add_project.php'); exit;
+        header('Location: ' . APP_BASE . '/add_project.php'); exit;
     }
 
     $stmt = $pdo->prepare("
@@ -52,7 +52,7 @@ if ($action === 'add') {
     $stmt->execute();
 
     setFlash('success', 'Project added successfully!');
-    header('Location: /TimeForge_Capstone/index.php'); exit;
+    header('Location: ' . APP_BASE . '/index.php'); exit;
 }
 
 // ── EDIT PROJECT ──────────────────────────────────────────────────────────
@@ -80,7 +80,7 @@ if ($action === 'edit') {
     if (!$project_id || $project_name === null || $project_name === '' ||
         $client_id === false || $hourly_rate === false || $status === null || !in_array($status, $allowed, true)) {
         setFlash('error', 'Invalid data. Check all required fields.');
-        header('Location: /TimeForge_Capstone/edit_project.php?id=' . urlencode((string)$project_id)); exit;
+        header('Location: ' . APP_BASE . '/edit_project.php?id=' . urlencode((string)$project_id)); exit;
     }
 
     $chk = $pdo->prepare('SELECT id FROM projects WHERE id = :id AND company_id = :cid AND deleted_at IS NULL LIMIT 1');
@@ -89,7 +89,7 @@ if ($action === 'edit') {
     $chk->execute();
     if (!$chk->fetchColumn()) {
         setFlash('error', 'Project not found.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
 
     $cchk = $pdo->prepare('SELECT id FROM clients WHERE id = :id AND company_id = :cid AND is_active = 1 LIMIT 1');
@@ -98,7 +98,7 @@ if ($action === 'edit') {
     $cchk->execute();
     if (!$cchk->fetchColumn()) {
         setFlash('error', 'Selected client does not exist or is inactive.');
-        header('Location: /TimeForge_Capstone/edit_project.php?id=' . urlencode((string)$project_id)); exit;
+        header('Location: ' . APP_BASE . '/edit_project.php?id=' . urlencode((string)$project_id)); exit;
     }
 
     $stmt = $pdo->prepare("
@@ -125,7 +125,7 @@ if ($action === 'edit') {
 
     logAuditAction((int)($_SESSION['user_id'] ?? 0), 'project_updated');
     setFlash('success', 'Project updated successfully.');
-    header('Location: /TimeForge_Capstone/index.php'); exit;
+    header('Location: ' . APP_BASE . '/index.php'); exit;
 }
 
 // ── DELETE (ARCHIVE) PROJECT ──────────────────────────────────────────────
@@ -134,7 +134,7 @@ if ($action === 'delete') {
     requireLogin();
     if (!hasRole('admin')) {
         setFlash('error', 'Only admins can archive projects.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
 
     $project_id      = filter_input(INPUT_POST, 'project_id', FILTER_VALIDATE_INT);
@@ -142,7 +142,7 @@ if ($action === 'delete') {
 
     if ($project_id === false || $project_id === null) {
         setFlash('error', 'Invalid project id.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
 
     $user_id = (int)$_SESSION['user_id'];
@@ -167,27 +167,27 @@ if ($action === 'delete') {
         setFlash('error', 'Database error while archiving project.');
     }
 
-    header('Location: /TimeForge_Capstone/index.php'); exit;
+    header('Location: ' . APP_BASE . '/index.php'); exit;
 }
 
 // ── RESTORE PROJECT ───────────────────────────────────────────────────────
 if ($action === 'restore') {
 
-    if (!isLoggedIn()) { header('Location: /TimeForge_Capstone/login.php'); exit; }
+    if (!isLoggedIn()) { header('Location: ' . APP_BASE . '/login.php'); exit; }
     if (($_SESSION['role'] ?? '') !== 'admin') {
         setFlash('error', 'Unauthorized access.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         setFlash('error', 'Invalid request method.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
     verifyCsrfToken();
 
     $project_id = filter_input(INPUT_POST, 'project_id', FILTER_VALIDATE_INT);
     if (!$project_id) {
         setFlash('error', 'Invalid project ID.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
 
     try {
@@ -196,10 +196,10 @@ if ($action === 'restore') {
         $stmt->execute();
         logAuditAction((int)$_SESSION['user_id'], 'restore_project');
         setFlash('success', 'Project restored successfully.');
-        header('Location: /TimeForge_Capstone/project_details.php?id=' . $project_id); exit;
+        header('Location: ' . APP_BASE . '/project_details.php?id=' . $project_id); exit;
     } catch (PDOException $e) {
         error_log('ProjectController restore: ' . $e->getMessage());
         setFlash('error', 'Database error occurred.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
 }

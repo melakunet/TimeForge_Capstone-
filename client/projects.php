@@ -95,9 +95,9 @@ $flash = getFlash();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> - TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/client-portal.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/client-portal.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
     <?php include_once __DIR__ . '/../includes/header_partial.php'; ?>
@@ -113,7 +113,7 @@ $flash = getFlash();
     <!-- ── Breadcrumb ── -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li><a href="/TimeForge_Capstone/client/dashboard.php">Client Portal</a></li>
+            <li><a href="<?= APP_BASE ?>/client/dashboard.php">Client Portal</a></li>
             <li class="active">My Projects</li>
         </ol>
     </nav>
@@ -166,7 +166,7 @@ $flash = getFlash();
                         No projects have been assigned to you yet.
                     <?php endif; ?>
                 </p>
-                <a href="/TimeForge_Capstone/client/dashboard.php" class="btn btn-secondary btn-sm">
+                <a href="<?= APP_BASE ?>/client/dashboard.php" class="btn btn-secondary btn-sm">
                     &larr; Back to Dashboard
                 </a>
             </div>
@@ -231,10 +231,10 @@ $flash = getFlash();
                                 </span>
                             </td>
                             <td class="text-center">
-                                <a href="/TimeForge_Capstone/project_details.php?id=<?php echo (int)$p['id']; ?>"
+                                <a href="<?= APP_BASE ?>/project_details.php?id=<?php echo (int)$p['id']; ?>"
                                    class="action-link">Details</a>
                                 <span class="action-sep">|</span>
-                                <a href="/TimeForge_Capstone/client/project_report.php?id=<?php echo (int)$p['id']; ?>"
+                                <a href="<?= APP_BASE ?>/client/project_report.php?id=<?php echo (int)$p['id']; ?>"
                                    class="action-link">Report</a>
                             </td>
                         </tr>
@@ -247,7 +247,7 @@ $flash = getFlash();
 
     <!-- ── Back Link ── -->
     <div style="margin-top: 1.5rem;">
-        <a href="/TimeForge_Capstone/client/dashboard.php" class="btn btn-secondary btn-sm">
+        <a href="<?= APP_BASE ?>/client/dashboard.php" class="btn btn-secondary btn-sm">
             &larr; Back to Dashboard
         </a>
     </div>
@@ -260,8 +260,8 @@ $flash = getFlash();
         <p>Web Capstone Project by Etefworkie Melaku — triOS College, Mobile and Web App Development</p>
     </footer>
 
-    <script src="/TimeForge_Capstone/js/theme.js"></script>
-    <script src="/TimeForge_Capstone/js/animations.js"></script>
-    <script src="/TimeForge_Capstone/js/client-portal.js"></script>
+    <script src="<?= APP_BASE ?>/js/theme.js"></script>
+    <script src="<?= APP_BASE ?>/js/animations.js"></script>
+    <script src="<?= APP_BASE ?>/js/client-portal.js"></script>
 </body>
 </html>

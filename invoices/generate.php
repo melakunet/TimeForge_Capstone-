@@ -19,7 +19,7 @@ $project_id = filter_input(INPUT_GET, 'project_id', FILTER_VALIDATE_INT);
 
 if (!$project_id) {
     setFlash('error', 'No project selected.');
-    header('Location: /TimeForge_Capstone/index.php');
+    header('Location: ' . APP_BASE . '/index.php');
     exit;
 }
 
@@ -49,7 +49,7 @@ $project = $proj_stmt->fetch();
 
 if (!$project) {
     setFlash('error', 'Project not found.');
-    header('Location: /TimeForge_Capstone/index.php');
+    header('Location: ' . APP_BASE . '/index.php');
     exit;
 }
 
@@ -75,7 +75,7 @@ $entries = $entries_stmt->fetchAll();
 
 if (empty($entries)) {
     setFlash('error', 'No approved billable time entries found for this project. Approve time entries before generating an invoice.');
-    header('Location: /TimeForge_Capstone/project_details.php?id=' . $project_id);
+    header('Location: ' . APP_BASE . '/project_details.php?id=' . $project_id);
     exit;
 }
 
@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
             $invoice_id = $pdo->lastInsertId();
             setFlash('success', 'Invoice #' . htmlspecialchars($invoice_number) . ' created successfully.');
-            header('Location: /TimeForge_Capstone/invoices/view.php?id=' . $invoice_id);
+            header('Location: ' . APP_BASE . '/invoices/view.php?id=' . $invoice_id);
             exit;
         } catch (PDOException $e) {
             // Duplicate invoice number is the most likely constraint violation
@@ -189,16 +189,16 @@ $flash = getFlash();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> — TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/invoice.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/invoice.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
 <?php include __DIR__ . '/../includes/header_partial.php'; ?>
 
 <div class="container">
     <div style="margin-bottom:1.5rem;">
-        <a href="/TimeForge_Capstone/project_details.php?id=<?php echo $project_id; ?>" class="btn btn-secondary">&larr; Back to Project</a>
+        <a href="<?= APP_BASE ?>/project_details.php?id=<?php echo $project_id; ?>" class="btn btn-secondary">&larr; Back to Project</a>
     </div>
 
     <h1 class="heading-serif" style="color:var(--color-accent); margin-bottom:0.25rem;">Generate Invoice</h1>
@@ -225,7 +225,7 @@ $flash = getFlash();
         </div>
         <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
             <?php foreach ($project_invoices as $pi): ?>
-            <a href="/TimeForge_Capstone/invoices/view.php?id=<?php echo $pi['id']; ?>"
+            <a href="<?= APP_BASE ?>/invoices/view.php?id=<?php echo $pi['id']; ?>"
                class="btn btn-secondary" style="font-size:0.82rem; padding:4px 12px;">
                 <?php echo htmlspecialchars($pi['invoice_number']); ?>
                 <span style="opacity:0.7; font-weight:400;">(<?php echo ucfirst($pi['status']); ?>)</span>
@@ -356,7 +356,7 @@ $flash = getFlash();
 </div>
 
 <?php include __DIR__ . '/../includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/theme.js"></script>
+<script src="<?= APP_BASE ?>/js/theme.js"></script>
 <script>
 // Live tax recalculation — updates the preview tfoot when the tax rate input changes
 (function () {

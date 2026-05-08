@@ -28,6 +28,6 @@ try {
     );
 } catch (PDOException $e) {
     $_SESSION['database_error'] = $e->getMessage();
-    header('Location: /TimeForge_Capstone/database_error.php');
+    header('Location: ' . APP_BASE . '/database_error.php');
     exit;
 }

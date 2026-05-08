@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/flash.php';
 require_once __DIR__ . '/../db.php';
 
 if (!isLoggedIn()) {
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 
@@ -15,7 +15,7 @@ $invoice_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if (!$invoice_id) {
     setFlash('error', 'Invalid invoice ID.');
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
@@ -54,20 +54,20 @@ try {
 } catch (PDOException $e) {
     error_log('view.php invoice fetch error: ' . $e->getMessage());
     setFlash('error', 'Could not load invoice. Please try again.');
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
 if (!$invoice) {
     setFlash('error', 'Invoice not found.');
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
 // Clients can only view their own invoices
 if (hasRole('client') && $invoice['client_user_id'] != $_SESSION['user_id']) {
     setFlash('error', 'Access denied.');
-    header('Location: /TimeForge_Capstone/client/dashboard.php');
+    header('Location: ' . APP_BASE . '/client/dashboard.php');
     exit;
 }
 
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && hasRole('admin') &&
             setFlash('error', 'Could not change template.');
         }
     }
-    header('Location: /TimeForge_Capstone/invoices/view.php?id=' . $invoice_id);
+    header('Location: ' . APP_BASE . '/invoices/view.php?id=' . $invoice_id);
     exit;
 }
 
@@ -171,8 +171,8 @@ $creator_email   = $invoice['creator_email']   ?? '';
 $creator_logo    = $invoice['creator_logo']    ?? '';
 // Resolve logo: use company logo if uploaded and file exists, else fall back to TimeForge app logo
 $logo_src = (!empty($creator_logo) && file_exists(__DIR__ . '/../' . $creator_logo))
-    ? '/TimeForge_Capstone/' . $creator_logo
-    : '/TimeForge_Capstone/icons/logo.png';
+    ? ' . APP_BASE . '/' . $creator_logo
+    : ' . APP_BASE . '/icons/logo.png';
 $logo_is_custom = (!empty($creator_logo) && file_exists(__DIR__ . '/../' . $creator_logo));
 
 // Client company — shown in the BILL TO section
@@ -191,9 +191,9 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice <?php echo htmlspecialchars($invoice['invoice_number']); ?> — TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/invoice.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/invoice.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
 <?php include __DIR__ . '/../includes/header_partial.php'; ?>
@@ -211,9 +211,9 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
     ════════════════════════════════════════════════════════════════════ -->
     <div class="inv-toolbar no-print">
         <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-            <a href="/TimeForge_Capstone/invoices/history.php" class="btn btn-secondary">&larr; All Invoices</a>
+            <a href="<?= APP_BASE ?>/invoices/history.php" class="btn btn-secondary">&larr; All Invoices</a>
             <?php if (hasRole('admin')): ?>
-                <a href="/TimeForge_Capstone/project_details.php?id=<?php echo $invoice['project_id']; ?>"
+                <a href="<?= APP_BASE ?>/project_details.php?id=<?php echo $invoice['project_id']; ?>"
                    class="btn btn-secondary">Project Details</a>
             <?php endif; ?>
         </div>
@@ -251,7 +251,7 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
             </span>
             <?php endif; ?>
 
-            <a href="/TimeForge_Capstone/invoices/download.php?id=<?php echo $invoice_id; ?>"
+            <a href="<?= APP_BASE ?>/invoices/download.php?id=<?php echo $invoice_id; ?>"
                class="btn btn-primary" target="_blank" rel="noopener">⬇ Download PDF</a>
         </div>
     </div>
@@ -380,7 +380,7 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
 
         <!-- ── Inline action forms (shown one at a time via JS) ── -->
         <?php
-        $act_url = '/TimeForge_Capstone/invoices/payment_action.php';
+        $act_url = ' . APP_BASE . '/invoices/payment_action.php';
         $hid     = '<input type="hidden" name="invoice_id" value="' . $invoice_id . '">';
 
         $method_options = ['', 'Bank Transfer', 'PayPal', 'Stripe', 'Cheque', 'Cash', 'Credit Card', 'Other'];
@@ -394,7 +394,7 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
 
         <!-- Send via Email form (draft → sent) -->
         <div id="form-sent" class="pmt-form" style="display:none;">
-            <form method="post" action="/TimeForge_Capstone/invoices/send.php">
+            <form method="post" action="<?= APP_BASE ?>/invoices/send.php">
                 <?php echo $hid; ?>
                 <div class="pmt-form-grid">
                     <label>Send to (email address)</label>
@@ -420,7 +420,7 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
                 on <?php echo date('M j, Y g:i a', strtotime($invoice['email_sent_at'])); ?>.
             </p>
             <?php endif; ?>
-            <form method="post" action="/TimeForge_Capstone/invoices/send.php">
+            <form method="post" action="<?= APP_BASE ?>/invoices/send.php">
                 <?php echo $hid; ?>
                 <div class="pmt-form-grid">
                     <label>Send to (email address)</label>
@@ -567,7 +567,7 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
                 <blockquote class="pmt-feedback-text"><?php echo nl2br(htmlspecialchars($invoice['client_feedback'])); ?></blockquote>
             <?php endif; ?>
             <?php if (hasRole('client') || hasRole('admin')): ?>
-            <form method="post" action="/TimeForge_Capstone/invoices/payment_action.php" style="margin-top:0.5rem;">
+            <form method="post" action="<?= APP_BASE ?>/invoices/payment_action.php" style="margin-top:0.5rem;">
                 <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
                 <input type="hidden" name="action" value="add_feedback">
                 <textarea name="client_feedback" class="form-control" rows="2"
@@ -595,7 +595,7 @@ $template_file = __DIR__ . '/templates/' . $tpl . '.php';
 </div>
 
 <?php include __DIR__ . '/../includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/theme.js"></script>
+<script src="<?= APP_BASE ?>/js/theme.js"></script>
 <script>
 // Payment panel: show one form at a time, collapse others
 function pmt_hide_all() {

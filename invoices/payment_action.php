@@ -14,12 +14,12 @@ require_once __DIR__ . '/../includes/flash.php';
 require_once __DIR__ . '/../db.php';
 
 if (!isLoggedIn()) {
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
@@ -30,7 +30,7 @@ $action     = trim($_POST['action'] ?? '');
 
 if (!$invoice_id) {
     setFlash('error', 'Invalid invoice.');
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
@@ -44,17 +44,17 @@ try {
 } catch (PDOException $e) {
     error_log('payment_action.php load: ' . $e->getMessage());
     setFlash('error', 'Database error. Please try again.');
-    header("Location: /TimeForge_Capstone/invoices/view.php?id={$invoice_id}");
+    header("Location: " . APP_BASE . "/invoices/view.php?id={$invoice_id}");
     exit;
 }
 
 if (!$invoice) {
     setFlash('error', 'Invoice not found.');
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
-$redirect = "/TimeForge_Capstone/invoices/view.php?id={$invoice_id}";
+$redirect = " . APP_BASE . "/invoices/view.php?id={$invoice_id}";
 
 // ------------------------------------------------------------------
 // Client feedback action — clients allowed

@@ -59,8 +59,8 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title) ?> - TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
     <?php include_once __DIR__ . '/../includes/header_partial.php'; ?>
@@ -73,7 +73,7 @@ try {
                     Showing login, registration, and security events for <strong>your company only</strong>.
                 </p>
             </div>
-            <a href="/TimeForge_Capstone/admin/dashboard.php" class="btn btn-secondary">← Dashboard</a>
+            <a href="<?= APP_BASE ?>/admin/dashboard.php" class="btn btn-secondary">← Dashboard</a>
         </div>
 
         <!-- Filters -->
@@ -97,7 +97,7 @@ try {
             </div>
             <button type="submit" class="btn btn-primary" style="height:36px;">Filter</button>
             <?php if ($filter_user || $filter_action): ?>
-                <a href="/TimeForge_Capstone/admin/audit_logs.php" class="btn btn-secondary" style="height:36px; line-height:1.2;">Clear</a>
+                <a href="<?= APP_BASE ?>/admin/audit_logs.php" class="btn btn-secondary" style="height:36px; line-height:1.2;">Clear</a>
             <?php endif; ?>
             <span style="margin-left:auto; font-size:.82rem; color:var(--color-text-secondary); align-self:center;">
                 <?= count($logs) ?> event<?= count($logs) !== 1 ? 's' : '' ?> shown
@@ -155,6 +155,6 @@ try {
     </div>
 
     <?php include_once __DIR__ . '/../includes/footer_partial.php'; ?>
-    <script src="/TimeForge_Capstone/js/theme.js"></script>
+    <script src="<?= APP_BASE ?>/js/theme.js"></script>
 </body>
 </html>

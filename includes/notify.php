@@ -5,7 +5,7 @@
  *
  * Usage:
  *   require_once __DIR__ . '/notify.php';
- *   notify($pdo, $user_id, 'time_approved', 'Your entry was approved.', '/TimeForge_Capstone/project_details.php?id=5');
+ *   notify($pdo, $user_id, 'time_approved', 'Your entry was approved.', ' . APP_BASE . '/project_details.php?id=5');
  *
  * Always safe to call — silently ignores DB errors so it never breaks the main flow.
  */

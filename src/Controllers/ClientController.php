@@ -15,12 +15,12 @@ $action = $_GET['action'] ?? $_POST['action'] ?? 'add';
 // ── ADD CLIENT ────────────────────────────────────────────────────────────
 if ($action === 'add') {
 
-    if (!isLoggedIn()) { header('Location: /TimeForge_Capstone/login.php'); exit; }
+    if (!isLoggedIn()) { header('Location: ' . APP_BASE . '/login.php'); exit; }
     if (!hasRole('admin') && !hasRole('freelancer')) {
         setFlash('error', 'You do not have permission to add clients.');
-        header('Location: /TimeForge_Capstone/index.php'); exit;
+        header('Location: ' . APP_BASE . '/index.php'); exit;
     }
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /TimeForge_Capstone/add_client.php'); exit; }
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_BASE . '/add_client.php'); exit; }
     verifyCsrfToken();
 
     $client_name  = trim($_POST['client_name']  ?? '');
@@ -44,7 +44,7 @@ if ($action === 'add') {
 
     if (!empty($errors)) {
         setFlash('error', implode(' ', $errors));
-        header('Location: /TimeForge_Capstone/clients.php'); exit;
+        header('Location: ' . APP_BASE . '/clients.php'); exit;
     }
 
     try {
@@ -63,23 +63,23 @@ if ($action === 'add') {
             ':is_active'    => $is_active,
         ]);
         setFlash('success', 'Client added successfully!');
-        header('Location: /TimeForge_Capstone/clients.php'); exit;
+        header('Location: ' . APP_BASE . '/clients.php'); exit;
     } catch (PDOException $e) {
         error_log('ClientController add: ' . $e->getMessage());
         setFlash('error', 'An error occurred while adding the client. Please try again.');
-        header('Location: /TimeForge_Capstone/clients.php'); exit;
+        header('Location: ' . APP_BASE . '/clients.php'); exit;
     }
 }
 
 // ── EDIT CLIENT ───────────────────────────────────────────────────────────
 if ($action === 'edit') {
 
-    if (!isLoggedIn()) { header('Location: /TimeForge_Capstone/login.php'); exit; }
+    if (!isLoggedIn()) { header('Location: ' . APP_BASE . '/login.php'); exit; }
     if (!hasRole('admin') && !hasRole('freelancer')) {
         setFlash('error', 'You do not have permission to edit clients.');
-        header('Location: /TimeForge_Capstone/clients.php'); exit;
+        header('Location: ' . APP_BASE . '/clients.php'); exit;
     }
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /TimeForge_Capstone/clients.php'); exit; }
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ' . APP_BASE . '/clients.php'); exit; }
     verifyCsrfToken();
 
     $client_id    = $_POST['client_id'] ?? null;
@@ -104,7 +104,7 @@ if ($action === 'edit') {
 
     if (!empty($errors)) {
         setFlash('error', implode(' ', $errors));
-        header('Location: /TimeForge_Capstone/edit_client.php?id=' . $client_id); exit;
+        header('Location: ' . APP_BASE . '/edit_client.php?id=' . $client_id); exit;
     }
 
     try {
@@ -124,10 +124,10 @@ if ($action === 'edit') {
             ':client_id'    => $client_id,
         ]);
         setFlash('success', 'Client updated successfully!');
-        header('Location: /TimeForge_Capstone/clients.php'); exit;
+        header('Location: ' . APP_BASE . '/clients.php'); exit;
     } catch (PDOException $e) {
         error_log('ClientController edit: ' . $e->getMessage());
         setFlash('error', 'An error occurred while updating the client. Please try again.');
-        header('Location: /TimeForge_Capstone/edit_client.php?id=' . $client_id); exit;
+        header('Location: ' . APP_BASE . '/edit_client.php?id=' . $client_id); exit;
     }
 }

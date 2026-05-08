@@ -7,16 +7,16 @@
 function redirectBasedOnRole($role) {
     switch ($role) {
         case 'admin':
-            header('Location: /TimeForge_Capstone/admin/dashboard.php');
+            header('Location: ' . APP_BASE . '/admin/dashboard.php');
             break;
         case 'freelancer':
-            header('Location: /TimeForge_Capstone/freelancer/dashboard.php');
+            header('Location: ' . APP_BASE . '/freelancer/dashboard.php');
             break;
         case 'client':
-            header('Location: /TimeForge_Capstone/client/dashboard.php');
+            header('Location: ' . APP_BASE . '/client/dashboard.php');
             break;
         default:
-            header('Location: /TimeForge_Capstone/index.php');
+            header('Location: ' . APP_BASE . '/index.php');
             break;
     }
     exit;

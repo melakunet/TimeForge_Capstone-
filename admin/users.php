@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo->prepare("INSERT INTO users (username,email,password,role,full_name,is_active,company_id,created_at,updated_at) VALUES (?,?,?,?,?,1,?,NOW(),NOW())")
                         ->execute([$inv_username, $inv_email, hashPassword($temp_pass), $inv_role, $inv_name, $company_id]);
 
-                    $reset_link = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/TimeForge_Capstone/forgot_password.php';
+                    $reset_link = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . ' . APP_BASE . '/forgot_password.php';
                     $html = "<div style='font-family:sans-serif;max-width:520px;margin:auto;'><h2 style='color:#3b82f6;'>Welcome to TimeForge</h2><p>Hi <strong>" . htmlspecialchars($inv_name) . "</strong>,</p><p>You have been invited to join <strong>" . htmlspecialchars($company_name) . "</strong> as a <strong>" . ucfirst($inv_role) . "</strong>.</p><p>Username: <strong>" . htmlspecialchars($inv_username) . "</strong><br>Temporary password: <strong>" . htmlspecialchars($temp_pass) . "</strong></p><p><a href='" . htmlspecialchars($reset_link) . "' style='background:#3b82f6;color:#fff;padding:.75rem 2rem;border-radius:6px;text-decoration:none;font-weight:700;'>Set Your Own Password</a></p><p style='color:#94a3b8;font-size:.8rem;'>Please change your password on first login.</p></div>";
                     sendEmail($inv_email, $inv_name, 'You have been invited to TimeForge', $html);
                     setFlash('success', "Invitation sent to {$inv_email}.");
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    header('Location: /TimeForge_Capstone/admin/users.php'); exit;
+    header('Location: ' . APP_BASE . '/admin/users.php'); exit;
 }
 
 // ── Fetch users ───────────────────────────────────────────────────────────────
@@ -93,8 +93,8 @@ $flash = getFlash();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title) ?> – TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
     <style>
         .role-badge{padding:.25rem .55rem;border-radius:4px;font-size:.8rem;font-weight:600;text-transform:uppercase}
         .role-admin{background:#dbeafe;color:#1d4ed8}.role-freelancer{background:#dcfce7;color:#15803d}.role-client{background:#ffedd5;color:#c2410c}
@@ -114,7 +114,7 @@ $flash = getFlash();
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
         <h1 style="margin:0;">Manage Users</h1>
-        <a href="/TimeForge_Capstone/admin/dashboard.php" class="btn btn-secondary btn-sm">← Dashboard</a>
+        <a href="<?= APP_BASE ?>/admin/dashboard.php" class="btn btn-secondary btn-sm">← Dashboard</a>
     </div>
 
     <?php if ($flash): ?>
@@ -200,7 +200,7 @@ $flash = getFlash();
 
 </div>
 <?php include_once __DIR__ . '/../includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/theme.js"></script>
+<script src="<?= APP_BASE ?>/js/theme.js"></script>
 </body>
 </html>
 
@@ -225,8 +225,8 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title) ?> - TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
     <style>
         .role-badge {
             padding: 0.25rem 0.5rem;
@@ -256,7 +256,7 @@ try {
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <h1>Manage Users</h1>
-            <a href="/TimeForge_Capstone/admin/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="<?= APP_BASE ?>/admin/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
         </div>
 
         <div class="card">
@@ -306,6 +306,6 @@ try {
     </div>
 
     <?php include_once __DIR__ . '/../includes/footer_partial.php'; ?>
-    <script src="/TimeForge_Capstone/js/theme.js"></script>
+    <script src="<?= APP_BASE ?>/js/theme.js"></script>
 </body>
 </html>

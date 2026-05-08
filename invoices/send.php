@@ -21,7 +21,7 @@ use PHPMailer\PHPMailer\Exception;
 requireRole('admin');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
@@ -31,7 +31,7 @@ $note       = trim($_POST['email_note']    ?? '');
 
 if (!$invoice_id || !filter_var($send_to, FILTER_VALIDATE_EMAIL)) {
     setFlash('error', 'A valid invoice ID and recipient email address are required.');
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
@@ -70,17 +70,17 @@ try {
 } catch (PDOException $e) {
     error_log('send.php invoice fetch: ' . $e->getMessage());
     setFlash('error', 'Could not load invoice.');
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
 if (!$invoice) {
     setFlash('error', 'Invoice not found.');
-    header('Location: /TimeForge_Capstone/invoices/history.php');
+    header('Location: ' . APP_BASE . '/invoices/history.php');
     exit;
 }
 
-$back = '/TimeForge_Capstone/invoices/view.php?id=' . $invoice_id;
+$back = ' . APP_BASE . '/invoices/view.php?id=' . $invoice_id;
 
 // Approved billable time entries for PDF line items
 $entries_stmt = $pdo->prepare("

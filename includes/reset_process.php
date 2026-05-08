@@ -8,7 +8,7 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 
@@ -34,7 +34,7 @@ if ($password !== $confirm)              $errors[] = 'Passwords do not match.';
 
 if (!empty($errors)) {
     $_SESSION['reset_error'] = implode(' ', $errors);
-    header('Location: /TimeForge_Capstone/reset_password.php?token=' . urlencode($raw_token) . '&email=' . urlencode($email));
+    header('Location: ' . APP_BASE . '/reset_password.php?token=' . urlencode($raw_token) . '&email=' . urlencode($email));
     exit;
 }
 
@@ -59,7 +59,7 @@ try {
 
 if (!$user) {
     $_SESSION['reset_error'] = 'This reset link is invalid or has expired. Please request a new one.';
-    header('Location: /TimeForge_Capstone/reset_password.php?token=' . urlencode($raw_token) . '&email=' . urlencode($email));
+    header('Location: ' . APP_BASE . '/reset_password.php?token=' . urlencode($raw_token) . '&email=' . urlencode($email));
     exit;
 }
 
@@ -79,10 +79,10 @@ try {
 } catch (PDOException $e) {
     error_log('reset_process update error: ' . $e->getMessage());
     $_SESSION['reset_error'] = 'A server error occurred. Please try again.';
-    header('Location: /TimeForge_Capstone/reset_password.php?token=' . urlencode($raw_token) . '&email=' . urlencode($email));
+    header('Location: ' . APP_BASE . '/reset_password.php?token=' . urlencode($raw_token) . '&email=' . urlencode($email));
     exit;
 }
 
 $_SESSION['register_success'] = 'Your password has been reset. You can now log in with your new password.';
-header('Location: /TimeForge_Capstone/login.php');
+header('Location: ' . APP_BASE . '/login.php');
 exit;

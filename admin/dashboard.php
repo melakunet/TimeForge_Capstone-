@@ -33,9 +33,9 @@ $total_entries  = (int)$entry_count->fetchColumn();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> - TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/time_tracker.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/time_tracker.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
     <?php include_once __DIR__ . '/../includes/header_partial.php'; ?>
@@ -85,27 +85,27 @@ $total_entries  = (int)$entry_count->fetchColumn();
         <h2 style="color: var(--color-accent); margin-bottom: 1.5rem;">Admin Functions</h2>
         <ul style="list-style: none; padding: 0;">
             <li style="margin-bottom: 1rem;">
-                <a href="/TimeForge_Capstone/admin/users.php" class="btn btn-primary" style="display: inline-block;">Manage Users</a>
+                <a href="<?= APP_BASE ?>/admin/users.php" class="btn btn-primary" style="display: inline-block;">Manage Users</a>
             </li>
             <li style="margin-bottom: 1rem;">
-                <a href="/TimeForge_Capstone/admin/audit_logs.php" class="btn btn-primary" style="display: inline-block;">View Audit Logs</a>
+                <a href="<?= APP_BASE ?>/admin/audit_logs.php" class="btn btn-primary" style="display: inline-block;">View Audit Logs</a>
             </li>
             <li style="margin-bottom: 1rem;">
-                <a href="/TimeForge_Capstone/admin/system_settings.php" class="btn btn-primary" style="display:inline-block;">⚙️ System Settings</a>
+                <a href="<?= APP_BASE ?>/admin/system_settings.php" class="btn btn-primary" style="display:inline-block;">⚙️ System Settings</a>
             </li>
             <li style="margin-bottom: 1rem;">
-                <a href="/TimeForge_Capstone/admin/session_audit.php" class="btn btn-primary" style="display: inline-block;">Session Audit Log</a>
+                <a href="<?= APP_BASE ?>/admin/session_audit.php" class="btn btn-primary" style="display: inline-block;">Session Audit Log</a>
             </li>
             <!-- Reporting and invoicing -->
             <li style="margin-bottom: 1rem;">
-                <a href="/TimeForge_Capstone/admin/reports.php" class="btn btn-primary" style="display: inline-block;">📊 Financial Reports</a>
+                <a href="<?= APP_BASE ?>/admin/reports.php" class="btn btn-primary" style="display: inline-block;">📊 Financial Reports</a>
             </li>
             <li style="margin-bottom: 1rem;">
-                <a href="/TimeForge_Capstone/invoices/history.php" class="btn btn-primary" style="display: inline-block;">🧾 Invoice History</a>
+                <a href="<?= APP_BASE ?>/invoices/history.php" class="btn btn-primary" style="display: inline-block;">🧾 Invoice History</a>
             </li>
             <!-- Phase 9 -->
             <li style="margin-bottom: 1rem;">
-                <a href="/TimeForge_Capstone/admin/screenshots.php" class="btn btn-primary" style="display: inline-block;">📷 Activity Screenshots</a>
+                <a href="<?= APP_BASE ?>/admin/screenshots.php" class="btn btn-primary" style="display: inline-block;">📷 Activity Screenshots</a>
             </li>
         </ul>
     </div>
@@ -128,7 +128,7 @@ $total_entries  = (int)$entry_count->fetchColumn();
     <div class="card" style="margin-top:2rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
             <h2 style="color:var(--color-accent); margin:0;">📷 Recent Screenshots</h2>
-            <a href="/TimeForge_Capstone/admin/screenshots.php" style="font-size:0.85rem;">View All →</a>
+            <a href="<?= APP_BASE ?>/admin/screenshots.php" style="font-size:0.85rem;">View All →</a>
         </div>
         <?php if (empty($recent_shots)): ?>
             <p style="color:var(--color-text-secondary);">No screenshots yet. Screenshots appear here once a worker starts a timer on a project with screenshots enabled.</p>
@@ -137,8 +137,8 @@ $total_entries  = (int)$entry_count->fetchColumn();
             <?php foreach ($recent_shots as $shot):
                 $border = $shot['activity_score_at_capture'] == 0 ? '2px solid #e74c3c' : '2px solid transparent';
             ?>
-            <a href="/TimeForge_Capstone/admin/screenshots.php" style="display:block; border-radius:6px; overflow:hidden; border:<?= $border ?>; text-decoration:none;">
-                <img src="/TimeForge_Capstone/api/screenshot_img.php?id=<?= (int)$shot['id'] ?>" style="width:100%;height:80px;object-fit:cover;display:block;" alt="screenshot">
+            <a href="<?= APP_BASE ?>/admin/screenshots.php" style="display:block; border-radius:6px; overflow:hidden; border:<?= $border ?>; text-decoration:none;">
+                <img src="<?= APP_BASE ?>/api/screenshot_img.php?id=<?= (int)$shot['id'] ?>" style="width:100%;height:80px;object-fit:cover;display:block;" alt="screenshot">
                 <div style="font-size:0.7rem; padding:0.3rem 0.4rem; background:var(--color-card); color:var(--color-text-secondary);">
                     <?= htmlspecialchars($shot['full_name'] ?? 'Unknown') ?> &bull; <?= date('M j, g:i a', strtotime($shot['captured_at'])) ?>
                 </div>
@@ -156,10 +156,10 @@ $total_entries  = (int)$entry_count->fetchColumn();
         <p>Web Capstone Project by Etefworkie Melaku — triOS College, Mobile and Web App Development</p>
     </footer>
     
-    <script src="/TimeForge_Capstone/js/theme.js"></script>
-    <script src="/TimeForge_Capstone/js/animations.js"></script>
+    <script src="<?= APP_BASE ?>/js/theme.js"></script>
+    <script src="<?= APP_BASE ?>/js/animations.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="/TimeForge_Capstone/js/time_tracker.js"></script>
-    <script src="/TimeForge_Capstone/js/presence.js"></script>
+    <script src="<?= APP_BASE ?>/js/time_tracker.js"></script>
+    <script src="<?= APP_BASE ?>/js/presence.js"></script>
 </body>
 </html>

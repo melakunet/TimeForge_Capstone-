@@ -30,7 +30,7 @@ if (isset($_SESSION['last_activity'])) {
     if (time() - $_SESSION['last_activity'] > SESSION_TIMEOUT) {
         // Session expired
         session_destroy();
-        header('Location: /TimeForge_Capstone/login.php?timeout=1');
+        header('Location: ' . APP_BASE . '/login.php?timeout=1');
         exit();
     }
 }

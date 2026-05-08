@@ -11,7 +11,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 
 if (!isLoggedIn()) {
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 

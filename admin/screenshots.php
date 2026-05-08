@@ -71,8 +71,8 @@ $screenshots = $shots_stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title) ?> - TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
     <style>
         .ss-filter-bar { display:flex; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.5rem; align-items:flex-end; }
         .ss-filter-bar select,
@@ -108,7 +108,7 @@ $screenshots = $shots_stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="container">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
             <h1 style="color:var(--color-accent);">📷 Activity Screenshots</h1>
-            <a href="/TimeForge_Capstone/admin/dashboard.php" class="btn btn-secondary">← Dashboard</a>
+            <a href="<?= APP_BASE ?>/admin/dashboard.php" class="btn btn-secondary">← Dashboard</a>
         </div>
 
         <?php if ($disk_size_mb >= 500): ?>
@@ -164,7 +164,7 @@ $screenshots = $shots_stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php else: ?>
             <div class="ss-grid">
                 <?php foreach ($screenshots as $s):
-                    $img_url  = '/TimeForge_Capstone/api/screenshot_img.php?id=' . (int)$s['id'];
+                    $img_url  = ' . APP_BASE . '/api/screenshot_img.php?id=' . (int)$s['id'];
                     $is_zero  = ($s['activity_score_at_capture'] == 0);
                     $cap_time = date('M j, Y g:i a', strtotime($s['captured_at']));
                 ?>

@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/flash.php';
 require_once __DIR__ . '/db.php';
 
 if (!isLoggedIn()) {
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upd->execute([':pw' => password_hash($new_pw, PASSWORD_DEFAULT), ':id' => $user_id]);
             setFlash('success', 'Password changed successfully.');
         }
-        header('Location: /TimeForge_Capstone/profile.php');
+        header('Location: ' . APP_BASE . '/profile.php');
         exit;
     }
     $full_name        = trim(filter_input(INPUT_POST, 'full_name'));
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION['full_name'] = $full_name;
             setFlash('success', 'Profile updated successfully.');
-            header('Location: /TimeForge_Capstone/profile.php');
+            header('Location: ' . APP_BASE . '/profile.php');
             exit;
         }
     }
@@ -171,8 +171,8 @@ $flash = getFlash();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> — TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
 <?php include __DIR__ . '/includes/header_partial.php'; ?>
@@ -239,7 +239,7 @@ $flash = getFlash();
                 <?php if (!empty($user['company_logo']) && file_exists(__DIR__ . '/' . $user['company_logo'])): ?>
                 <!-- Current logo preview -->
                 <div id="logo-current" style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem; padding:0.75rem 1rem; background:var(--color-bg-secondary, #f9fafb); border:1px solid var(--color-border); border-radius:8px;">
-                    <img src="/TimeForge_Capstone/<?php echo htmlspecialchars($user['company_logo']); ?>"
+                    <img src="<?= APP_BASE ?>/<?php echo htmlspecialchars($user['company_logo']); ?>"
                          alt="Your logo" id="logo-preview-img"
                          style="max-height:60px; max-width:160px; object-fit:contain;">
                     <div style="flex:1;">
@@ -273,7 +273,7 @@ $flash = getFlash();
     <p style="margin-top:1rem; font-size:0.85rem; color:var(--color-text-secondary); text-align:center;">
         Role: <strong><?php echo ucfirst($user['role']); ?></strong>
         &nbsp;&bull;&nbsp;
-        <a href="/TimeForge_Capstone/index.php">Back to Dashboard</a>
+        <a href="<?= APP_BASE ?>/index.php">Back to Dashboard</a>
     </p>
 
     <!-- ── Change Password ─────────────────────────────────────────────────── -->
@@ -314,7 +314,7 @@ $flash = getFlash();
 </div>
 
 <?php include __DIR__ . '/includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/theme.js"></script>
+<script src="<?= APP_BASE ?>/js/theme.js"></script>
 <script>
 function previewLogo(input) {
     if (!input.files || !input.files[0]) return;

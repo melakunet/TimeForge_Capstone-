@@ -269,7 +269,7 @@ function registerUser($username, $email, $password, $confirmPassword, $fullName,
 function requireLogin() {
     if (devBypassEnabled()) { ensureDevSession(); return; }
     if (!isLoggedIn()) {
-        header('Location: /TimeForge_Capstone/login.php?redirect=1');
+        header('Location: ' . APP_BASE . '/login.php?redirect=1');
         exit;
     }
 }

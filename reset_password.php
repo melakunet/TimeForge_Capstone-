@@ -11,7 +11,7 @@ require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/db.php';
 
 if (isLoggedIn()) {
-    header('Location: /TimeForge_Capstone/index.php');
+    header('Location: ' . APP_BASE . '/index.php');
     exit;
 }
 

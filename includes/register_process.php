@@ -3,7 +3,7 @@ require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /TimeForge_Capstone/register.php');
+    header('Location: ' . APP_BASE . '/register.php');
     exit;
 }
 
@@ -36,7 +36,7 @@ if (!preg_match('/[0-9]/', $password))  $errors[] = 'Password must contain at le
 
 if (!empty($errors)) {
     $_SESSION['register_errors'] = $errors;
-    header('Location: /TimeForge_Capstone/register.php');
+    header('Location: ' . APP_BASE . '/register.php');
     exit;
 }
 
@@ -45,10 +45,10 @@ $result = registerUser($username, $email, $password, $confirm_password, $full_na
 if ($result['success']) {
     unset($_SESSION['register_form_data']);
     $_SESSION['register_success'] = 'Thank you, ' . htmlspecialchars($username) . '. You may now log in.';
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 
 $_SESSION['register_errors'] = array_merge($errors, $result['errors'] ?? []);
-header('Location: /TimeForge_Capstone/register.php');
+header('Location: ' . APP_BASE . '/register.php');
 exit;

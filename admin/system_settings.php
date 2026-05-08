@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     saveSetting($pdo, $company_id, 'screenshots_default_on', $ss_default);
 
     setFlash('success', 'Settings saved successfully.');
-    header('Location: /TimeForge_Capstone/admin/system_settings.php');
+    header('Location: ' . APP_BASE . '/admin/system_settings.php');
     exit;
 }
 
@@ -329,7 +329,7 @@ $currencies = ['CAD' => 'CAD — Canadian Dollar', 'USD' => 'USD — US Dollar',
                 <?= $pr['screenshots_enabled'] ? $interval : '—' ?>
               </td>
               <td style="padding:.4rem .5rem;">
-                <a href="/TimeForge_Capstone/edit_project.php?id=<?= $pr['id'] ?? '' ?>" 
+                <a href="<?= APP_BASE ?>/edit_project.php?id=<?= $pr['id'] ?? '' ?>" 
                    style="color:#3b82f6; font-size:.78rem;">Edit →</a>
               </td>
             </tr>
@@ -345,7 +345,7 @@ $currencies = ['CAD' => 'CAD — Canadian Dollar', 'USD' => 'USD — US Dollar',
       <!-- ── Sticky Save Bar ── -->
       <div class="save-bar">
         <button type="submit" class="btn btn-primary">💾 Save Settings</button>
-        <a href="/TimeForge_Capstone/admin/dashboard.php" class="btn btn-secondary">Cancel</a>
+        <a href="<?= APP_BASE ?>/admin/dashboard.php" class="btn btn-secondary">Cancel</a>
         <span class="save-hint">Changes take effect immediately for new invoices, projects, and timer sessions.</span>
       </div>
 

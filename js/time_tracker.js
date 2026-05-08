@@ -317,7 +317,7 @@ class TimeTracker {
         } else if (choice === 'discard') {
             // Tell server to abandon old entry then clear storage
             if (state.entryId) {
-                fetch('/TimeForge_Capstone/api/time_tracking.php', {
+                fetch(APP_BASE + '/api/time_tracking.php', {
                     method: 'POST',
                     body: new URLSearchParams({
                         action: 'stop', project_id: state.projectId,
@@ -496,7 +496,7 @@ class TimeTracker {
         this.mouseEvents = 0;
         this.keyEvents   = 0;
 
-        const resp = await fetch('/TimeForge_Capstone/api/time_tracking.php', { method: 'POST', body });
+        const resp = await fetch(APP_BASE + '/api/time_tracking.php', { method: 'POST', body });
         const json = await resp.json();
 
         if (action === 'start' && json.entry_id) {
@@ -510,7 +510,7 @@ class TimeTracker {
     _notifyServer(action, idleSecs, discardedSecs) {
         if (!this.entryId) return;
         navigator.sendBeacon(
-            '/TimeForge_Capstone/api/time_tracking.php',
+            APP_BASE + '/api/time_tracking.php',
             new URLSearchParams({
                 action,
                 project_id:             this.projectId,
@@ -584,7 +584,7 @@ class TimeTracker {
             body.append('activity_score', this.mouseEvents + this.keyEvents);
             body.append('image',          imageData);
 
-            const resp = await fetch('/TimeForge_Capstone/api/upload_screenshot.php', {
+            const resp = await fetch(APP_BASE + '/api/upload_screenshot.php', {
                 method: 'POST',
                 body,
             });

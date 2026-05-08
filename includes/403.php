@@ -15,13 +15,13 @@ http_response_code(403);
 $role      = $_SESSION['role'] ?? null;
 $full_name = $_SESSION['full_name'] ?? 'User';
 
-$home_url = '/TimeForge_Capstone/index.php';
+$home_url = ' . APP_BASE . '/index.php';
 if ($role === 'client') {
-    $home_url = '/TimeForge_Capstone/client/dashboard.php';
+    $home_url = ' . APP_BASE . '/client/dashboard.php';
 } elseif ($role === 'freelancer') {
-    $home_url = '/TimeForge_Capstone/freelancer/dashboard.php';
+    $home_url = ' . APP_BASE . '/freelancer/dashboard.php';
 } elseif ($role === 'admin') {
-    $home_url = '/TimeForge_Capstone/admin/dashboard.php';
+    $home_url = ' . APP_BASE . '/admin/dashboard.php';
 }
 ?>
 <!DOCTYPE html>
@@ -30,8 +30,8 @@ if ($role === 'client') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>403 Access Denied - TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
     <main class="container page-403">
@@ -50,7 +50,7 @@ if ($role === 'client') {
                 <a href="<?php echo htmlspecialchars($home_url, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary">
                     &larr; Back to My Dashboard
                 </a>
-                <a href="/TimeForge_Capstone/includes/logout.php" class="btn btn-secondary">
+                <a href="<?= APP_BASE ?>/includes/logout.php" class="btn btn-secondary">
                     Logout
                 </a>
             </div>
@@ -58,6 +58,6 @@ if ($role === 'client') {
 
     </main>
 
-    <script src="/TimeForge_Capstone/js/theme.js"></script>
+    <script src="<?= APP_BASE ?>/js/theme.js"></script>
 </body>
 </html>

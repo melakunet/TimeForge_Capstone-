@@ -7,7 +7,7 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/notify.php';
 
 if (!isLoggedIn()) {
-    header('Location: /TimeForge_Capstone/login.php');
+    header('Location: ' . APP_BASE . '/login.php');
     exit;
 }
 
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_all_read'])) {
     verifyCsrfToken();
     $pdo->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = :uid")
         ->execute([':uid' => $user_id]);
-    header('Location: /TimeForge_Capstone/notifications.php');
+    header('Location: ' . APP_BASE . '/notifications.php');
     exit;
 }
 
@@ -36,7 +36,7 @@ if (isset($_GET['read'])) {
             exit;
         }
     }
-    header('Location: /TimeForge_Capstone/notifications.php');
+    header('Location: ' . APP_BASE . '/notifications.php');
     exit;
 }
 
@@ -80,8 +80,8 @@ $type_icons = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title) ?> — TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
 <?php include __DIR__ . '/includes/header_partial.php'; ?>
@@ -133,11 +133,11 @@ $type_icons = [
                 </div>
                 <div style="display:flex;gap:.5rem;align-items:center;flex-shrink:0;">
                     <?php if ($n['link']): ?>
-                        <a href="/TimeForge_Capstone/notifications.php?read=<?= $n['id'] ?>"
+                        <a href="<?= APP_BASE ?>/notifications.php?read=<?= $n['id'] ?>"
                            style="font-size:.8rem;" class="btn btn-secondary" title="View">View →</a>
                     <?php endif; ?>
                     <?php if (!$n['is_read']): ?>
-                        <a href="/TimeForge_Capstone/notifications.php?read=<?= $n['id'] ?>"
+                        <a href="<?= APP_BASE ?>/notifications.php?read=<?= $n['id'] ?>"
                            style="font-size:.78rem;color:var(--color-accent);" title="Mark read">✓</a>
                     <?php endif; ?>
                 </div>
@@ -162,6 +162,6 @@ $type_icons = [
 </div>
 
 <?php include __DIR__ . '/includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/theme.js"></script>
+<script src="<?= APP_BASE ?>/js/theme.js"></script>
 </body>
 </html>

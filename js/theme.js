@@ -59,7 +59,7 @@ function sendThemeToServer(theme) {
     formData.append('action', 'set_theme');
     formData.append('theme', theme);
 
-    fetch('/TimeForge_Capstone/includes/theme_handler.php', {
+    fetch(APP_BASE + '/includes/theme_handler.php', {
         method: 'POST',
         body: formData,
     }).catch(function () {

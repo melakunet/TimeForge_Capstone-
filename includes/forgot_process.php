@@ -10,7 +10,7 @@ require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/../includes/mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /TimeForge_Capstone/forgot_password.php');
+    header('Location: ' . APP_BASE . '/forgot_password.php');
     exit;
 }
 
@@ -20,7 +20,7 @@ $email = trim(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) ?? '');
 
 if (!$email) {
     $_SESSION['forgot_error'] = 'Please enter a valid email address.';
-    header('Location: /TimeForge_Capstone/forgot_password.php');
+    header('Location: ' . APP_BASE . '/forgot_password.php');
     exit;
 }
 
@@ -53,14 +53,14 @@ if ($user) {
     } catch (PDOException $e) {
         error_log('forgot_process token save error: ' . $e->getMessage());
         $_SESSION['forgot_error'] = 'A server error occurred. Please try again.';
-        header('Location: /TimeForge_Capstone/forgot_password.php');
+        header('Location: ' . APP_BASE . '/forgot_password.php');
         exit;
     }
 
     // Build reset URL
     $protocol  = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
     $host      = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $reset_url = "$protocol://$host/TimeForge_Capstone/reset_password.php?token=" . urlencode($raw_token) . "&email=" . urlencode($email);
+    $reset_url = "$protocol://$host" . APP_BASE . "/reset_password.php?token=" . urlencode($raw_token) . "&email=" . urlencode($email);
 
     $name     = htmlspecialchars($user['full_name'] ?: 'User');
     $html_body = "
@@ -84,5 +84,5 @@ if ($user) {
 // Always show success (anti-enumeration: don't reveal whether email exists)
 unset($_SESSION['forgot_email']);
 $_SESSION['forgot_success'] = 'If that email is registered, a reset link has been sent. Check your inbox.';
-header('Location: /TimeForge_Capstone/forgot_password.php');
+header('Location: ' . APP_BASE . '/forgot_password.php');
 exit;

@@ -11,44 +11,45 @@ $current_user = getCurrentUser();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($page_title) ? htmlspecialchars($page_title) . ' - TimeForge' : 'TimeForge'; ?></title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/time_tracker.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/time_tracker.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
+    <script>/* Expose server config to JS */const APP_BASE = '<?= APP_BASE ?>';</script>
 </head>
 <body>
     <header>
         <div class="logo">
-            <a href="/TimeForge_Capstone/index.php?view=welcome" class="logo-link">
-                <img src="/TimeForge_Capstone/icons/logo.png" alt="TimeForge Logo">
+            <a href="<?= APP_BASE ?>/index.php?view=welcome" class="logo-link">
+                <img src="<?= APP_BASE ?>/icons/logo.png" alt="TimeForge Logo">
                 <span>TimeForge</span>
             </a>
         </div>
         
         <nav>
-            <a href="/TimeForge_Capstone/index.php">Home</a>
+            <a href="<?= APP_BASE ?>/index.php">Home</a>
             <?php if (isLoggedIn()): ?>
                 <span class="nav-text">Welcome, <?php echo htmlspecialchars($current_user['full_name']); ?></span>
                 
                 <?php if (hasRole('admin')): ?>
-                    <a href="/TimeForge_Capstone/admin/dashboard.php">Admin Dashboard</a>
+                    <a href="<?= APP_BASE ?>/admin/dashboard.php">Admin Dashboard</a>
                 <?php elseif (hasRole('freelancer')): ?>
-                    <a href="/TimeForge_Capstone/freelancer/dashboard.php">Freelancer Portal</a>
+                    <a href="<?= APP_BASE ?>/freelancer/dashboard.php">Freelancer Portal</a>
                 <?php elseif (hasRole('client')): ?>
-                    <a href="/TimeForge_Capstone/client/dashboard.php">Client Portal</a>
+                    <a href="<?= APP_BASE ?>/client/dashboard.php">Client Portal</a>
                 <?php endif; ?>
                 
                 <button id="themeToggle" class="theme-toggle">
                     Dark mode
                 </button>
                 
-                <a href="/TimeForge_Capstone/includes/logout.php" class="btn btn-danger btn-compact">Logout</a>
+                <a href="<?= APP_BASE ?>/includes/logout.php" class="btn btn-danger btn-compact">Logout</a>
             <?php else: ?>
                 <button id="themeToggle" class="theme-toggle">
                     Dark mode
                 </button>
                 
-                <a href="/TimeForge_Capstone/login.php">Login</a>
-                <a href="/TimeForge_Capstone/register.php">Register</a>
+                <a href="<?= APP_BASE ?>/login.php">Login</a>
+                <a href="<?= APP_BASE ?>/register.php">Register</a>
             <?php endif; ?>
         </nav>
     </header>

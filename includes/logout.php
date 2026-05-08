@@ -4,5 +4,5 @@ require_once __DIR__ . '/auth.php';
 
 $_SESSION = [];
 destroySession();
-header('Location: /TimeForge_Capstone/login.php');
+header('Location: ' . APP_BASE . '/login.php');
 exit;

@@ -14,7 +14,7 @@ $project_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 // Validate project ID supplied
 if (!$project_id) {
     setFlash('error', 'Invalid project ID.');
-    header('Location: /TimeForge_Capstone/client/dashboard.php');
+    header('Location: ' . APP_BASE . '/client/dashboard.php');
     exit;
 }
 
@@ -46,7 +46,7 @@ $project = $proj_stmt->fetch(PDO::FETCH_ASSOC);
 // If not found or doesn't belong to this client → deny
 if (!$project) {
     setFlash('error', 'Project not found or access denied.');
-    header('Location: /TimeForge_Capstone/client/dashboard.php');
+    header('Location: ' . APP_BASE . '/client/dashboard.php');
     exit;
 }
 
@@ -118,9 +118,9 @@ $flash       = getFlash();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> - TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/client-portal.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/client-portal.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
     <?php include_once __DIR__ . '/../includes/header_partial.php'; ?>
@@ -136,7 +136,7 @@ $flash       = getFlash();
     <!-- ── Breadcrumb ── -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li><a href="/TimeForge_Capstone/client/dashboard.php">Client Portal</a></li>
+            <li><a href="<?= APP_BASE ?>/client/dashboard.php">Client Portal</a></li>
             <li class="active"><?php echo htmlspecialchars($project['project_name']); ?> — Report</li>
         </ol>
     </nav>
@@ -325,7 +325,7 @@ $flash       = getFlash();
                             <td><span style="background:<?= $statusCls ?>;color:#fff;padding:.15rem .5rem;border-radius:4px;font-size:.73rem;font-weight:600;"><?= str_replace('_',' ', $t['status']) ?></span></td>
                             <td><?= $t['due_date'] ? date('M j', strtotime($t['due_date'])) : '—' ?></td>
                             <td>
-                                <a href="/TimeForge_Capstone/task_detail.php?id=<?= $t['id'] ?>&project_id=<?= $project_id ?>"
+                                <a href="<?= APP_BASE ?>/task_detail.php?id=<?= $t['id'] ?>&project_id=<?= $project_id ?>"
                                    style="text-decoration:none; font-size:.82rem; color:var(--color-accent);">
                                     <?php if ($t['problem_count'] > 0): ?>
                                         🐛 <?= $t['comment_count'] ?> comment<?= $t['comment_count'] != 1 ? 's' : '' ?>
@@ -345,7 +345,7 @@ $flash       = getFlash();
 
     <!-- ── Back Link ── -->
     <div style="margin-top: 1.5rem;">
-        <a href="/TimeForge_Capstone/client/dashboard.php" class="btn btn-secondary btn-sm">&larr; Back to Dashboard</a>
+        <a href="<?= APP_BASE ?>/client/dashboard.php" class="btn btn-secondary btn-sm">&larr; Back to Dashboard</a>
     </div>
 
 </main>
@@ -356,8 +356,8 @@ $flash       = getFlash();
         <p>Web Capstone Project by Etefworkie Melaku — triOS College, Mobile and Web App Development</p>
     </footer>
 
-    <script src="/TimeForge_Capstone/js/theme.js"></script>
-    <script src="/TimeForge_Capstone/js/animations.js"></script>
-    <script src="/TimeForge_Capstone/js/client-portal.js"></script>
+    <script src="<?= APP_BASE ?>/js/theme.js"></script>
+    <script src="<?= APP_BASE ?>/js/animations.js"></script>
+    <script src="<?= APP_BASE ?>/js/client-portal.js"></script>
 </body>
 </html>

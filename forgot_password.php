@@ -5,7 +5,7 @@ require_once __DIR__ . '/config/session.php';
 require_once __DIR__ . '/includes/auth.php';
 
 if (isLoggedIn()) {
-    header('Location: /TimeForge_Capstone/index.php');
+    header('Location: ' . APP_BASE . '/index.php');
     exit;
 }
 

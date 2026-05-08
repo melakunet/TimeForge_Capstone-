@@ -43,9 +43,9 @@ $earnings         = round($fl_stats['earned'] ?? 0, 2);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> - TimeForge</title>
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/time_tracker.css">
-    <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-    <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/time_tracker.css">
+    <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+    <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
 </head>
 <body>
     <?php include_once __DIR__ . '/../includes/header_partial.php'; ?>
@@ -77,10 +77,10 @@ $earnings         = round($fl_stats['earned'] ?? 0, 2);
         <h2 style="color: var(--color-accent); margin-bottom: 1.5rem;">Freelancer Functions</h2>
         <ul style="list-style: none; padding: 0;">
             <li style="margin-bottom: 1rem;">
-                <a href="/TimeForge_Capstone/index.php" class="btn btn-primary" style="display: inline-block;">View Projects</a>
+                <a href="<?= APP_BASE ?>/index.php" class="btn btn-primary" style="display: inline-block;">View Projects</a>
             </li>
             <li style="margin-bottom: 1rem;">
-                <a href="/TimeForge_Capstone/index.php" class="btn btn-primary" style="display: inline-block;">Track Time</a>
+                <a href="<?= APP_BASE ?>/index.php" class="btn btn-primary" style="display: inline-block;">Track Time</a>
             </li>
             <li style="margin-bottom: 1rem;">
                 <a href="#" class="btn btn-primary" style="display: inline-block;">View Invoices</a>
@@ -140,7 +140,7 @@ $earnings         = round($fl_stats['earned'] ?? 0, 2);
                     <?= $mt['due_date'] ? date('M j', strtotime($mt['due_date'])) . ($is_ov ? ' ⚠' : '') : '—' ?>
                 </td>
                 <td style="padding:.5rem .6rem;">
-                    <form method="POST" action="/TimeForge_Capstone/task_action.php" style="display:inline;">
+                    <form method="POST" action="<?= APP_BASE ?>/task_action.php" style="display:inline;">
                         <input type="hidden" name="action" value="move">
                         <input type="hidden" name="task_id" value="<?= $mt['id'] ?>">
                         <input type="hidden" name="project_id" value="<?= $mt['project_id'] ?>">
@@ -152,8 +152,8 @@ $earnings         = round($fl_stats['earned'] ?? 0, 2);
                             <button type="submit" style="background:#22c55e22; color:#22c55e; border:1px solid #22c55e44; border-radius:4px; padding:.2rem .6rem; font-size:.75rem; cursor:pointer; font-weight:600;">✔ Done</button>
                         <?php endif; ?>
                     </form>
-                    <a href="/TimeForge_Capstone/tasks.php?project_id=<?= $mt['project_id'] ?>" style="color:#3b82f6; font-size:.78rem; margin-left:.5rem;">Board</a>
-                    <a href="/TimeForge_Capstone/task_detail.php?id=<?= $mt['id'] ?>&project_id=<?= $mt['project_id'] ?>"
+                    <a href="<?= APP_BASE ?>/tasks.php?project_id=<?= $mt['project_id'] ?>" style="color:#3b82f6; font-size:.78rem; margin-left:.5rem;">Board</a>
+                    <a href="<?= APP_BASE ?>/task_detail.php?id=<?= $mt['id'] ?>&project_id=<?= $mt['project_id'] ?>"
                        style="color:#a5b4fc; font-size:.78rem; margin-left:.5rem;" title="Notes &amp; Problem Reports">💬 Notes</a>
                 </td>
             </tr>
@@ -173,8 +173,8 @@ $earnings         = round($fl_stats['earned'] ?? 0, 2);
     </footer>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="/TimeForge_Capstone/js/time_tracker.js"></script>
-    <script src="/TimeForge_Capstone/js/theme.js"></script>
-    <script src="/TimeForge_Capstone/js/animations.js"></script>
+    <script src="<?= APP_BASE ?>/js/time_tracker.js"></script>
+    <script src="<?= APP_BASE ?>/js/theme.js"></script>
+    <script src="<?= APP_BASE ?>/js/animations.js"></script>
 </body>
 </html>

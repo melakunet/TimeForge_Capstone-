@@ -66,9 +66,9 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= $page_title ?> — TimeForge</title>
-  <link rel="stylesheet" href="/TimeForge_Capstone/css/style.css">
-  <link rel="stylesheet" href="/TimeForge_Capstone/css/time_tracker.css">
-  <link rel="icon" type="image/png" href="/TimeForge_Capstone/icons/logo.png">
+  <link rel="stylesheet" href="<?= APP_BASE ?>/css/style.css">
+  <link rel="stylesheet" href="<?= APP_BASE ?>/css/time_tracker.css">
+  <link rel="icon" type="image/png" href="<?= APP_BASE ?>/icons/logo.png">
   <style>
     .task-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1.5rem; }
     @media(max-width:768px){ .task-board { grid-template-columns: 1fr; } }
@@ -367,7 +367,7 @@ $page_title = 'Tasks — ' . htmlspecialchars($project['project_name']);
 </div>
 
 <?php include __DIR__ . '/includes/footer_partial.php'; ?>
-<script src="/TimeForge_Capstone/js/time_tracker.js"></script>
+<script src="<?= APP_BASE ?>/js/time_tracker.js"></script>
 
 <script>
 function toggleAddForm() {
