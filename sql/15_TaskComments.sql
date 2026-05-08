@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `task_comments` (
   `task_id`     INT(11)      NOT NULL,
   `company_id`  INT(11)      NOT NULL,
   `user_id`     INT(11)      NOT NULL,
-  `type`        ENUM('note','problem','solution') NOT NULL DEFAULT 'note',
+  `type`        ENUM('note','problem','solution','feedback') NOT NULL DEFAULT 'note',
   `body`        TEXT         NOT NULL,
   `created_at`  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
