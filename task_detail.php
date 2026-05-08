@@ -80,8 +80,15 @@ $back_url = $role === 'client'
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Task: <?= htmlspecialchars($task['title']) ?> — TimeForge</title>
+  <?php if ($role === 'client'): ?>
+  <link rel="stylesheet" href="/TimeForge_Capstone/css/client-portal.css">
+  <?php endif; ?>
   <style>
-    /* force dark theme regardless of body class */
+    /* ── task-detail-page: dark base for admin/freelancer ── */
+    body.task-detail-page { background:#0f172a; color:#e0e0e0; min-height:100vh; }
+    /* client-portal-context: do not force dark — inherit portal theme so toggle works */
+    body.task-detail-page.client-portal-context { background:inherit; color:inherit; }
+
     .td-wrap  * { box-sizing: border-box; }
     .td-wrap  { max-width:860px; margin:0 auto; padding:2rem 1rem 5rem; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; color:#e0e0e0; }
     .td-back  { color:#6366f1; font-size:.88rem; text-decoration:none; display:inline-block; margin-bottom:1rem; }
@@ -146,9 +153,9 @@ $back_url = $role === 'client'
     /* post button */
     .td-post .btn-primary { background:#6366f1; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:.9rem; font-weight:600; }
     .td-post .btn-primary:hover { background:#4f46e5; }
-  </style>
+</style>
 </head>
-<body style="background:#0f172a; color:#e0e0e0; min-height:100vh;">
+<body class="task-detail-page<?= $role === 'client' ? ' client-portal-context' : '' ?>">
 
 <?php include __DIR__ . '/includes/header_partial.php'; ?>
 
@@ -172,7 +179,7 @@ if ($flash): ?>
       </div>
     </div>
     <?php if ($task['description']): ?>
-      <p style="margin:.6rem 0 0; color:var(--color-text-secondary); font-size:.88rem; line-height:1.6;">
+      <p style="margin:.6rem 0 0; color:#94a3b8; font-size:.88rem; line-height:1.6;">
         <?= nl2br(htmlspecialchars($task['description'])) ?>
       </p>
     <?php endif; ?>
