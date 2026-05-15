@@ -416,6 +416,7 @@ $flash = getFlash();
                             <p>No time entries found for this project.</p>
                         </div>
                     <?php else: ?>
+                        <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -503,6 +504,7 @@ $flash = getFlash();
                             </div>
                         </div>
                         <?php endif; ?>
+                        </div><!-- /.table-responsive -->
                     <?php endif; ?>
                 </div>
             </div>
