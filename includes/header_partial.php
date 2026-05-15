@@ -42,6 +42,7 @@ $_notif_count  = (isLoggedIn() && isset($pdo)) ? unreadNotificationCount($pdo, (
         🔔<?php if ($_notif_count > 0): ?><span style="position:absolute;top:2px;right:2px;background:#dc2626;color:#fff;font-size:.6rem;border-radius:999px;padding:0 .35rem;line-height:1.4;"><?= $_notif_count ?></span><?php endif; ?>
       </a>
       <a href="<?= APP_BASE ?>/about.php" class="btn btn-secondary btn-compact">About</a>
+      <a href="<?= APP_BASE ?>/about.php#guide" class="btn btn-secondary btn-compact">📖 Guide</a>
       <a href="<?= APP_BASE ?>/profile.php" class="btn btn-secondary btn-compact">My Profile</a>
       <button id="themeToggle" class="theme-toggle">Dark mode</button>
       <a href="<?= APP_BASE ?>/includes/logout.php" class="btn btn-danger btn-compact">Logout</a>

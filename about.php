@@ -428,6 +428,106 @@ include __DIR__ . '/includes/header_partial.php';
   </div>
 </section>
 
+<!-- ── How to Use Guide ───────────────────────────────────────────────────── -->
+<section id="guide" style="max-width:1200px; margin:0 auto 4rem; padding:0 1.5rem;">
+  <h2 style="color:var(--color-accent); font-size:1.6rem; margin-bottom:.4rem;">📖 How to Use TimeForge</h2>
+  <p style="color:var(--color-text-secondary); margin-bottom:2rem; font-size:.95rem;">
+    Everything you need to get started — from registering your first account to generating invoices.
+  </p>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:1.5rem;">
+
+    <div style="background:var(--color-card); border-radius:12px; padding:1.4rem; border-left:4px solid #3b82f6;">
+      <h4 style="margin:0 0 .75rem; color:#3b82f6;">🚀 Getting Started</h4>
+      <ol style="margin:0; padding-left:1.2rem; color:var(--color-text-secondary); line-height:2;">
+        <li>Register — your first account becomes <strong>Admin</strong></li>
+        <li>Admin: go to <strong>Admin Dashboard → Users</strong> to manage team members</li>
+        <li>Add <strong>Clients</strong> via the Clients menu</li>
+        <li>Create a <strong>Project</strong> — set hourly rate, budget, deadline, and assign a client</li>
+        <li>Share the app URL so freelancers can register and start tracking</li>
+      </ol>
+    </div>
+
+    <div style="background:var(--color-card); border-radius:12px; padding:1.4rem; border-left:4px solid #f59e0b;">
+      <h4 style="margin:0 0 .75rem; color:#f59e0b;">📋 Tasks & Kanban Board</h4>
+      <ol style="margin:0; padding-left:1.2rem; color:var(--color-text-secondary); line-height:2;">
+        <li>Open a project → click <strong>Tasks</strong> to see the Kanban board</li>
+        <li>Admin: click <strong>+ Add Task</strong> — set title, priority, due date, and assign to a freelancer</li>
+        <li>Freelancer: click <strong>▶ Start</strong> on any Open task — a modal appears</li>
+        <li>Confirm the description → <strong>▶ Start Timer</strong> — task moves to In Progress and timer starts</li>
+        <li>Click <strong>✔ Done</strong> when finished to mark the task complete</li>
+      </ol>
+    </div>
+
+    <div style="background:var(--color-card); border-radius:12px; padding:1.4rem; border-left:4px solid #22c55e;">
+      <h4 style="margin:0 0 .75rem; color:#22c55e;">⏱ Time Tracking</h4>
+      <ol style="margin:0; padding-left:1.2rem; color:var(--color-text-secondary); line-height:2;">
+        <li>Start a timer from <strong>Home dashboard</strong> (▶ Start) or from any task card</li>
+        <li>The floating <strong>timer widget</strong> (bottom-right) shows elapsed time and active project</li>
+        <li>If you go idle, a popup asks: <em>Keep all / Discard idle / Stop timer</em></li>
+        <li>Click <strong>Stop Timer</strong> when done — session is saved automatically</li>
+        <li>Missed a session? Use <strong>Add Time Manually</strong> from the project details page</li>
+      </ol>
+    </div>
+
+    <div style="background:var(--color-card); border-radius:12px; padding:1.4rem; border-left:4px solid #a855f7;">
+      <h4 style="margin:0 0 .75rem; color:#a855f7;">📷 Activity Screenshots</h4>
+      <ol style="margin:0; padding-left:1.2rem; color:var(--color-text-secondary); line-height:2;">
+        <li>Screenshots are taken <strong>automatically</strong> while the timer runs (if enabled)</li>
+        <li>Configurable per project — <strong>Edit Project → Screenshot Settings</strong></li>
+        <li>Admin views all screenshots at <strong>Admin Dashboard → Activity Screenshots</strong></li>
+        <li>Red border = zero activity; no border = worker was active at capture time</li>
+        <li>Screenshots are <strong>private</strong> — served through a secure proxy</li>
+      </ol>
+    </div>
+
+    <div style="background:var(--color-card); border-radius:12px; padding:1.4rem; border-left:4px solid #f97316;">
+      <h4 style="margin:0 0 .75rem; color:#f97316;">🧾 Invoices</h4>
+      <ol style="margin:0; padding-left:1.2rem; color:var(--color-text-secondary); line-height:2;">
+        <li>Go to <strong>Project Details</strong> → click <strong>Generate Invoice</strong></li>
+        <li>Choose a template (Classic / Corporate / Bold), set tax rate and notes</li>
+        <li>Send the invoice to the client by email directly from the invoice view</li>
+        <li>Track status: Draft → Sent → Viewed → Paid in <strong>Invoices → History</strong></li>
+        <li>Record payments and download as PDF at any time</li>
+      </ol>
+    </div>
+
+    <div style="background:var(--color-card); border-radius:12px; padding:1.4rem; border-left:4px solid #06b6d4;">
+      <h4 style="margin:0 0 .75rem; color:#06b6d4;">📊 Reports & Exports</h4>
+      <ol style="margin:0; padding-left:1.2rem; color:var(--color-text-secondary); line-height:2;">
+        <li>Admin: <strong>Reports</strong> in the nav shows earnings, hours, and project breakdown</li>
+        <li>Filter by date range, project, or freelancer</li>
+        <li>Export any view as <strong>CSV</strong> for payroll or client billing</li>
+        <li>Client portal: clients see only their own projects and time reports</li>
+        <li><strong>Session Audit</strong> shows idle time, activity scores, and close reasons</li>
+      </ol>
+    </div>
+
+    <div style="background:var(--color-card); border-radius:12px; padding:1.4rem; border-left:4px solid #e74c3c;">
+      <h4 style="margin:0 0 .75rem; color:#e74c3c;">⚙️ Admin Controls</h4>
+      <ol style="margin:0; padding-left:1.2rem; color:var(--color-text-secondary); line-height:2;">
+        <li><strong>Users</strong> — view all accounts, change roles, deactivate members</li>
+        <li><strong>Audit Logs</strong> — every login, change, and action is recorded</li>
+        <li><strong>System Settings</strong> — invoice tax defaults, screenshot defaults, company logo</li>
+        <li>Live <strong>Freelancer Presence</strong> panel shows who is online right now</li>
+        <li>Timers left running overnight are <strong>auto-closed</strong> by a cron job</li>
+      </ol>
+    </div>
+
+    <div style="background:var(--color-card); border-radius:12px; padding:1.4rem; border-left:4px solid #94a3b8;">
+      <h4 style="margin:0 0 .75rem; color:#94a3b8;">💡 Tips & Notes</h4>
+      <ul style="margin:0; padding-left:1.2rem; color:var(--color-text-secondary); line-height:2;">
+        <li>Timer widget stays visible as you navigate — you never lose your session</li>
+        <li>Closing the browser while the timer runs? It asks what to do when you return</li>
+        <li>Dark / Light mode toggle is in the top navigation bar</li>
+        <li>Idle detection kicks in after <strong>10 minutes</strong> of no activity</li>
+        <li>Only <strong>approved</strong> time entries count toward invoice totals and reports</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
 <?php include __DIR__ . '/includes/footer_partial.php'; ?>
 <script src="<?= APP_BASE ?>/js/theme.js"></script>
 <script>
