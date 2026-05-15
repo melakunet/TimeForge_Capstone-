@@ -153,7 +153,7 @@
         if (window.timeTracker && window.timeTracker.startTime) return;
         const fd = new FormData();
         fd.append('action', 'ping');
-        navigator.sendBeacon(' . APP_BASE . '/api/time_tracking.php', fd);
+        navigator.sendBeacon('<?= APP_BASE ?>/api/time_tracking.php', fd);
     }
     // Ping immediately on page load, then every 60 seconds
     sendPing();
