@@ -137,5 +137,5 @@ Task cards on the Kanban board show a **🐛 red badge** when an open problem co
 
 ## Author
 
-**Etefworkie Melaku** — triOS College, 2025  
+**Etefworkie Melaku** — triOS College, 2026  
 Web Capstone — Mobile and Web App Development Program
