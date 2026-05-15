@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 08, 2026 at 04:07 PM
+-- Generation Time: May 08, 2026 at 05:15 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -99,7 +99,8 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `company_id`, `action`, `ip_address`,
 (54, 0, NULL, 'login_failed_invalid_user', '192.168.2.11', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-05-01 15:28:26'),
 (55, 9, 1, 'login_success', '192.168.2.11', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-05-01 15:28:54'),
 (56, 0, NULL, 'System auto-abandoned 1 stale timers', '127.0.0.1', NULL, '2026-05-01 16:00:00'),
-(57, 11, 1, 'login_success', '192.168.2.12', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 12:46:25');
+(57, 11, 1, 'login_success', '192.168.2.12', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 12:46:25'),
+(58, 8, 1, 'login_success', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 14:25:01');
 
 -- --------------------------------------------------------
 
@@ -380,7 +381,13 @@ INSERT INTO `screenshots` (`id`, `entry_id`, `user_id`, `project_id`, `company_i
 (6, 11, 11, 4, 1, 'uploads/screenshots/1/11/11/20260417174745_327.jpg', 31, 0, '2026-04-17 11:47:45'),
 (7, 11, 11, 4, 1, 'uploads/screenshots/1/11/11/20260417174757_303.jpg', 31, 0, '2026-04-17 11:47:57'),
 (8, 12, 11, 4, 1, 'uploads/screenshots/1/11/12/20260417174832_212.jpg', 35, 40, '2026-04-17 11:48:32'),
-(9, 12, 11, 4, 1, 'uploads/screenshots/1/11/12/20260417174842_278.jpg', 35, 45, '2026-04-17 11:48:42');
+(9, 12, 11, 4, 1, 'uploads/screenshots/1/11/12/20260417174842_278.jpg', 35, 45, '2026-04-17 11:48:42'),
+(12, 21, 11, 4, 1, 'uploads/screenshots/1/11/21/20260508162701_294.jpg', 54, 0, '2026-05-08 10:27:01'),
+(15, 21, 11, 4, 1, 'uploads/screenshots/1/11/21/20260508163605_668.jpg', 54, 0, '2026-05-08 10:36:05'),
+(16, 21, 11, 4, 1, 'uploads/screenshots/1/11/21/20260508164915_948.jpg', 54, 0, '2026-05-08 10:49:15'),
+(17, 21, 11, 4, 1, 'uploads/screenshots/1/11/21/20260508165552_180.jpg', 54, 0, '2026-05-08 10:55:52'),
+(18, 21, 11, 4, 1, 'uploads/screenshots/1/11/21/20260508170700_230.jpg', 54, 0, '2026-05-08 11:07:00'),
+(19, 21, 11, 4, 1, 'uploads/screenshots/1/11/21/20260508171338_967.jpg', 54, 0, '2026-05-08 11:13:38');
 
 -- --------------------------------------------------------
 
@@ -857,7 +864,64 @@ INSERT INTO `session_activity` (`id`, `time_entry_id`, `user_id`, `recorded_at`,
 (451, 14, 8, '2026-05-01 11:46:54', 3, 0, 3),
 (452, 14, 8, '2026-05-01 11:47:54', 0, 0, 0),
 (453, 14, 8, '2026-05-01 11:48:54', 0, 0, 0),
-(454, 14, 8, '2026-05-01 11:49:54', 0, 0, 0);
+(454, 14, 8, '2026-05-01 11:49:54', 0, 0, 0),
+(455, 21, 11, '2026-05-08 10:18:20', 286, 0, 286),
+(456, 21, 11, '2026-05-08 10:19:20', 0, 0, 0),
+(457, 21, 11, '2026-05-08 10:20:20', 0, 0, 0),
+(458, 21, 11, '2026-05-08 10:21:20', 0, 0, 0),
+(459, 21, 11, '2026-05-08 10:22:20', 0, 0, 0),
+(460, 21, 11, '2026-05-08 10:23:20', 0, 0, 0),
+(461, 21, 11, '2026-05-08 10:24:20', 283, 0, 283),
+(462, 21, 11, '2026-05-08 10:26:02', 0, 0, 0),
+(463, 21, 11, '2026-05-08 10:26:20', 0, 0, 0),
+(464, 21, 11, '2026-05-08 10:27:20', 0, 0, 0),
+(465, 21, 11, '2026-05-08 10:28:20', 0, 0, 0),
+(466, 21, 11, '2026-05-08 10:29:20', 0, 0, 0),
+(467, 21, 11, '2026-05-08 10:30:20', 0, 0, 0),
+(468, 21, 11, '2026-05-08 10:31:20', 0, 0, 0),
+(469, 21, 11, '2026-05-08 10:32:20', 0, 0, 0),
+(470, 21, 11, '2026-05-08 10:33:20', 0, 0, 0),
+(471, 21, 11, '2026-05-08 10:35:02', 0, 0, 0),
+(472, 21, 11, '2026-05-08 10:36:02', 0, 0, 0),
+(473, 21, 11, '2026-05-08 10:37:02', 0, 0, 0),
+(474, 21, 11, '2026-05-08 10:38:02', 0, 0, 0),
+(475, 21, 11, '2026-05-08 10:39:02', 0, 0, 0),
+(476, 21, 11, '2026-05-08 10:40:02', 0, 0, 0),
+(477, 21, 11, '2026-05-08 10:41:02', 0, 0, 0),
+(478, 21, 11, '2026-05-08 10:42:02', 0, 0, 0),
+(479, 21, 11, '2026-05-08 10:43:02', 0, 0, 0),
+(480, 21, 11, '2026-05-08 10:44:02', 0, 0, 0),
+(481, 21, 11, '2026-05-08 10:45:02', 0, 0, 0),
+(482, 21, 11, '2026-05-08 10:46:02', 0, 0, 0),
+(483, 21, 11, '2026-05-08 10:47:02', 0, 0, 0),
+(484, 21, 11, '2026-05-08 10:48:02', 0, 0, 0),
+(485, 21, 11, '2026-05-08 10:49:02', 0, 0, 0),
+(486, 21, 11, '2026-05-08 10:50:02', 0, 0, 0),
+(487, 21, 11, '2026-05-08 10:51:02', 0, 0, 0),
+(488, 21, 11, '2026-05-08 10:52:02', 0, 0, 0),
+(489, 21, 11, '2026-05-08 10:53:02', 0, 0, 0),
+(490, 21, 11, '2026-05-08 10:54:02', 0, 0, 0),
+(491, 21, 11, '2026-05-08 10:55:02', 0, 0, 0),
+(492, 21, 11, '2026-05-08 10:56:02', 0, 0, 0),
+(493, 21, 11, '2026-05-08 10:57:02', 0, 0, 0),
+(494, 21, 11, '2026-05-08 10:58:02', 0, 0, 0),
+(495, 21, 11, '2026-05-08 10:59:02', 0, 0, 0),
+(496, 21, 11, '2026-05-08 11:00:02', 0, 0, 0),
+(497, 21, 11, '2026-05-08 11:01:02', 0, 0, 0),
+(498, 21, 11, '2026-05-08 11:02:02', 0, 0, 0),
+(499, 21, 11, '2026-05-08 11:03:02', 0, 0, 0),
+(500, 21, 11, '2026-05-08 11:04:02', 0, 0, 0),
+(501, 21, 11, '2026-05-08 11:05:02', 0, 0, 0),
+(502, 21, 11, '2026-05-08 11:06:02', 0, 0, 0),
+(503, 21, 11, '2026-05-08 11:07:02', 0, 0, 0),
+(504, 21, 11, '2026-05-08 11:08:02', 0, 0, 0),
+(505, 21, 11, '2026-05-08 11:09:02', 0, 0, 0),
+(506, 21, 11, '2026-05-08 11:10:02', 0, 0, 0),
+(507, 21, 11, '2026-05-08 11:11:02', 0, 0, 0),
+(508, 21, 11, '2026-05-08 11:12:02', 0, 0, 0),
+(509, 21, 11, '2026-05-08 11:13:02', 0, 0, 0),
+(510, 21, 11, '2026-05-08 11:14:02', 0, 0, 0),
+(511, 21, 11, '2026-05-08 11:15:02', 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -986,7 +1050,8 @@ INSERT INTO `time_entries` (`id`, `company_id`, `project_id`, `task_id`, `user_i
 (17, 6, 6, NULL, 14, '2026-05-01 10:03:04', '2026-05-01 10:18:19', 915, 'Testing: security test', 1, 0, 'abandoned', 'timer', NULL, NULL, NULL, '2026-05-01 14:03:04', '2026-05-01 14:50:00', 0, 0, 96.1333, 'abandoned'),
 (18, 6, 6, 13, 14, '2026-05-01 11:00:17', '2026-05-01 11:13:45', 808, 'ResuMatch', 1, 0, 'completed', 'timer', NULL, NULL, NULL, '2026-05-01 15:00:17', '2026-05-01 15:13:45', 0, 0, NULL, 'manual'),
 (19, 1, 4, 14, 11, '2026-05-01 11:16:54', '2026-05-01 11:25:34', 520, 'Melaku Digital Inc.', 1, 0, 'abandoned', 'timer', NULL, NULL, NULL, '2026-05-01 15:16:54', '2026-05-01 16:00:00', 0, 0, 226.571, 'abandoned'),
-(20, 1, 4, 14, 11, '2026-05-01 12:32:11', '2026-05-01 12:32:18', 7, 'images loading', 1, 0, 'completed', 'timer', NULL, NULL, NULL, '2026-05-01 16:32:11', '2026-05-01 16:32:18', 0, 0, NULL, 'manual');
+(20, 1, 4, 14, 11, '2026-05-01 12:32:11', '2026-05-01 12:32:18', 7, 'images loading', 1, 0, 'completed', 'timer', NULL, NULL, NULL, '2026-05-01 16:32:11', '2026-05-01 16:32:18', 0, 0, NULL, 'manual'),
+(21, 1, 4, 14, 11, '2026-05-08 10:17:19', NULL, 0, 'Melaku Digital Inc.', 1, 0, 'running', 'timer', NULL, NULL, NULL, '2026-05-08 14:17:19', '2026-05-08 14:17:19', 0, 0, NULL, 'manual');
 
 -- --------------------------------------------------------
 
@@ -1028,10 +1093,10 @@ INSERT INTO `users` (`id`, `company_id`, `username`, `email`, `password`, `role`
 (5, 1, 'freelancer1', 'freelancer1@example.com', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'freelancer', 'Sample Freelancer', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-05-01 13:58:51'),
 (6, 1, 'client1', 'client1@example.com', '$2y$10$Bq0fhgYEsUffmExi0ETWleY89s0GFyuQ9EVRI2O4k2iAHcYtmMube', 'client', 'Sample Client', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '2026-02-06 14:47:00', '2026-05-01 13:58:51'),
 (7, 1, 'sara', 'sarakey@timeforge.com', '$2y$10$gM4HuEs1G1zlqIFsoQEHIe0IpYEnig.Omygc4jJtONKBXMzvx/btG', 'freelancer', 'sara key', NULL, NULL, NULL, 1, '2026-02-13 11:27:27', '2026-02-13 11:27:27', NULL, NULL, NULL, '2026-02-13 14:10:55', '2026-05-01 13:58:43'),
-(8, 1, 'Etef', 'etefmelaku@gmail.com', '$2y$10$zQe9n49AM0U3zq6S.O9uHOcxJpPRkkd719./6b6faaDJs0f1YPjIG', 'admin', 'Etefworkie Melaku', 'Melaku Digital Inc.', 'Web Design and software development', NULL, 1, '2026-05-01 08:44:17', '2026-05-01 11:49:54', 5, NULL, NULL, '2026-02-13 15:58:57', '2026-05-01 15:49:54'),
+(8, 1, 'Etef', 'etefmelaku@gmail.com', '$2y$10$zQe9n49AM0U3zq6S.O9uHOcxJpPRkkd719./6b6faaDJs0f1YPjIG', 'admin', 'Etefworkie Melaku', 'Melaku Digital Inc.', 'Web Design and software development', NULL, 1, '2026-05-08 10:25:01', '2026-05-08 10:25:01', 5, NULL, NULL, '2026-02-13 15:58:57', '2026-05-08 14:25:01'),
 (9, 1, 'Rose', 'rose@timeforge.com', '$2y$10$HQxSMJiCwzmnIV3x9TPDf.VvzwvgnZf7B1A8KNLgxwE4rtsN8aXYW', 'client', 'Rose Etef', NULL, NULL, NULL, 1, '2026-05-01 11:28:54', '2026-05-01 11:28:54', NULL, NULL, NULL, '2026-02-13 16:07:33', '2026-05-01 15:28:54'),
 (10, 1, 'ademe', 'abelconltd@gmail.com', '$2y$10$Src9cEOBTf1n1zdRp3tANO9MaXg5XxzucgO2mBFsKhO5zlD5o7aeO', 'freelancer', 'abel', NULL, NULL, NULL, 1, '2026-02-20 08:14:09', '2026-02-20 08:14:09', NULL, NULL, NULL, '2026-02-20 13:13:52', '2026-05-01 13:58:43'),
-(11, 1, 'Abi', 'gizieart@gmail.com', '$2y$10$afzkYYWImgw5/3VkSx0yYuMB9L0l6aiBlnLIjhOTlRV7r0yKyFNR.', 'freelancer', 'Abegaile', NULL, NULL, NULL, 1, '2026-05-08 08:46:25', '2026-05-08 08:46:25', 4, NULL, NULL, '2026-02-27 13:06:12', '2026-05-08 12:46:25'),
+(11, 1, 'Abi', 'gizieart@gmail.com', '$2y$10$afzkYYWImgw5/3VkSx0yYuMB9L0l6aiBlnLIjhOTlRV7r0yKyFNR.', 'freelancer', 'Abegaile', NULL, NULL, NULL, 1, '2026-05-08 08:46:25', '2026-05-08 11:15:02', 4, NULL, NULL, '2026-02-27 13:06:12', '2026-05-08 15:15:02'),
 (12, 4, 'George', 'wodebetf@gmail.com', '$2y$10$lK6lQtyW1sIncnFiPs7TKugzX1QCaPXSYQBHlIKFttRAj2el1DYGu', 'admin', 'George ETEF', NULL, NULL, NULL, 1, '2026-02-27 10:54:12', '2026-02-27 10:54:12', NULL, NULL, NULL, '2026-02-27 15:53:55', '2026-05-01 13:58:43'),
 (13, 5, 'Abe', 'melakuetf@gmail.com', '$2y$10$lmKJzt1hDNuydhJApmK.FuKRNwvU3/cUMK3lfZMooiP7MN6z3kBSm', 'admin', 'Abegaile Ademe', NULL, NULL, NULL, 1, '2026-04-10 09:40:46', '2026-04-10 09:40:46', NULL, NULL, NULL, '2026-04-10 13:40:07', '2026-05-01 13:58:43'),
 (14, 6, 'wub', 'melakunetdigital@gmail.com', '$2y$10$imeveVxDBp5bl82qqyzOOOoVQAmrPK93OCDRWTaeOn.uvv0DV2Ije', 'admin', 'bro', NULL, NULL, 'images/logos/14_logo.png', 1, '2026-05-01 09:32:03', '2026-05-01 11:10:10', 6, NULL, NULL, '2026-05-01 13:31:47', '2026-05-01 15:10:10');
@@ -1169,7 +1234,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `clients`
@@ -1199,7 +1264,7 @@ ALTER TABLE `invoices`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `projects`
@@ -1211,13 +1276,13 @@ ALTER TABLE `projects`
 -- AUTO_INCREMENT for table `screenshots`
 --
 ALTER TABLE `screenshots`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `session_activity`
 --
 ALTER TABLE `session_activity`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=455;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=512;
 
 --
 -- AUTO_INCREMENT for table `tasks`
@@ -1235,7 +1300,7 @@ ALTER TABLE `task_comments`
 -- AUTO_INCREMENT for table `time_entries`
 --
 ALTER TABLE `time_entries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `users`
