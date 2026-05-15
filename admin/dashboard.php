@@ -26,6 +26,20 @@ $total_projects = (int)$proj_count->fetchColumn();
 $entry_count   = $pdo->prepare("SELECT COUNT(*) FROM time_entries WHERE company_id = :cid");
 $entry_count->execute([':cid' => $company_id]);
 $total_entries  = (int)$entry_count->fetchColumn();
+
+// Projects list for dashboard panel
+$projects_stmt = $pdo->prepare("
+    SELECT p.id, p.project_name, p.status, p.hourly_rate, p.stage,
+           c.name AS client_name,
+           (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id AND t.deleted_at IS NULL) AS task_count,
+           (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id AND t.status NOT IN ('done','cancelled') AND t.deleted_at IS NULL) AS open_tasks
+    FROM projects p
+    LEFT JOIN clients c ON c.id = p.client_id
+    WHERE p.company_id = :cid AND p.deleted_at IS NULL
+    ORDER BY p.status ASC, p.project_name ASC
+");
+$projects_stmt->execute([':cid' => $company_id]);
+$all_projects = $projects_stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,6 +82,72 @@ $total_entries  = (int)$entry_count->fetchColumn();
         
         <!-- NEW: Quick Start Widget -->
         <?php include __DIR__ . '/dashboard_quick_start.php'; ?>
+    </div>
+
+    <!-- ── Projects Panel ─────────────────────────────────────────────────── -->
+    <div class="card" style="margin-bottom:2rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:.75rem;">
+            <h2 style="color:var(--color-accent); margin:0;">📁 Projects</h2>
+            <a href="<?= APP_BASE ?>/add_project.php" class="btn btn-primary">+ New Project</a>
+        </div>
+        <?php if (empty($all_projects)): ?>
+            <p style="color:var(--color-text-secondary);">No projects yet. <a href="<?= APP_BASE ?>/add_project.php">Create your first project →</a></p>
+        <?php else: ?>
+        <div class="table-responsive">
+        <table class="table" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Project Name</th>
+                    <th>Client</th>
+                    <th>Rate</th>
+                    <th>Status</th>
+                    <th>Tasks</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($all_projects as $proj):
+                $status_color = match($proj['status']) {
+                    'active'    => '#22c55e',
+                    'completed' => '#3b82f6',
+                    'on_hold'   => '#f59e0b',
+                    default     => '#94a3b8',
+                };
+            ?>
+                <tr>
+                    <td style="font-weight:600;">
+                        <a href="<?= APP_BASE ?>/project_details.php?id=<?= (int)$proj['id'] ?>" style="color:var(--color-text); text-decoration:none;">
+                            <?= htmlspecialchars($proj['project_name']) ?>
+                        </a>
+                    </td>
+                    <td style="color:var(--color-text-secondary); font-size:.88rem;"><?= htmlspecialchars($proj['client_name'] ?? '—') ?></td>
+                    <td style="font-size:.88rem;">$<?= number_format((float)$proj['hourly_rate'], 2) ?>/hr</td>
+                    <td>
+                        <span style="background:<?= $status_color ?>22; color:<?= $status_color ?>; border:1px solid <?= $status_color ?>55; padding:.2rem .65rem; border-radius:999px; font-size:.78rem; font-weight:600; text-transform:capitalize;">
+                            <?= ucfirst($proj['status']) ?>
+                        </span>
+                    </td>
+                    <td style="font-size:.88rem;">
+                        <?php if ($proj['open_tasks'] > 0): ?>
+                            <span style="color:#f59e0b;"><?= (int)$proj['open_tasks'] ?> open</span>
+                            <span style="color:var(--color-text-secondary);">/<?= (int)$proj['task_count'] ?></span>
+                        <?php else: ?>
+                            <span style="color:var(--color-text-secondary);"><?= (int)$proj['task_count'] ?> total</span>
+                        <?php endif; ?>
+                    </td>
+                    <td style="white-space:nowrap; font-size:.88rem;">
+                        <a href="<?= APP_BASE ?>/project_details.php?id=<?= (int)$proj['id'] ?>" style="color:#3b82f6;">View</a>
+                        &nbsp;|&nbsp;
+                        <a href="<?= APP_BASE ?>/tasks.php?project_id=<?= (int)$proj['id'] ?>" style="color:#3b82f6;">Tasks</a>
+                        &nbsp;|&nbsp;
+                        <a href="<?= APP_BASE ?>/edit_project.php?id=<?= (int)$proj['id'] ?>" style="color:#94a3b8;">Edit</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        </div>
+        <?php endif; ?>
     </div>
 
     <!-- Phase 10: Live Freelancer Presence — vanilla JS panel (reliable, no React dependency) -->
