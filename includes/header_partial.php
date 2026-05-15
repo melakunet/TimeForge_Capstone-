@@ -7,7 +7,7 @@ $current_user  = getCurrentUser();
 // Guard: only query if logged in AND $pdo is available
 $_notif_count  = (isLoggedIn() && isset($pdo)) ? unreadNotificationCount($pdo, (int)$_SESSION['user_id']) : 0;
 ?>
-<script>if(typeof APP_BASE==='undefined'){const APP_BASE='<?= APP_BASE ?>';}</script>
+<script>if(typeof APP_BASE==='undefined'){var APP_BASE='<?= APP_BASE ?>';}</script>
 <header>
   <div class="logo">
     <a href="<?= APP_BASE ?>/index.php?view=welcome" class="logo-link">
