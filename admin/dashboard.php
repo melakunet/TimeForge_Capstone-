@@ -30,9 +30,9 @@ $total_entries  = (int)$entry_count->fetchColumn();
 // Projects list for dashboard panel
 $projects_stmt = $pdo->prepare("
     SELECT p.id, p.project_name, p.status, p.hourly_rate, p.stage,
-           c.name AS client_name,
-           (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id AND t.deleted_at IS NULL) AS task_count,
-           (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id AND t.status NOT IN ('done','cancelled') AND t.deleted_at IS NULL) AS open_tasks
+           c.client_name AS client_name,
+           (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id) AS task_count,
+           (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id AND t.status NOT IN ('done','cancelled')) AS open_tasks
     FROM projects p
     LEFT JOIN clients c ON c.id = p.client_id
     WHERE p.company_id = :cid AND p.deleted_at IS NULL
