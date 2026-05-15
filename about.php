@@ -3,6 +3,7 @@
  * about.php — TimeForge Feature Showcase
  * For capstone testers, instructors, and evaluators.
  */
+require_once __DIR__ . '/config/app.php';
 $page_title = 'About TimeForge';
 ?>
 <!DOCTYPE html>
