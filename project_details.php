@@ -457,21 +457,15 @@ $flash = getFlash();
                                             <?php if ($role === 'admin' || $role === 'freelancer'): ?>
                                                 <div class="action-buttons">
                                                     <?php if ($entry['status'] === 'running'): ?>
-                                                        <form action="stop_timer.php" method="POST" class="d-inline">
-                                                            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
-                                                            <input type="hidden" name="entry_id" value="<?php echo $entry['id']; ?>">
-                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Stop the timer?');">
-                                                                ■ Stop Timer
-                                                            </button>
-                                                        </form>
+                                                        <button class="btn btn-danger btn-sm"
+                                                                onclick="stopEntryTimer(<?= (int)$entry['id'] ?>, <?= (int)$project_id ?>)">
+                                                            ■ Stop Timer
+                                                        </button>
                                                     <?php else: ?>
-                                                        <form action="start_timer.php" method="POST" class="d-inline">
-                                                            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
-                                                            <input type="hidden" name="entry_id" value="<?php echo $entry['id']; ?>">
-                                                            <button type="submit" class="btn btn-success btn-sm">
-                                                                ▶ Resume Timer
-                                                            </button>
-                                                        </form>
+                                                        <button class="btn btn-success btn-sm"
+                                                                onclick="resumeEntryTimer(<?= (int)$project_id ?>, <?= htmlspecialchars(json_encode($entry['description'] ?: 'General work'), ENT_QUOTES) ?>)">
+                                                            ▶ Resume Timer
+                                                        </button>
                                                     <?php endif; ?>
                                                     
                                                     <a href="edit_time_entry.php?id=<?php echo $entry['id']; ?>" class="btn btn-secondary btn-sm">
@@ -905,7 +899,7 @@ function pfSelectTemplate(key) {
     if (chosen) chosen.style.borderColor = '#3b82f6';
 
     var btn = document.getElementById('preflightContinueBtn');
-    var base = ' . APP_BASE . '/invoices/generate.php?project_id=<?php echo $project['id']; ?>';
+    var base = '<?= APP_BASE ?>/invoices/generate.php?project_id=<?php echo $project['id']; ?>';
     btn.href = base + '&tpl=' + key;
 }
 
@@ -929,6 +923,41 @@ function closeCsvPreflight() {
 document.getElementById('csvPreflightModal').addEventListener('click', function(e) {
     if (e.target === this) closeCsvPreflight();
 });
+</script>
+
+<script>
+// ── Timer helpers for project_details.php ─────────────────────────────────
+// Resume: start a fresh timer entry for this project via the JS widget
+async function resumeEntryTimer(projectId, description) {
+    if (!window.timeTracker) { alert('Timer widget not loaded. Please refresh the page.'); return; }
+    if (window.timeTracker.projectId) { alert('A timer is already running. Please stop it first.'); return; }
+    try {
+        await window.timeTracker.startTimer(projectId, description);
+    } catch (err) {
+        console.error('Resume timer failed:', err);
+        alert('Could not start timer: ' + (err.message || 'Server error. Please try again.'));
+    }
+}
+
+// Stop: if the widget owns this entry, use its stop flow; otherwise stop via API then reload
+async function stopEntryTimer(entryId, projectId) {
+    if (!confirm('Stop this running timer?')) return;
+    if (window.timeTracker && window.timeTracker.entryId == entryId) {
+        // Widget is tracking this entry — let it handle the stop cleanly
+        await window.timeTracker.stopTimer();
+        return;
+    }
+    // Timer is running on another tab/session — stop it server-side and reload
+    try {
+        const fd = new URLSearchParams({ action: 'stop', project_id: projectId, entry_id: entryId });
+        const r = await fetch('<?= APP_BASE ?>/api/time_tracking.php', { method: 'POST', body: fd });
+        const j = await r.json();
+        if (j.success) { location.reload(); }
+        else { alert('Could not stop timer: ' + (j.message || 'Unknown error')); }
+    } catch (err) {
+        alert('Network error stopping timer: ' + err.message);
+    }
+}
 </script>
 </body>
 </html>

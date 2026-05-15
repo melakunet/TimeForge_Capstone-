@@ -354,7 +354,12 @@ $flash = getFlash();
             const tname = tid ? (_pmTasks.find(t => t.id == tid)?.title || null) : null;
             closeProjModal();
             if (window.timeTracker) {
-                await window.timeTracker.startTimer(pid, desc, null, tid, tname);
+                try {
+                    await window.timeTracker.startTimer(pid, desc, null, tid, tname);
+                } catch (err) {
+                    console.error('Timer start failed:', err);
+                    alert('Could not start timer: ' + (err.message || 'Server error. Please try again.'));
+                }
             }
         }
 
