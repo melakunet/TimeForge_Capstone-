@@ -3,7 +3,7 @@
 **Student:** Etefworkie Melaku  
 **Program:** Mobile and Web App Development  
 **Institution:** triOS College  
-**Capstone:** 2024 – 2025  
+**Capstone:** 2025 – 2027  
 
 ---
 
